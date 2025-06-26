@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-22T00:28:58.312351+00:00",
+  "timestamp": "2025-06-26T00:26:10.790513+00:00",
   "repo": "brandonweeks/draft-bweeks-acme-device-attest",
   "labels": [
     {
@@ -175,16 +175,24 @@
       "id": "I_kwDOHJ3oBc61IUww",
       "title": "Draft status",
       "url": "https://github.com/brandonweeks/draft-bweeks-acme-device-attest/issues/7",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "stormshield-gt",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Thanks for pushing this up! \n\nI noticed that the latest draft [has expired the 2025-02-26](https://datatracker.ietf.org/doc/draft-acme-device-attest/history/).\nIs it still planned to move this forward ?",
       "createdAt": "2025-05-05T07:41:35Z",
-      "updatedAt": "2025-05-05T07:41:35Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-06-24T14:05:28Z",
+      "closedAt": "2025-06-24T14:05:28Z",
+      "comments": [
+        {
+          "author": "brandonweeks",
+          "authorAssociation": "OWNER",
+          "body": "https://datatracker.ietf.org/doc/draft-acme-device-attest/04/",
+          "createdAt": "2025-06-24T14:05:28Z",
+          "updatedAt": "2025-06-24T14:05:28Z"
+        }
+      ]
     }
   ],
   "pulls": [
