@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-26T00:26:10.790513+00:00",
+  "timestamp": "2025-07-10T00:26:42.176434+00:00",
   "repo": "brandonweeks/draft-bweeks-acme-device-attest",
   "labels": [
     {
@@ -193,6 +193,54 @@
           "updatedAt": "2025-06-24T14:05:28Z"
         }
       ]
+    },
+    {
+      "number": 9,
+      "id": "I_kwDOHJ3oBc6_eLAW",
+      "title": "hardware-module identifier CSR encoding underspecified?",
+      "url": "https://github.com/brandonweeks/draft-bweeks-acme-device-attest/issues/9",
+      "state": "OPEN",
+      "author": "cpu",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": ":wave: Hi there,\n\nOf the two new identifier types (`permanent-identifier`, and `hardware-module`), only `permanent-identifier` describes how it should appear in a CSR, saying in [\u00a73](https://www.ietf.org/archive/id/draft-acme-device-attest-04.html#section-3): \n\n> The identity along with the assigning organization can be included in the Subject Alternate Name Extension using the PermanentIdentifier form described in [[RFC4043](https://www.ietf.org/archive/id/draft-acme-device-attest-04.html#RFC4043)].\n\nIn contrast, [\u00a74](https://www.ietf.org/archive/id/draft-acme-device-attest-04.html#section-4) about `hardware-module` only says: \n> If the server includes HardwareModule in the subjectAltName extension the CA MUST verify that the certificate key was generated on the secure cryptoprocessor with the asserted identity and type\n\nIs there a specific choice of `GeneralName` the CA should expect to find for a `hardware-module` `subjectAltName`? Is it an `otherName` w/ a specific OID like `PermanentIdentifier`?\n\n[RFC 8555 \u00a77.4](https://www.rfc-editor.org/rfc/rfc8555#section-7.4) says:\n\n> The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request. Identifiers of type \"dns\" MUST appear either in the commonName portion of the requested subject name or in an extensionRequest attribute [[RFC2985](https://www.rfc-editor.org/rfc/rfc2985)] requesting a subjectAltName extension, or both. (These identifiers may appear in any sort order.)  Specifications that define new identifier types must specify where in the certificate signing request these identifiers can appear.\n\nFor an ACME server to meet that requirement I think the specification of the `hardware-module` identifier needs to provide more detail. WDYT?",
+      "createdAt": "2025-07-08T12:27:09Z",
+      "updatedAt": "2025-07-08T12:27:09Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 10,
+      "id": "I_kwDOHJ3oBc6_eVsP",
+      "title": "structure of the `permanent-identifier` identifier value",
+      "url": "https://github.com/brandonweeks/draft-bweeks-acme-device-attest/issues/10",
+      "state": "OPEN",
+      "author": "cpu",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Hi hi,\n\nSimilar to https://github.com/brandonweeks/draft-bweeks-acme-device-attest/issues/9 I have a question about the `permanent-identifier` value. Presently the draft defers to [RFC 4043](https://www.rfc-editor.org/rfc/rfc4043) for the form the `permanent-identifier` should take inside of a CSR's `subjectAltName` extension.\n\nHowever, in RFC 8555 when [applying for cert issuance](https://www.rfc-editor.org/rfc/rfc8555#section-7.4) the new order request identifier values are strings. It's not immediately obvious to me how one would encode a `PermanentIdentifier` from RFC 4043 in that context. Would it be just the `identifierValue UTF8String OPTIONAL` field?\n\nSimilarly, when it comes time for the ACME server to match up the CSR contents with the order identifiers, is there more specific advice to offer? In particular both fields of the `PermanentIdentifier` are spec'd as OPTIONAL and 4043 has a lot of text describing how to interpret the omission/inclusion of each. How will that map to the identifier types when matching CSR/order contents?\n\nI'm not very familiar with the problem space this draft is tackling so I might be confusing myself here :-) I came up with these questions while trying to review parts of an implementation proposed for the [instant-acme](https://github.com/djc/instant-acme) client.",
+      "createdAt": "2025-07-08T12:41:02Z",
+      "updatedAt": "2025-07-08T12:41:02Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 11,
+      "id": "I_kwDOHJ3oBc6_ehAg",
+      "title": "Pebble implementation?",
+      "url": "https://github.com/brandonweeks/draft-bweeks-acme-device-attest/issues/11",
+      "state": "OPEN",
+      "author": "cpu",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I saw you have a demo fork of [step-ca](https://github.com/brandonweeks/acme-device-attest-demo). That's great, thank you \ud83d\udc4d \n\nWould it be viable to implement support in [Pebble](https://github.com/letsencrypt/pebble)? One of its stated goals is to \"Provide a test-bed for new and compatibility breaking ACME features\" so hopefully there would be mutual interest. \n\nHowever, even if the LE folks weren't interested in support (perhaps it would require some heavyweight dependencies or significant amounts of new code) I think having a fork of Pebble with support would be more appealing for prospective client developers than `step-ca`. \n\nStep is great, but it's fairly heavy-weight in comparison to Pebble. It's also likely that ACME clients will have pre-existing Pebble integration tests they could extend for device attestation. ",
+      "createdAt": "2025-07-08T12:53:59Z",
+      "updatedAt": "2025-07-08T12:53:59Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
