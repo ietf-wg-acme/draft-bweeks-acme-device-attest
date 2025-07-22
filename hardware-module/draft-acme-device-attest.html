@@ -1268,7 +1268,8 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 </li>
       </ul>
 <p id="section-4-4">Clients <span class="bcp14">MAY</span> include this identifier in the certificate signing request (CSR). When included in a CSR, it <span class="bcp14">MUST</span> appear in an extensionRequest attribute [RFC2985] requesting a subjectAltName extension.<a href="#section-4-4" class="pilcrow">¶</a></p>
-<p id="section-4-5">If the server wishes to issue privacy-preserving certificates, it <span class="bcp14">MAY</span> omit HardwareModule from the subjectAltName extension.<a href="#section-4-5" class="pilcrow">¶</a></p>
+<p id="section-4-5">If the server includes HardwareModule in the subjectAltName extension the CA <span class="bcp14">MUST</span> verify that the certificate key was generated on the secure cryptoprocessor with the asserted identity and type. The key <span class="bcp14">MUST NOT</span> be able to be exported from the cryptoprocessor.<a href="#section-4-5" class="pilcrow">¶</a></p>
+<p id="section-4-6">If the server wishes to issue privacy-preserving certificates, it <span class="bcp14">MAY</span> omit HardwareModule from the subjectAltName extension.<a href="#section-4-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="device-attestation-challenge">

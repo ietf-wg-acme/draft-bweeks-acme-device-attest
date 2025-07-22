@@ -171,6 +171,11 @@ Table of Contents
    extensionRequest attribute [RFC2985] requesting a subjectAltName
    extension.
 
+   If the server includes HardwareModule in the subjectAltName extension
+   the CA MUST verify that the certificate key was generated on the
+   secure cryptoprocessor with the asserted identity and type.  The key
+   MUST NOT be able to be exported from the cryptoprocessor.
+
    If the server wishes to issue privacy-preserving certificates, it MAY
    omit HardwareModule from the subjectAltName extension.
 
