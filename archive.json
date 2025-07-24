@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-10T00:26:42.176434+00:00",
+  "timestamp": "2025-07-24T00:28:03.200360+00:00",
   "repo": "brandonweeks/draft-bweeks-acme-device-attest",
   "labels": [
     {
@@ -206,9 +206,17 @@
       "labels": [],
       "body": ":wave: Hi there,\n\nOf the two new identifier types (`permanent-identifier`, and `hardware-module`), only `permanent-identifier` describes how it should appear in a CSR, saying in [\u00a73](https://www.ietf.org/archive/id/draft-acme-device-attest-04.html#section-3): \n\n> The identity along with the assigning organization can be included in the Subject Alternate Name Extension using the PermanentIdentifier form described in [[RFC4043](https://www.ietf.org/archive/id/draft-acme-device-attest-04.html#RFC4043)].\n\nIn contrast, [\u00a74](https://www.ietf.org/archive/id/draft-acme-device-attest-04.html#section-4) about `hardware-module` only says: \n> If the server includes HardwareModule in the subjectAltName extension the CA MUST verify that the certificate key was generated on the secure cryptoprocessor with the asserted identity and type\n\nIs there a specific choice of `GeneralName` the CA should expect to find for a `hardware-module` `subjectAltName`? Is it an `otherName` w/ a specific OID like `PermanentIdentifier`?\n\n[RFC 8555 \u00a77.4](https://www.rfc-editor.org/rfc/rfc8555#section-7.4) says:\n\n> The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request. Identifiers of type \"dns\" MUST appear either in the commonName portion of the requested subject name or in an extensionRequest attribute [[RFC2985](https://www.rfc-editor.org/rfc/rfc2985)] requesting a subjectAltName extension, or both. (These identifiers may appear in any sort order.)  Specifications that define new identifier types must specify where in the certificate signing request these identifiers can appear.\n\nFor an ACME server to meet that requirement I think the specification of the `hardware-module` identifier needs to provide more detail. WDYT?",
       "createdAt": "2025-07-08T12:27:09Z",
-      "updatedAt": "2025-07-08T12:27:09Z",
+      "updatedAt": "2025-07-22T10:27:33Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "brandonweeks",
+          "authorAssociation": "OWNER",
+          "body": "Thank you for the feedback!\n\nPlease take a look at #12 and let me know if the change addresses your feedback.",
+          "createdAt": "2025-07-22T10:27:33Z",
+          "updatedAt": "2025-07-22T10:27:33Z"
+        }
+      ]
     },
     {
       "number": 10,
@@ -353,6 +361,53 @@
       },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 12,
+      "id": "PR_kwDOHJ3oBc6gCnkP",
+      "title": "Document hardware-module encoding",
+      "url": "https://github.com/brandonweeks/draft-bweeks-acme-device-attest/pull/12",
+      "state": "OPEN",
+      "author": "brandonweeks",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #9",
+      "createdAt": "2025-07-22T10:26:15Z",
+      "updatedAt": "2025-07-22T13:36:46Z",
+      "baseRepository": "brandonweeks/draft-bweeks-acme-device-attest",
+      "baseRefName": "main",
+      "baseRefOid": "1b4667aabfbe550ec3a4f4e18b21a771c4f69242",
+      "headRepository": "brandonweeks/draft-bweeks-acme-device-attest",
+      "headRefName": "hardware-module",
+      "headRefOid": "1d1c3c21c9e7808923d8293e65efbaac11219375",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOHJ3oBc61YQ9y",
+          "commit": {
+            "abbreviatedOid": "1d1c3c2"
+          },
+          "author": "cpu",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "Thanks! I think this is a change in the right direction.\r\n\r\nDid you want to look at the question of how servers should be matching CSR subjectAltName extensionRequest attributes with ACME order identifiers separately or was that part of my issue not well articulated? I think there's still room to make that aspect of the draft a bit tighter even after this update.",
+          "createdAt": "2025-07-22T13:33:43Z",
+          "updatedAt": "2025-07-22T13:36:46Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "This new text looks good, but I think its a little more detailed than the equivalent Permanent Identifier text and it might be nice to aim for more symmetry between them. The things that stick out to me in this one vs the other are the mention of the otherName OID, and the extra clarity on the expected RFC 2985 CSR attribute.\r\n\r\nI think the extra detail here is good, so probably backporting some of it to the preceding section might be the best way to go. WDYT?",
+              "createdAt": "2025-07-22T13:33:44Z",
+              "updatedAt": "2025-07-22T13:36:46Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
