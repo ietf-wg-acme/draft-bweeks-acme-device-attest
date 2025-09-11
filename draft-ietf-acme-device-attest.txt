@@ -3,14 +3,16 @@
 
 
 ACME Working Group                                              B. Weeks
-Internet-Draft                                              22 July 2025
-Intended status: Standards Track                                        
-Expires: 23 January 2026
+Internet-Draft                                                          
+Intended status: Standards Track                              G. Mallaya
+Expires: 15 March 2026                                                  
+                                                               S. Rajala
+                                                       11 September 2025
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
                                Extension
-                    draft-acme-device-attest-latest
+                  draft-ietf-acme-device-attest-latest
 
 Abstract
 
@@ -33,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 January 2026.
+   This Internet-Draft will expire on 15 March 2026.
 
 Copyright Notice
 
@@ -70,7 +72,7 @@ Table of Contents
    Appendix A.  Enterprise PKI
      A.1.  External Account Binding
    Acknowledgments
-   Author's Address
+   Authors' Addresses
 
 1.  Introduction
 
@@ -604,7 +606,15 @@ Acknowledgments
 
    TODO acknowledge.
 
-Author's Address
+Authors' Addresses
 
    Brandon Weeks
    Email: me@brandonweeks.com
+
+
+   Ganesh Mallaya
+   Email: ganesh.mallaya@appviewx.com
+
+
+   Sven Rajala
+   Email: sven.rajala@keyfactor.com

@@ -6,29 +6,31 @@
 <meta content="initial-scale=1.0" name="viewport">
 <title>Automated Certificate Management Environment (ACME) Device Attestation Extension</title>
 <meta content="Brandon Weeks" name="author">
+<meta content="Ganesh Mallaya" name="author">
+<meta content="Sven Rajala" name="author">
 <meta content="
        This document specifies new identifiers and a challenge for the
 Automated Certificate Management Environment (ACME) protocol which allows validating the identity of a device using attestation. 
     " name="description">
-<meta content="xml2rfc 3.29.0" name="generator">
+<meta content="xml2rfc 3.30.1" name="generator">
 <meta content="Internet-Draft" name="keyword">
-<meta content="draft-acme-device-attest-latest" name="ietf.draft">
+<meta content="draft-ietf-acme-device-attest-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.29.0
+  xml2rfc 3.30.1
     Python 3.12.11
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.3.8
+    platformdirs 4.4.0
     pycountry 24.6.1
     PyYAML 6.0.2
-    requests 2.32.4
+    requests 2.32.5
     setuptools 80.9.0
     wcwidth 0.2.13
 -->
-<link href="draft-acme-device-attest.xml" rel="alternate" type="application/rfc+xml">
+<link href="draft-ietf-acme-device-attest.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
 <style type="text/css">@font-face {
   font-family: 'Lora';
@@ -1045,11 +1047,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">ACME DA</td>
-<td class="right">June 2025</td>
+<td class="right">September 2025</td>
 </tr></thead>
 <tfoot><tr>
-<td class="left">Weeks</td>
-<td class="center">Expires 22 December 2025</td>
+<td class="left">Weeks, et al.</td>
+<td class="center">Expires 15 March 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1059,19 +1061,25 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dt class="label-workgroup">Workgroup:</dt>
 <dd class="workgroup">ACME Working Group</dd>
 <dt class="label-internet-draft">Internet-Draft:</dt>
-<dd class="internet-draft">draft-acme-device-attest-latest</dd>
+<dd class="internet-draft">draft-ietf-acme-device-attest-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-06-20" class="published">20 June 2025</time>
+<time datetime="2025-09-11" class="published">11 September 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-12-22">22 December 2025</time></dd>
-<dt class="label-authors">Author:</dt>
+<dd class="expires"><time datetime="2026-03-15">15 March 2026</time></dd>
+<dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
       <div class="author-name">B. Weeks</div>
+</div>
+<div class="author">
+      <div class="author-name">G. Mallaya</div>
+</div>
+<div class="author">
+      <div class="author-name">S. Rajala</div>
 </div>
 </dd>
 </dl>
@@ -1101,7 +1109,7 @@ Automated Certificate Management Environment (ACME) protocol which allows valida
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 22 December 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 15 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1188,7 +1196,7 @@ Automated Certificate Management Environment (ACME) protocol which allows valida
             <p id="section-toc.1-1.10.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+            <p id="section-toc.1-1.11.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1258,8 +1266,18 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-hardware-module" class="section-name selfRef">Hardware Module</a>
       </h2>
 <p id="section-4-1">A new identifier type, "hardware-module" is introduced to represent the identity of the secure cryptoprocessor that generated the certificate key.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">If the server includes HardwareModule in the subjectAltName extension the CA <span class="bcp14">MUST</span> verify that the certificate key was generated on the secure cryptoprocessor with the asserted identity and type. The key <span class="bcp14">MUST NOT</span> be able to be exported from the cryptoprocessor.<a href="#section-4-2" class="pilcrow">¶</a></p>
-<p id="section-4-3">If the server wishes to issue privacy-preserving certificates, it <span class="bcp14">MAY</span> omit HardwareModule from the subjectAltName extension.<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-2">The hardware module identity can be included in the Subject Alternate Name Extension using the HardwareModuleName form described in <span>[<a href="#RFC4108" class="cite xref">RFC4108</a>]</span>. The HardwareModuleName is encoded as an otherName with the OID id-on-hardwareModuleName (1.3.6.1.5.5.7.8.4) and consists of:<a href="#section-4-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-3.1">
+          <p id="section-4-3.1.1">hwType: An OBJECT IDENTIFIER that identifies the type of hardware module<a href="#section-4-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-4-3.2">
+          <p id="section-4-3.2.1">hwSerialNum: An OCTET STRING containing the hardware module serial number<a href="#section-4-3.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-4-4">Clients <span class="bcp14">MAY</span> include this identifier in the certificate signing request (CSR). When included in a CSR, it <span class="bcp14">MUST</span> appear in an extensionRequest attribute [RFC2985] requesting a subjectAltName extension.<a href="#section-4-4" class="pilcrow">¶</a></p>
+<p id="section-4-5">If the server includes HardwareModule in the subjectAltName extension the CA <span class="bcp14">MUST</span> verify that the certificate key was generated on the secure cryptoprocessor with the asserted identity and type. The key <span class="bcp14">MUST NOT</span> be able to be exported from the cryptoprocessor.<a href="#section-4-5" class="pilcrow">¶</a></p>
+<p id="section-4-6">If the server wishes to issue privacy-preserving certificates, it <span class="bcp14">MAY</span> omit HardwareModule from the subjectAltName extension.<a href="#section-4-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="device-attestation-challenge">
@@ -1705,14 +1723,28 @@ present in "newAccount" requests.<a href="#appendix-A.1-1" class="pilcrow">¶</a
 </div>
 <div id="authors-addresses">
 <section id="appendix-C">
-      <h2 id="name-authors-address">
-<a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
 <address class="vcard">
         <div dir="auto" class="left"><span class="fn nameRole">Brandon Weeks</span></div>
 <div class="email">
 <span>Email:</span>
 <a href="mailto:me@brandonweeks.com" class="email">me@brandonweeks.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Ganesh Mallaya</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:ganesh.mallaya@appviewx.com" class="email">ganesh.mallaya@appviewx.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Sven Rajala</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:sven.rajala@keyfactor.com" class="email">sven.rajala@keyfactor.com</a>
 </div>
 </address>
 </section>
