@@ -2,10 +2,10 @@
 
 This is the working area for the individual Internet-Draft, "Automated Certificate Management Environment (ACME) Device Attestation Extension".
 
-* [Editor's Copy](https://ietf-wg-acme.github.io/draft-bweeks-acme-device-attest/#go.draft-bweeks-acme-device-attest.html)
-* [Datatracker Page](https://ietf-wg-acme.ietf.org/doc/draft-bweeks-acme-device-attest)
-* [Individual Draft](https://ietf-wg-acme.ietf.org/doc/html/draft-bweeks-acme-device-attest)
-* [Compare Editor's Copy to Individual Draft](https://ietf-wg-acme.github.io/draft-bweeks-acme-device-attest/#go.draft-bweeks-acme-device-attest.diff)
+* [Editor's Copy](https://ietf-wg-acme.github.io/draft-bweeks-acme-device-attest/#go.draft-ietf-acme-device-attest.html)
+* [Datatracker Page](https://ietf-wg-acme.ietf.org/doc/draft-ietf-acme-device-attest)
+* [Individual Draft](https://ietf-wg-acme.ietf.org/doc/html/draft-ietf-acme-device-attest)
+* [Compare Editor's Copy to Individual Draft](https://ietf-wg-acme.github.io/draft-bweeks-acme-device-attest/#go.draft-ietf-acme-device-attest.diff)
 
 
 ## Contributing
