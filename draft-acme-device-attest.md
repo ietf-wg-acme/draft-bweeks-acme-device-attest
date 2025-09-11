@@ -5,7 +5,7 @@ category: std
 submissiontype: IETF
 
 docname: draft-acme-device-attest-latest
-v: 3
+v: 5
 area: Security
 workgroup: ACME Working Group
 keyword: Internet-Draft
@@ -14,6 +14,12 @@ author:
  -
     fullname: Brandon Weeks
     email: me@brandonweeks.com
+ -
+    fullname: Ganesh Mallaya
+    email: ganesh.mallaya@appviewx.com
+ -
+    fullname: Sven Rajala
+    email: sven.rajala@keyfactor.com
 
 normative:
   RFC4108:
