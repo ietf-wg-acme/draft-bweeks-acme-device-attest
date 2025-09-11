@@ -11,7 +11,7 @@ This is the working area for the individual Internet-Draft, "Automated Certifica
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/brandonweeks/draft-bweeks-acme-device-attest/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/ietf-wg-acme/draft-bweeks-acme-device-attest/blob/main/CONTRIBUTING.md).
 
 Contributions can be made by creating pull requests.
 The GitHub interface supports creating pull requests using the Edit (✏) button.
