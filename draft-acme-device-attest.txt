@@ -12,7 +12,7 @@ Expires: 15 March 2026
 
  Automated Certificate Management Environment (ACME) Device Attestation
                                Extension
-                  draft-ietf-acme-device-attest-latest
+                    draft-acme-device-attest-latest
 
 Abstract
 
