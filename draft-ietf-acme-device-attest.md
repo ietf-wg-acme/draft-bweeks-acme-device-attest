@@ -5,7 +5,7 @@ category: std
 submissiontype: IETF
 
 docname: draft-acme-device-attest-latest
-v: 5
+v: 3
 area: Security
 workgroup: ACME Working Group
 keyword: Internet-Draft
@@ -99,6 +99,12 @@ A new identifier type, "hardware-module" is introduced to represent the identity
 
 <!-- TODO: describe the certificate representation -->
 <!-- TODO: describe how the CA assert the key is hardware backed without an identifier -->
+The hardware module identity can be included in the Subject Alternate Name Extension using the HardwareModuleName form described in [RFC4108]. The HardwareModuleName is encoded as an otherName with the OID id-on-hardwareModuleName (1.3.6.1.5.5.7.8.4) and consists of:
+
+- hwType: An OBJECT IDENTIFIER that identifies the type of hardware module
+- hwSerialNum: An OCTET STRING containing the hardware module serial number
+
+Clients MAY include this identifier in the certificate signing request (CSR). When included in a CSR, it MUST appear in an extensionRequest attribute [RFC2985] requesting a subjectAltName extension.
 
 If the server includes HardwareModule in the subjectAltName extension the CA MUST verify that the certificate key was generated on the secure cryptoprocessor with the asserted identity and type. The key MUST NOT be able to be exported from the cryptoprocessor.
 
