@@ -5,7 +5,7 @@ category: std
 submissiontype: IETF
 
 docname: draft-acme-device-attest-latest
-v: 5
+v: 3
 area: Security
 workgroup: ACME Working Group
 keyword: Internet-Draft
