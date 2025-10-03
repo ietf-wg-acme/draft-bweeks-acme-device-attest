@@ -16,10 +16,10 @@ author:
     email: me@brandonweeks.com
  -
     fullname: Ganesh Mallaya
-    email: ganesh.mallaya@appviewx.com
+    email: mallaya.ganesh3@gmail.com
  -
     fullname: Sven Rajala
-    email: sven.rajala@keyfactor.com
+    email: sven.rajala@gmail.com
 
 normative:
   RFC4108:
@@ -69,6 +69,7 @@ Many operating systems and device vendors offer functionality enabling a device 
 - [Android Key Attestation](https://source.android.com/security/keystore/attestation)
 - [Chrome OS Verified Access](https://developers.google.com/chrome/verified-access/overview)
 - [Trusted Platform Module](https://trustedcomputinggroup.org/resource/trusted-platform-module-tpm-summary/)
+- [Managed Device Attestation for Apple Devices](https://support.apple.com/en-om/guide/deployment/dep28afbde6a/web)
 
 Using ACME and device attestation to issue client certificates for enterprise PKI is anticipated to be the most common use case. The following variances to the ACME specification are described in this document:
 
@@ -104,7 +105,7 @@ The hardware module identity can be included in the Subject Alternate Name Exten
 - hwType: An OBJECT IDENTIFIER that identifies the type of hardware module
 - hwSerialNum: An OCTET STRING containing the hardware module serial number
 
-Clients MAY include this identifier in the certificate signing request (CSR). When included in a CSR, it MUST appear in an extensionRequest attribute [RFC2985] requesting a subjectAltName extension.
+Clients MAY include this identifier in the certificate signing request (CSR). When included in a CSR, it MUST appear in an extensionRequest attribute {{!RFC2985}} requesting a subjectAltName extension.
 
 If the server includes HardwareModule in the subjectAltName extension the CA MUST verify that the certificate key was generated on the secure cryptoprocessor with the asserted identity and type. The key MUST NOT be able to be exported from the cryptoprocessor.
 
