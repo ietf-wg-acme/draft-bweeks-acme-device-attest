@@ -5,9 +5,9 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                          
 Intended status: Standards Track                              G. Mallaya
-Expires: 15 March 2026                                                  
+Expires: 6 April 2026                                                   
                                                                S. Rajala
-                                                       11 September 2025
+                                                          3 October 2025
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 March 2026.
+   This Internet-Draft will expire on 6 April 2026.
 
 Copyright Notice
 
@@ -96,6 +96,10 @@ Table of Contents
    *  Trusted Platform Module
       (https://trustedcomputinggroup.org/resource/trusted-platform-
       module-tpm-summary/)
+
+   *  Managed Device Attestation for Apple Devices
+      (https://support.apple.com/en-om/guide/deployment/dep28afbde6a/
+      web)
 
    Using ACME and device attestation to issue client certificates for
    enterprise PKI is anticipated to be the most common use case.  The
@@ -548,6 +552,11 @@ Table of Contents
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
+   [RFC2985]  Nystrom, M. and B. Kaliski, "PKCS #9: Selected Object
+              Classes and Attribute Types Version 2.0", RFC 2985,
+              DOI 10.17487/RFC2985, November 2000,
+              <https://www.rfc-editor.org/rfc/rfc2985>.
+
    [RFC4043]  Pinkas, D. and T. Gindin, "Internet X.509 Public Key
               Infrastructure Permanent Identifier", RFC 4043,
               DOI 10.17487/RFC4043, May 2005,
@@ -613,8 +622,8 @@ Authors' Addresses
 
 
    Ganesh Mallaya
-   Email: ganesh.mallaya@appviewx.com
+   Email: mallaya.ganesh3@gmail.com
 
 
    Sven Rajala
-   Email: sven.rajala@keyfactor.com
+   Email: sven.rajala@gmail.com
