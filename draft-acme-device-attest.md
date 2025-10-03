@@ -16,10 +16,12 @@ author:
     email: me@brandonweeks.com
  -
     fullname: Ganesh Mallaya
-    email: mallaya.ganesh3@gmail.com
+    company: AppViewX
+    email: ganesh.mallaya@appviewx.com
  -
     fullname: Sven Rajala
-    email: sven.rajala@gmail.com
+    company: Keyfactor
+    email: sven.rajala@keyfactor.com
 
 normative:
   RFC4108:
