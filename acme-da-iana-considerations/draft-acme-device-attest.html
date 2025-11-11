@@ -12,22 +12,21 @@
        This document specifies new identifiers and a challenge for the
 Automated Certificate Management Environment (ACME) protocol which allows validating the identity of a device using attestation. 
     " name="description">
-<meta content="xml2rfc 3.30.2" name="generator">
+<meta content="xml2rfc 3.31.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-acme-device-attest-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.30.2
-    Python 3.12.11
+  xml2rfc 3.31.0
+    Python 3.12.12
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.4.0
+    platformdirs 4.5.0
     pycountry 24.6.1
     PyYAML 6.0.2
     requests 2.32.5
-    setuptools 80.9.0
     wcwidth 0.2.14
 -->
 <link href="draft-acme-device-attest.xml" rel="alternate" type="application/rfc+xml">
@@ -1047,11 +1046,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">ACME DA</td>
-<td class="right">October 2025</td>
+<td class="right">November 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Weeks, et al.</td>
-<td class="center">Expires 6 April 2026</td>
+<td class="center">Expires 15 May 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1064,12 +1063,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-acme-device-attest-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-10-03" class="published">3 October 2025</time>
+<time datetime="2025-11-11" class="published">11 November 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-04-06">6 April 2026</time></dd>
+<dd class="expires"><time datetime="2026-05-15">15 May 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1109,7 +1108,7 @@ Automated Certificate Management Environment (ACME) protocol which allows valida
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 6 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 15 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1380,7 +1379,7 @@ Content-Type: application/jose+json
         <h3 id="name-acme-identifier-types">
 <a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-acme-identifier-types" class="section-name selfRef">ACME Identifier Types</a>
         </h3>
-<p id="section-7.1-1">The "ACME Validation Methods" registry is to be updated to include the following entries:<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<p id="section-7.1-1">The "ACME Identifier Types" registry is to be updated to include the following entries:<a href="#section-7.1-1" class="pilcrow">¶</a></p>
 <table class="center" id="table-1">
           <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
 <thead>
@@ -1414,6 +1413,7 @@ Content-Type: application/jose+json
             <tr>
               <th class="text-left" rowspan="1" colspan="1">Label</th>
               <th class="text-left" rowspan="1" colspan="1">Identifier Type</th>
+              <th class="text-left" rowspan="1" colspan="1">ACME</th>
               <th class="text-left" rowspan="1" colspan="1">Reference</th>
             </tr>
           </thead>
@@ -1421,6 +1421,7 @@ Content-Type: application/jose+json
             <tr>
               <td class="text-left" rowspan="1" colspan="1">device-attest-01</td>
               <td class="text-left" rowspan="1" colspan="1">permanent-identifier</td>
+              <td class="text-left" rowspan="1" colspan="1">Y</td>
               <td class="text-left" rowspan="1" colspan="1">RFC XXXX</td>
             </tr>
           </tbody>
@@ -1744,14 +1745,14 @@ present in "newAccount" requests.<a href="#appendix-A.1-1" class="pilcrow">¶</a
         <div dir="auto" class="left"><span class="fn nameRole">Ganesh Mallaya</span></div>
 <div class="email">
 <span>Email:</span>
-<a href="mailto:mallaya.ganesh3@gmail.com" class="email">mallaya.ganesh3@gmail.com</a>
+<a href="mailto:ganesh.mallaya@appviewx.com" class="email">ganesh.mallaya@appviewx.com</a>
 </div>
 </address>
 <address class="vcard">
         <div dir="auto" class="left"><span class="fn nameRole">Sven Rajala</span></div>
 <div class="email">
 <span>Email:</span>
-<a href="mailto:sven.rajala@gmail.com" class="email">sven.rajala@gmail.com</a>
+<a href="mailto:sven.rajala@keyfactor.com" class="email">sven.rajala@keyfactor.com</a>
 </div>
 </address>
 </section>
