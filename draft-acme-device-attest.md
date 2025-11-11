@@ -186,7 +186,7 @@ Key attestation statements may include a variety of information in addition to t
 
 ## ACME Identifier Types
 
-The "ACME Validation Methods" registry is to be updated to include the following entries:
+The "ACME Identifier Types" registry is to be updated to include the following entries:
 
 | Label                | Reference |
 | :------------------- | :-------- |
@@ -197,9 +197,10 @@ The "ACME Validation Methods" registry is to be updated to include the following
 
 The "ACME Validation Methods" registry is to be updated to include the following entry:
 
-| Label            | Identifier Type      | Reference |
-| :--------------- | :------------------- | :-------- |
-| device-attest-01 | permanent-identifier | RFC XXXX  |
+
+| Label            | Identifier Type      | ACME   | Reference |
+| :--------------- | :------------------- | :----- | :-------- |
+| device-attest-01 | permanent-identifier | Y      | RFC XXXX  |
 
 <!-- Begin WebAuthn registry text -->
 <!-- Editor's note: the below text was written by Carl Wallance as part of draft-wallace-lamps-key-attestation-ext. These registries only need to be established by a single document, so if they are established by another document prior to this document being approved, this text will be removed and replaced with a reference to the other document.  -->
