@@ -5,9 +5,9 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                          
 Intended status: Standards Track                              G. Mallaya
-Expires: 15 May 2026                                                    
+Expires: 5 June 2026                                                    
                                                                S. Rajala
-                                                        11 November 2025
+                                                         2 December 2025
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 May 2026.
+   This Internet-Draft will expire on 5 June 2026.
 
 Copyright Notice
 
@@ -63,11 +63,6 @@ Table of Contents
      7.1.  ACME Identifier Types
      7.2.  ACME Validation Method
      7.3.  New Error Types
-     7.4.  Attestation statement formats
-       7.4.1.  WebAuthn Attestation Statement Format Identifiers for
-               Certificate Request Protocols
-       7.4.2.  WebAuthn Extension Identifiers for Certificate Request
-               Protocols
    8.  Normative References
    Appendix A.  Enterprise PKI
      A.1.  External Account Binding
@@ -259,6 +254,12 @@ Table of Contents
      "signature": "Q1bURgJoEslbD1c5...3pYdSMLio57mQNN4"
    }
 
+   The webauthn payload MAY contain any identifiers registered in
+   "WebAuthn Attestation Statement Format Identifiers" and any
+   extensions registered in "WebAuthn Extension Identifiers" IANA-
+   Webauthn (https://www.iana.org/assignments/webauthn/webauthn.xhtml),
+   [RFC8809].
+
 6.  Security Considerations
 
    See Section 13 of [WebAuthn] for additional security considerations
@@ -277,8 +278,8 @@ Table of Contents
 
 7.1.  ACME Identifier Types
 
-   The "ACME Identifier Types" registry is to be updated to include the
-   following entries:
+   The "ACME Validation Methods" registry is to be updated to include
+   the following entries:
 
                    +======================+===========+
                    | Label                | Reference |
@@ -295,13 +296,13 @@ Table of Contents
    The "ACME Validation Methods" registry is to be updated to include
    the following entry:
 
-      +==================+======================+======+===========+
-      | Label            | Identifier Type      | ACME | Reference |
-      +==================+======================+======+===========+
-      | device-attest-01 | permanent-identifier | Y    | RFC XXXX  |
-      +------------------+----------------------+------+-----------+
+          +==================+======================+===========+
+          | Label            | Identifier Type      | Reference |
+          +==================+======================+===========+
+          | device-attest-01 | permanent-identifier | RFC XXXX  |
+          +------------------+----------------------+-----------+
 
-                                 Table 2
+                                  Table 2
 
 7.3.  New Error Types
 
@@ -319,227 +320,6 @@ Table of Contents
     +-------------------------+---------------------------+-----------+
 
                                   Table 3
-
-7.4.  Attestation statement formats
-
-   Section 2.1 of [RFC8809] describes registration of new attestation
-   statement format types used when authenticating users via [WebAuthn].
-   This specification reuses the same format, but, because the context
-   for use is different, a different registry is required.  This section
-   defines IANA registries for W3C Web Authentication (WebAuthn)
-   attestation statement format identifiers and extension identifiers
-   used in the context of a certificate request.  This specification
-   establishes two registries:
-
-   *  the "WebAuthn Attestation Statement Format Identifiers for
-      Certificate Request Protocols" registry
-
-   *  the "WebAuthn Extension Identifiers for Certificate Request
-      Protocols" registry
-
-   Any additional processes established by the expert(s) after the
-   publication of this document will be recorded on the registry web
-   page at the discretion of the expert(s), who may differ from the
-   experts associated with the registry established by [RFC8809].
-
-7.4.1.  WebAuthn Attestation Statement Format Identifiers for
-        Certificate Request Protocols
-
-   WebAuthn attestation statement format identifiers are strings whose
-   semantic, syntactic, and string-matching criteria are specified in
-   the "Attestation Statement Format Identifiers"
-   (https://www.w3.org/TR/2019/REC-webauthn-1-20190304/#sctn-attstn-fmt-
-   ids) section of [WebAuthn], along with the concepts of attestation
-   and attestation statement formats.
-
-   Registered attestation statement format identifiers are those that
-   have been added to the registry by following the procedure in
-   Section 7.4.1.1.
-
-   Each attestation statement format identifier added to this registry
-   MUST be unique amongst the set of registered attestation statement
-   format identifiers.
-
-   Registered attestation statement format identifiers MUST be a maximum
-   of 32 octets in length and MUST consist only of printable ASCII
-   [RFC20] characters, excluding backslash and double quote, i.e., VCHAR
-   as defined in [RFC5234] but without %x22 and %x5c.  Attestation
-   statement format identifiers are case sensitive and may not match
-   other registered identifiers in a case-insensitive manner unless the
-   designated experts determine that there is a compelling reason to
-   allow an exception.
-
-7.4.1.1.  Registering Attestation Statement Format Identifiers
-
-   WebAuthn attestation statement format identifiers are registered
-   using the Specification Required policy (see Section 4.6 of
-   [RFC8126]).
-
-   The "WebAuthn Attestation Statement Format Identifiers for
-   Certificate Request Protocols" registry is located at
-   https://www.iana.org/assignments/webauthn_for_certreq
-   (https://www.iana.org/assignments/webauthn_for_certreq).
-   Registration requests can be made by following the instructions
-   located there or by sending an email to the webauthn-for-certreq-reg-
-   review@ietf.org mailing list.
-
-   Registration requests consist of at least the following information:
-
-   *  WebAuthn Attestation Statement Format Identifier:
-
-      -  An identifier meeting the requirements given in Section 7.4.1.
-
-   *  Description:
-
-      -  A relatively short description of the attestation format.
-
-   *  Specification Document(s):
-
-      -  Reference to the document or documents that specify the
-         attestation statement format.
-
-   *  Change Controller:
-
-      -  For Standards Track RFCs, list "IETF".  For others, give the
-         name of the responsible party.  Other details (e.g., postal
-         address, email address, home page URI) may also be included.
-
-   *  Notes:
-
-      -  [optional]
-
-   Registrations MUST reference a freely available, stable
-   specification, e.g., as described in Section 4.6 of [RFC8126].  This
-   specification MUST include security and privacy considerations
-   relevant to the attestation statement format.
-
-   Note that WebAuthn attestation statement format identifiers can be
-   registered by third parties (including the expert(s) themselves), if
-   the expert(s) determines that an unregistered attestation statement
-   format is widely deployed and not likely to be registered in a timely
-   manner otherwise.  Such registrations still are subject to the
-   requirements defined, including the need to reference a
-   specification.
-
-7.4.1.2.  Registration Request Processing
-
-   As noted in Section 7.4.1.1, WebAuthn attestation statement format
-   identifiers are registered using the Specification Required policy.
-
-   The expert(s) will clearly identify any issues that cause a
-   registration to be refused, such as an incompletely specified
-   attestation format.
-
-   When a request is approved, the expert(s) will inform IANA, and the
-   registration will be processed.  The IESG is the arbiter of any
-   objection.
-
-7.4.1.3.  Initial Values in the WebAuthn Attestation Statement Format
-          Identifiers for Certificate Request Protocols Registry
-
-   The initial values for the "WebAuthn Attestation Statement Format
-   Identifiers for Certificate Request Protocols" registry have been
-   populated with the values listed in the "WebAuthn Attestation
-   Statement Format Identifier Registrations"
-   (https://www.w3.org/TR/2019/REC-webauthn-1-20190304/#sctn-att-fmt-
-   reg) section of [WebAuthn].  Also, the Change Controller entry for
-   each of those registrations is:
-
-   *  Change Controller:
-
-      -  W3C Web Authentication Working Group (public-webauthn@w3.org)
-
-7.4.2.  WebAuthn Extension Identifiers for Certificate Request Protocols
-
-   WebAuthn extension identifiers are strings whose semantic, syntactic,
-   and string-matching criteria are specified in the "Extension
-   Identifiers" (https://www.w3.org/TR/2019/REC-webauthn-1-
-   20190304/#sctn-extension-id) section of [WebAuthn].
-
-   Registered extension identifiers are those that have been added to
-   the registry by following the procedure in Section 7.4.2.1.
-
-   Each extension identifier added to this registry MUST be unique
-   amongst the set of registered extension identifiers.
-
-   Registered extension identifiers MUST be a maximum of 32 octets in
-   length and MUST consist only of printable ASCII characters, excluding
-   backslash and double quote, i.e., VCHAR as defined in [RFC5234] but
-   without %x22 and %x5c.  Extension identifiers are case sensitive and
-   may not match other registered identifiers in a case-insensitive
-   manner unless the designated experts determine that there is a
-   compelling reason to allow an exception.
-
-7.4.2.1.  Registering Extension Identifiers
-
-   WebAuthn extension identifiers are registered using the Specification
-   Required policy (see Section 4.6 of [RFC8126]).
-
-   The "WebAuthn Extension Identifiers" registry is located at
-   https://www.iana.org/assignments/webauthn
-   (https://www.iana.org/assignments/webauthn).  Registration requests
-   can be made by following the instructions located there or by sending
-   an email to the webauthn-for-certreq-reg-review@ietf.org mailing
-   list.
-
-   Registration requests consist of at least the following information:
-
-   *  WebAuthn Extension Identifier:
-
-      -  An identifier meeting the requirements given in Section 7.4.2.
-
-   *  Description:
-
-      -  A relatively short description of the extension.
-
-   *  Specification Document(s):
-
-      -  Reference to the document or documents that specify the
-         extension.
-
-   *  Change Controller:
-
-      -  For Standards Track RFCs, list "IETF".  For others, give the
-         name of the responsible party.  Other details (e.g., postal
-         address, email address, home page URI) may also be included.
-
-   *  Notes:
-
-      -  [optional]
-
-   Registrations MUST reference a freely available, stable
-   specification, e.g., as described in Section 4.6 of [RFC8126].  This
-   specification MUST include security and privacy considerations
-   relevant to the extension.
-
-   Note that WebAuthn extensions can be registered by third parties
-   (including the expert(s) themselves), if the expert(s) determines
-   that an unregistered extension is widely deployed and not likely to
-   be registered in a timely manner otherwise.  Such registrations still
-   are subject to the requirements defined, including the need to
-   reference a specification.
-
-7.4.2.2.  Registration Request Processing
-
-   As noted in Section 7.4.2.1, WebAuthn extension identifiers are
-   registered using the Specification Required policy.
-
-   The expert(s) will clearly identify any issues that cause a
-   registration to be refused, such as an incompletely specified
-   extension.
-
-   When a request is approved, the expert(s) will inform IANA, and the
-   registration will be processed.  The IESG is the arbiter of any
-   objection.
-
-7.4.2.3.  Initial Values in the WebAuthn Extension Identifiers Registry
-
-   The initial values for the "WebAuthn Extension Identifiers" registry
-   have been populated with the values listed in the "WebAuthn Extension
-   Identifier Registrations" https://www.w3.org/TR/2019/REC-webauthn-1-
-   20190304/#sctn-extensions-reg (https://www.w3.org/TR/2019/REC-
-   webauthn-1-20190304/#sctn-extensions-reg) section of [WebAuthn].
-   Also, the Change Controller entry for each of those registrations is:
 
    *  Change Controller:
 
