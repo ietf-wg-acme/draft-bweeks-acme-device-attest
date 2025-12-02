@@ -256,9 +256,8 @@ Table of Contents
 
    The webauthn payload MAY contain any identifiers registered in
    "WebAuthn Attestation Statement Format Identifiers" and any
-   extensions registered in "WebAuthn Extension Identifiers" IANA-
-   Webauthn (https://www.iana.org/assignments/webauthn/webauthn.xhtml),
-   [RFC8809].
+   extensions registered in "WebAuthn Extension Identifiers"
+   [IANA-Webauthn], [RFC8809].
 
 6.  Security Considerations
 
@@ -326,6 +325,11 @@ Table of Contents
       -  W3C Web Authentication Working Group (public-webauthn@w3.org)
 
 8.  Normative References
+
+   [IANA-Webauthn]
+              "IANA Registries for Web Authentication (WebAuthn)", n.d.,
+              <https://www.iana.org/assignments/webauthn/
+              webauthn.xhtml>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
