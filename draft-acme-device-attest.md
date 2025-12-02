@@ -53,6 +53,10 @@ normative:
         email: emil@yubico.com
     date: 2021-04
     target: https://www.w3.org/TR/webauthn-2/
+  IANA-Webauthn:
+    title: "IANA Registries for Web Authentication (WebAuthn)"
+    target: https://www.iana.org/assignments/webauthn/webauthn.xhtml
+
 informative:
 
 
@@ -177,8 +181,6 @@ Content-Type: application/jose+json
 ~~~~~~~~~~
 
 The webauthn payload MAY contain any identifiers registered in "WebAuthn Attestation Statement Format Identifiers" and any extensions registered in "WebAuthn Extension Identifiers" [IANA-Webauthn], [RFC8809].
-
-[IANA-Webauthn]: https://www.iana.org/assignments/webauthn/webauthn.xhtml
 
 # Security Considerations
 
