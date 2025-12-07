@@ -53,11 +53,11 @@ normative:
         email: emil@yubico.com
     date: 2021-04
     target: https://www.w3.org/TR/webauthn-2/
+
+informative:
   IANA-Webauthn:
     title: "IANA Registries for Web Authentication (WebAuthn)"
     target: https://www.iana.org/assignments/webauthn/webauthn.xhtml
-
-informative:
 
 
 --- abstract
