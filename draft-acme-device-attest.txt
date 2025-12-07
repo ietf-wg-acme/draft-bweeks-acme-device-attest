@@ -279,8 +279,8 @@ Table of Contents
 
 7.1.  ACME Identifier Types
 
-   The "ACME Validation Methods" registry is to be updated to include
-   the following entries:
+   The "ACME Identifier Types" registry is to be updated to include the
+   following entries:
 
                    +======================+===========+
                    | Label                | Reference |
@@ -297,13 +297,13 @@ Table of Contents
    The "ACME Validation Methods" registry is to be updated to include
    the following entry:
 
-          +==================+======================+===========+
-          | Label            | Identifier Type      | Reference |
-          +==================+======================+===========+
-          | device-attest-01 | permanent-identifier | RFC XXXX  |
-          +------------------+----------------------+-----------+
+      +==================+======================+======+===========+
+      | Label            | Identifier Type      | ACME | Reference |
+      +==================+======================+======+===========+
+      | device-attest-01 | permanent-identifier | Y    | RFC XXXX  |
+      +------------------+----------------------+------+-----------+
 
-                                  Table 2
+                                 Table 2
 
 7.3.  New Error Types
 
