@@ -5,9 +5,9 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                          
 Intended status: Standards Track                              G. Mallaya
-Expires: 5 June 2026                                                    
+Expires: 10 June 2026                                                   
                                                                S. Rajala
-                                                         2 December 2025
+                                                         7 December 2025
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 June 2026.
+   This Internet-Draft will expire on 10 June 2026.
 
 Copyright Notice
 
@@ -63,7 +63,9 @@ Table of Contents
      7.1.  ACME Identifier Types
      7.2.  ACME Validation Method
      7.3.  New Error Types
-   8.  Normative References
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
    Appendix A.  Enterprise PKI
      A.1.  External Account Binding
    Acknowledgments
@@ -324,12 +326,9 @@ Table of Contents
 
       -  W3C Web Authentication Working Group (public-webauthn@w3.org)
 
-8.  Normative References
+8.  References
 
-   [IANA-Webauthn]
-              "IANA Registries for Web Authentication (WebAuthn)", n.d.,
-              <https://www.iana.org/assignments/webauthn/
-              webauthn.xhtml>.
+8.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -374,6 +373,13 @@ Table of Contents
               Lundberg, "Web Authentication: An API for accessing Public
               Key Credentials Level 2", April 2021,
               <https://www.w3.org/TR/webauthn-2/>.
+
+8.2.  Informative References
+
+   [IANA-Webauthn]
+              "IANA Registries for Web Authentication (WebAuthn)", n.d.,
+              <https://www.iana.org/assignments/webauthn/
+              webauthn.xhtml>.
 
 Appendix A.  Enterprise PKI
 
