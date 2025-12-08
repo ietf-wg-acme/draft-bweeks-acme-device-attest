@@ -5,14 +5,14 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                          
 Intended status: Standards Track                              G. Mallaya
-Expires: 10 June 2026                                                   
+Expires: 11 June 2026                                                   
                                                                S. Rajala
-                                                         7 December 2025
+                                                         8 December 2025
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
                                Extension
-                    draft-acme-device-attest-latest
+                  draft-ietf-acme-device-attest-latest
 
 Abstract
 
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 June 2026.
+   This Internet-Draft will expire on 11 June 2026.
 
 Copyright Notice
 
