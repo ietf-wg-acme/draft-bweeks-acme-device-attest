@@ -4,7 +4,7 @@ abbrev: "ACME DA"
 category: std
 submissiontype: IETF
 
-docname: draft-acme-device-attest-latest
+docname: draft-ietf-acme-device-attest-latest
 v: 3
 area: Security
 workgroup: ACME Working Group
