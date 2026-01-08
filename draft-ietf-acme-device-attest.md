@@ -77,7 +77,7 @@ Many operating systems and device vendors offer functionality enabling a device 
 - [Trusted Platform Module](https://trustedcomputinggroup.org/resource/trusted-platform-module-tpm-summary/)
 - [Managed Device Attestation for Apple Devices](https://support.apple.com/en-om/guide/deployment/dep28afbde6a/web)
 
-Using ACME and device attestation to issue client certificates for enterprise PKI is anticipated to be the most common use case. The following variances to the ACME specification are described in this document:
+Using ACME and device attestation to issue client certificates for enterprise PKI is to be a common use case. The following variances to the ACME specification are described in this document:
 
 - Addition of `permanent-identifier` {{!RFC4043}} and `hardware-module` {{!RFC4108}} identifier types.
 - Addition of the `device-attest-01` challenge type to prove control of the `permanent-identifier` and `hardware-module` identifier types.
@@ -86,7 +86,7 @@ Using ACME and device attestation to issue client certificates for enterprise PK
 
 This document does not specify the attestation verification procedures. Section 13 of {{WebAuthn}} gives some guidance, however verification procedures are complex and may require changes to address future security issues.
 
-Efforts are underway within the Remote ATtestation ProcedureS (RATS) working group to define a set of standard formats and protocols for attestation. An explict aim of this document is to support vendor specific formats and protocols that are widley deployed at the time it was authored. In the future, an ACME challenge type based on these standards SHOULD be used instead of `device-attest-01`.
+Efforts are underway within the Remote ATtestation ProcedureS (RATS) working group to define a set of standard formats and protocols for attestation. An explict aim of this document is to support vendor specific formats and protocols that are widely deployed at publication time of this specification. In the future, an ACME challenge type based on these standards SHOULD be used instead of `device-attest-01`.
 
 # Conventions and Definitions
 
@@ -127,10 +127,7 @@ type (required, string):
 : The string "device-attest-01".
 
 token (required, string):
-: A random value that uniquely identifies the challenge.  This value MUST have
-at least 128 bits of entropy. It MUST NOT contain any characters outside the
-base64url alphabet, including padding characters ("="). See {{!RFC4086}} for
-additional information on randomness requirements.
+: A random value that uniquely identifies the challenge.  
 
 ~~~~~~~~~~
 {
@@ -182,11 +179,30 @@ Content-Type: application/jose+json
 
 The webauthn payload MAY contain any identifiers registered in "WebAuthn Attestation Statement Format Identifiers" and any extensions registered in "WebAuthn Extension Identifiers" [IANA-Webauthn], [RFC8809].
 
+# Operational Considerations
+
+Although this document focuses guidance on implementing new type and challenge for certificate issuance using ACME, it does not define a New Protocol, a Protocol Extension, or an architecture.
+
+## Enterprise PKI
+ACME was originally envisioned for issuing certificates in the Web PKI, however this extension will primarily be useful in enterprise PKI. The subsection below covers some operational considerations for an ACME-based enterprise CA.
+<!-- TODO: ^^^ perhaps also mention/cover IoT attestation PKI usecases -->
+
+### External Account Binding
+An enterprise CA likely only wants to receive requests from authorized devices. It is RECOMMENDED that the server require a value for the "externalAccountBinding" field to be
+present in "newAccount" requests.
+
+If an enterprise CA desires to limit the number of certificates that can be requested with a given account, including limiting an account to a single certificate. After the desired number of certificates have been issued to an account, the server MAY revoke the account as described in Section 7.1.2 of {{RFC8555}}.
+
 # Security Considerations
 
 See Section 13 of {{WebAuthn}} for additional security considerations related to attestation statement formats, including certificate revocation.
 
 Key attestation statements may include a variety of information in addition to the public key being attested. While not described in this document, the server MAY use any policy when evaluating this information. This evaluation can result in rejection of a certificate request that features a verifiable key attestation for the public key contained in the request. For example, an attestation statement may indicate use of an unacceptable firmware version.
+
+The "token" value MUST have at least 128 bits of entropy. It MUST NOT contain any characters outside the
+base64url alphabet, including padding characters ("="). See {{!draft-ietf-tls-rfc8446bis}}, Appendix C.1 for additional information on randomness requirements.
+
+Please reference {{!RFC8555}} for other security considerations.
 
 # IANA Considerations
 
@@ -219,22 +235,12 @@ This document adds the following entries to the ACME Error Type registry:
 |-----------------------|-------------|-----------|
 | badAttestationStatement | The attestation statement is unacceptable (e.g. not signed by an attestation authority trusted by the CA) | RFC XXXX  |
 
-- Change Controller:
-  - W3C Web Authentication Working Group (public-webauthn@w3.org)
 
 <!-- End WebAuthn registry text -->
 
 --- back
 
-# Enterprise PKI
-ACME was originally envisioned for issuing certificates in the Web PKI, however this extension will primarily be useful in enterprise PKI. The subsection below covers some operational considerations for an ACME-based enterprise CA.
-<!-- TODO: ^^^ perhaps also mention/cover IoT attestation PKI usecases -->
 
-## External Account Binding
-An enterprise CA likely only wants to receive requests from authorized devices. It is RECOMMENDED that the server require a value for the "externalAccountBinding" field to be
-present in "newAccount" requests.
-
-If an enterprise CA desires to limit the number of certificates that can be requested with a given account, including limiting an account to a single certificate. After the desired number of certificates have been issued to an account, the server MAY revoke the account as described in Section 7.1.2 of {{RFC8555}}.
 
 # Acknowledgments
 {:numbered="false"}
