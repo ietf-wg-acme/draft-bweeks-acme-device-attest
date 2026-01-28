@@ -5,9 +5,9 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                          
 Intended status: Standards Track                              G. Mallaya
-Expires: 11 June 2026                                                   
+Expires: 1 August 2026                                                  
                                                                S. Rajala
-                                                         8 December 2025
+                                                         28 January 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -35,11 +35,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 June 2026.
+   This Internet-Draft will expire on 1 August 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -58,16 +58,17 @@ Table of Contents
    3.  Permanent Identifier
    4.  Hardware Module
    5.  Device Attestation Challenge
-   6.  Security Considerations
-   7.  IANA Considerations
-     7.1.  ACME Identifier Types
-     7.2.  ACME Validation Method
-     7.3.  New Error Types
-   8.  References
-     8.1.  Normative References
-     8.2.  Informative References
-   Appendix A.  Enterprise PKI
-     A.1.  External Account Binding
+   6.  Operational Considerations
+     6.1.  Enterprise PKI
+       6.1.1.  External Account Binding
+   7.  Security Considerations
+   8.  IANA Considerations
+     8.1.  ACME Identifier Types
+     8.2.  ACME Validation Method
+     8.3.  New Error Types
+   9.  References
+     9.1.  Normative References
+     9.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -99,9 +100,8 @@ Table of Contents
       web)
 
    Using ACME and device attestation to issue client certificates for
-   enterprise PKI is anticipated to be the most common use case.  The
-   following variances to the ACME specification are described in this
-   document:
+   enterprise PKI is to be a common use case.  The following variances
+   to the ACME specification are described in this document:
 
    *  Addition of permanent-identifier [RFC4043] and hardware-module
       [RFC4108] identifier types.
@@ -123,9 +123,8 @@ Table of Contents
    Efforts are underway within the Remote ATtestation ProcedureS (RATS)
    working group to define a set of standard formats and protocols for
    attestation.  An explict aim of this document is to support vendor
-   specific formats and protocols that are widley deployed at the time
-   it was authored.  In the future, an ACME challenge type based on
-   these standards SHOULD be used instead of device-attest-01.
+   specific formats and protocols that are widely deployed at
+   publication time of this specification.
 
 2.  Conventions and Definitions
 
@@ -193,10 +192,7 @@ Table of Contents
    type (required, string):  The string "device-attest-01".
 
    token (required, string):  A random value that uniquely identifies
-      the challenge.  This value MUST have at least 128 bits of entropy.
-      It MUST NOT contain any characters outside the base64url alphabet,
-      including padding characters ("=").  See [RFC4086] for additional
-      information on randomness requirements.
+      the challenge.
 
    {
      "type": "device-attest-01",
@@ -261,7 +257,35 @@ Table of Contents
    extensions registered in "WebAuthn Extension Identifiers"
    [IANA-Webauthn], [RFC8809].
 
-6.  Security Considerations
+6.  Operational Considerations
+
+   Although this document focuses guidance on implementing new type and
+   challenge for certificate issuance using ACME, it does not define a
+   New Protocol, a Protocol Extension, or an architecture.
+
+6.1.  Enterprise PKI
+
+   ACME was originally envisioned for issuing certificates in the Web
+   PKI, however this extension will primarily be useful in enterprise
+   PKI.  The subsection below covers some operational considerations for
+   an ACME-based enterprise CA.
+
+6.1.1.  External Account Binding
+
+   An enterprise CA likely only wants to receive requests from
+   authorized devices.  It is RECOMMENDED that the server require a
+   value for the "externalAccountBinding" field to be present in
+   "newAccount" requests.
+
+   If an enterprise CA desires to limit the number of certificates that
+   can be requested with a given account, including limiting an account
+   to a single certificate.  After the desired number of certificates
+   have been issued to an account, the server MAY revoke the account as
+   described in Section 7.1.2 of [RFC8555].
+
+7.  Security Considerations
+
+   Please reference [RFC8555] for other security considerations.
 
    See Section 13 of [WebAuthn] for additional security considerations
    related to attestation statement formats, including certificate
@@ -275,9 +299,14 @@ Table of Contents
    the public key contained in the request.  For example, an attestation
    statement may indicate use of an unacceptable firmware version.
 
-7.  IANA Considerations
+   The "token" value MUST have at least 128 bits of entropy.  It MUST
+   NOT contain any characters outside the base64url alphabet, including
+   padding characters ("=").  See [I-D.ietf-tls-rfc8446bis],
+   Appendix C.1 for additional information on randomness requirements.
 
-7.1.  ACME Identifier Types
+8.  IANA Considerations
+
+8.1.  ACME Identifier Types
 
    The "ACME Identifier Types" registry is to be updated to include the
    following entries:
@@ -292,7 +321,7 @@ Table of Contents
 
                                  Table 1
 
-7.2.  ACME Validation Method
+8.2.  ACME Validation Method
 
    The "ACME Validation Methods" registry is to be updated to include
    the following entry:
@@ -305,7 +334,7 @@ Table of Contents
 
                                  Table 2
 
-7.3.  New Error Types
+8.3.  New Error Types
 
    This document adds the following entries to the ACME Error Type
    registry:
@@ -322,13 +351,16 @@ Table of Contents
 
                                   Table 3
 
-   *  Change Controller:
+9.  References
 
-      -  W3C Web Authentication Working Group (public-webauthn@w3.org)
+9.1.  Normative References
 
-8.  References
-
-8.1.  Normative References
+   [I-D.ietf-tls-rfc8446bis]
+              Rescorla, E., "The Transport Layer Security (TLS) Protocol
+              Version 1.3", Work in Progress, Internet-Draft, draft-
+              ietf-tls-rfc8446bis-14, 13 September 2025,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
+              rfc8446bis-14>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -344,11 +376,6 @@ Table of Contents
               Infrastructure Permanent Identifier", RFC 4043,
               DOI 10.17487/RFC4043, May 2005,
               <https://www.rfc-editor.org/rfc/rfc4043>.
-
-   [RFC4086]  Eastlake 3rd, D., Schiller, J., and S. Crocker,
-              "Randomness Requirements for Security", BCP 106, RFC 4086,
-              DOI 10.17487/RFC4086, June 2005,
-              <https://www.rfc-editor.org/rfc/rfc4086>.
 
    [RFC4108]  Housley, R., "Using Cryptographic Message Syntax (CMS) to
               Protect Firmware Packages", RFC 4108,
@@ -374,36 +401,16 @@ Table of Contents
               Key Credentials Level 2", April 2021,
               <https://www.w3.org/TR/webauthn-2/>.
 
-8.2.  Informative References
+9.2.  Informative References
 
    [IANA-Webauthn]
               "IANA Registries for Web Authentication (WebAuthn)", n.d.,
               <https://www.iana.org/assignments/webauthn/
               webauthn.xhtml>.
 
-Appendix A.  Enterprise PKI
-
-   ACME was originally envisioned for issuing certificates in the Web
-   PKI, however this extension will primarily be useful in enterprise
-   PKI.  The subsection below covers some operational considerations for
-   an ACME-based enterprise CA.
-
-A.1.  External Account Binding
-
-   An enterprise CA likely only wants to receive requests from
-   authorized devices.  It is RECOMMENDED that the server require a
-   value for the "externalAccountBinding" field to be present in
-   "newAccount" requests.
-
-   If an enterprise CA desires to limit the number of certificates that
-   can be requested with a given account, including limiting an account
-   to a single certificate.  After the desired number of certificates
-   have been issued to an account, the server MAY revoke the account as
-   described in Section 7.1.2 of [RFC8555].
-
 Acknowledgments
 
-   TODO acknowledge.
+   Thank you for all the reivews from the work group.
 
 Authors' Addresses
 
