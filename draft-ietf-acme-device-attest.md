@@ -128,7 +128,7 @@ type (required, string):
 : The string "device-attest-01".
 
 token (required, string):
-: A random value that uniquely identifies the challenge.  
+: A random value that uniquely identifies the challenge.
 
 ~~~~~~~~~~
 {
