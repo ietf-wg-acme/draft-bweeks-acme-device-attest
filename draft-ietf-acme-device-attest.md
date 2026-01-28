@@ -28,6 +28,7 @@ normative:
   RFC4043:
   RFC8555:
   RFC8809:
+  I-D.ietf-tls-rfc8446bis:
   WebAuthn:
     title: "Web Authentication: An API for accessing Public Key Credentials Level 2"
     author:
