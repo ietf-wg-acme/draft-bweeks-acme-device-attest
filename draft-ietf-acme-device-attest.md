@@ -86,7 +86,7 @@ Using ACME and device attestation to issue client certificates for enterprise PK
 
 This document does not specify the attestation verification procedures. Section 13 of {{WebAuthn}} gives some guidance, however verification procedures are complex and may require changes to address future security issues.
 
-Efforts are underway within the Remote ATtestation ProcedureS (RATS) working group to define a set of standard formats and protocols for attestation. An explict aim of this document is to support vendor specific formats and protocols that are widely deployed at publication time of this specification. In the future, an ACME challenge type based on these standards SHOULD be used instead of `device-attest-01`.
+Efforts are underway within the Remote ATtestation ProcedureS (RATS) working group to define a set of standard formats and protocols for attestation. An explict aim of this document is to support vendor specific formats and protocols that are widely deployed at publication time of this specification.
 
 # Conventions and Definitions
 
@@ -195,14 +195,14 @@ If an enterprise CA desires to limit the number of certificates that can be requ
 
 # Security Considerations
 
+Please reference {{!RFC8555}} for other security considerations.
+
 See Section 13 of {{WebAuthn}} for additional security considerations related to attestation statement formats, including certificate revocation.
 
 Key attestation statements may include a variety of information in addition to the public key being attested. While not described in this document, the server MAY use any policy when evaluating this information. This evaluation can result in rejection of a certificate request that features a verifiable key attestation for the public key contained in the request. For example, an attestation statement may indicate use of an unacceptable firmware version.
 
 The "token" value MUST have at least 128 bits of entropy. It MUST NOT contain any characters outside the
-base64url alphabet, including padding characters ("="). See {{!draft-ietf-tls-rfc8446bis}}, Appendix C.1 for additional information on randomness requirements.
-
-Please reference {{!RFC8555}} for other security considerations.
+base64url alphabet, including padding characters ("="). See {{I-D.ietf-tls-rfc8446bis}}, Appendix C.1 for additional information on randomness requirements.
 
 # IANA Considerations
 
