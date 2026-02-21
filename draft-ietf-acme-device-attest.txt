@@ -5,9 +5,9 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                          
 Intended status: Standards Track                              G. Mallaya
-Expires: 1 August 2026                                                  
+Expires: 25 August 2026                                                 
                                                                S. Rajala
-                                                         28 January 2026
+                                                        21 February 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 August 2026.
+   This Internet-Draft will expire on 25 August 2026.
 
 Copyright Notice
 
@@ -78,7 +78,7 @@ Table of Contents
    standard specifies methods for validating control over identifiers,
    such as domain names.  It is also useful to be able to validate
    properties of the device requesting the certificate, such as the
-   identity of the device /and whether the certificate key is protected
+   identity of the device and whether the certificate key is protected
    by a secure cryptoprocessor.
 
    Many operating systems and device vendors offer functionality
@@ -122,7 +122,7 @@ Table of Contents
 
    Efforts are underway within the Remote ATtestation ProcedureS (RATS)
    working group to define a set of standard formats and protocols for
-   attestation.  An explict aim of this document is to support vendor
+   attestation.  An explicit aim of this document is to support vendor
    specific formats and protocols that are widely deployed at
    publication time of this specification.
 
