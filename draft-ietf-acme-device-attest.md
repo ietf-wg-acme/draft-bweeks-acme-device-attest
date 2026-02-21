@@ -69,7 +69,7 @@ Automated Certificate Management Environment (ACME) protocol which allows valida
 --- middle
 
 # Introduction
-The Automatic Certificate Management Environment (ACME) {{RFC8555}} standard specifies methods for validating control over identifiers, such as domain names. It is also useful to be able to validate properties of the device requesting the certificate, such as the identity of the device /and whether the certificate key is protected by a secure cryptoprocessor.
+The Automatic Certificate Management Environment (ACME) {{RFC8555}} standard specifies methods for validating control over identifiers, such as domain names. It is also useful to be able to validate properties of the device requesting the certificate, such as the identity of the device and whether the certificate key is protected by a secure cryptoprocessor.
 
 Many operating systems and device vendors offer functionality enabling a device to generate a cryptographic attestation of their identity, such as:
 
@@ -87,7 +87,7 @@ Using ACME and device attestation to issue client certificates for enterprise PK
 
 This document does not specify the attestation verification procedures. Section 13 of {{WebAuthn}} gives some guidance, however verification procedures are complex and may require changes to address future security issues.
 
-Efforts are underway within the Remote ATtestation ProcedureS (RATS) working group to define a set of standard formats and protocols for attestation. An explict aim of this document is to support vendor specific formats and protocols that are widely deployed at publication time of this specification.
+Efforts are underway within the Remote ATtestation ProcedureS (RATS) working group to define a set of standard formats and protocols for attestation. An explicit aim of this document is to support vendor specific formats and protocols that are widely deployed at publication time of this specification.
 
 # Conventions and Definitions
 
