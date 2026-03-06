@@ -207,15 +207,6 @@ base64url alphabet, including padding characters ("="). See {{I-D.ietf-tls-rfc84
 
 # IANA Considerations
 
-## ACME Identifier Types
-
-The "ACME Identifier Types" registry is to be updated to include the following entries:
-
-| Label                | Reference |
-| :------------------- | :-------- |
-| permanent-identifier | RFC XXXX  |
-| hardware-module      | RFC XXXX  |
-
 ## ACME Validation Method
 
 The "ACME Validation Methods" registry is to be updated to include the following entry:
