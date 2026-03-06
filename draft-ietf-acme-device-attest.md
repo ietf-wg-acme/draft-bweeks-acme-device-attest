@@ -246,4 +246,4 @@ This document adds the following entries to the ACME Error Type registry:
 # Acknowledgments
 {:numbered="false"}
 
-Thank you for all the reivews from the work group.
+Thank you for all the reviews from the work group.
