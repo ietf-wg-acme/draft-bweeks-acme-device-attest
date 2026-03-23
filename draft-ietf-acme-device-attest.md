@@ -94,31 +94,63 @@ Efforts are underway within the Remote ATtestation ProcedureS (RATS) working gro
 {::boilerplate bcp14-tagged}
 
 # Permanent Identifier
-A new identifier type, "permanent-identifier" is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. The name of this identifier type was chosen to align with {{!RFC4043}}, it does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
 
-The identity along with the assigning organization can be included in the Subject Alternate Name Extension using the PermanentIdentifier form described in {{!RFC4043}}.
+A new identifier type, "permanent-identifier" is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. The name of this identifier type was chosen to align with {{!RFC4043}}. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
 
-<!-- Section 7.4 of RFC 8555 states "Specifications that define new identifier types must specify where in the certificate signing request these identifiers can appear." -->
+## Representation in Order resources
 
-Clients MAY include this identifier in the certificate signing request (CSR). Alternatively if the server wishes to only issue privacy-preserving certificates, it MAY reject CSRs containing a PermanentIdentifier in the subjectAltName extension.
+The identifier's `value` field contains a UTF-8 string representation of the identity of the device.
+
+Example identifier:
+
+```
+{
+  "type": "permanent-identifier",
+  "value": "ABCDEF123456"
+}
+```
+
+Clients MUST include the identifier in new order requests if the identifier is to be included in certificates. Server implementations that conform to this specification MUST accept identifiers of this type in order requests if the server accepts such identifiers in the CSR.
+
+Some server implementations exist that do not permit the inclusion of this identifier type in order requests. In this case, clients MAY omit the inclusion of this identifier in new order requests when requesting certificates from servers that reject this identifier type. Such server implementations MUST be modified to include support for this identifier type in order requests as soon as feasible.
+
+## Representation in Certificate Signing Requests
+
+The identity is included in the Subject Alternative Name Extension using the `identifierValue` field of the PermanentIdentifier form described in {{!RFC4043}}, with the following two restrictions: 
+
+1. Although {{!RFC4043}} permits the requester to include the `identifierValue` in a `serialNumber` subject attribute, this specification mandates that the `identifierValue` field of the PermanentIdentifier MUST be present and MUST contain the identifier.
+2. The `assigner` field of the PermanentIdentifier form MUST be absent.
+
+{{!RFC8555}} section 7.4 mandates that "The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where including the identifier in a certificate poses a privacy concern. To support privacy-preserving certificates, clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the server wishes to only issue privacy-preserving certificates, it MAY reject CSRs containing a PermanentIdentifier in the subjectAltName extension.
 
 # Hardware Module
-A new identifier type, "hardware-module" is introduced to represent the identity of the secure cryptoprocessor that generated the certificate key.
+
+A new identifier type, "hardware-module" is introduced to represent the identity of the secure crypto-processor that generated the certificate key. The identity is modeled after the HardwareModuleName form described in [RFC4108]. It consists of two components: an OBJECT IDENTIFIER to represent the type of hardware module, and a serial number that identifies the specific hardware module.
+
+Although [RFC4108] specifies that serial numbers can be represented as any sequence of bytes, this specification requires that serial numbers be representable as valid UTF-8 strings consisting of at least one code point. This restriction ensures that serial numbers can be included in `hardware-module` identifier values.
+
+## Representation in Order resources
+
+The identifier's `value` field contains a string representation of the identity of the hardware module. The value consists of the the "dotted decimal" representation of the OBJECT IDENTIFIER hardware module's type and the UTF-8 string representation of the serial number, separated by a hyphen-minus "-" (UTF-8: U+002D) character.
+
+As an example, assume that the type of the hardware module is represented using the OBJECT IDENTIFIER "1.2.3.4" and the serial number is "ABCD". The identifier for the hardware module would be formatted as:
+
+`1.2.3.4-ABCD`.
+
+## Representation in Certificate Signing Requests
 
 <!-- TODO: describe the certificate representation -->
-<!-- TODO: describe how the CA assert the key is hardware backed without an identifier -->
-The hardware module identity can be included in the Subject Alternate Name Extension using the HardwareModuleName form described in [RFC4108]. The HardwareModuleName is encoded as an otherName with the OID id-on-hardwareModuleName (1.3.6.1.5.5.7.8.4) and consists of:
+The hardware module identity is included in the Subject Alternate Name Extension using the HardwareModuleName form described in [RFC4108]. The HardwareModuleName is encoded as an otherName with the OID id-on-hardwareModuleName (1.3.6.1.5.5.7.8.4) and consists of:
 
 - hwType: An OBJECT IDENTIFIER that identifies the type of hardware module
 - hwSerialNum: An OCTET STRING containing the hardware module serial number
 
-Clients MAY include this identifier in the certificate signing request (CSR). When included in a CSR, it MUST appear in an extensionRequest attribute {{!RFC2985}} requesting a subjectAltName extension.
+The value of the `hwSerialNum` field MUST contain the encoding of the UTF-8 string of the serial number of the hardware module.
 
-If the server includes HardwareModule in the subjectAltName extension the CA MUST verify that the certificate key was generated on the secure cryptoprocessor with the asserted identity and type. The key MUST NOT be able to be exported from the cryptoprocessor.
-
-If the server wishes to issue privacy-preserving certificates, it MAY omit HardwareModule from the subjectAltName extension.
+{{!RFC8555}} section 7.4 mandates that "The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where including the identifier in a certificate poses a privacy concern. To support privacy-preserving certificates, clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the server wishes to only issue privacy-preserving certificates, it MAY reject CSRs containing a HardwareModuleName in the subjectAltName extension.
 
 # Device Attestation Challenge
+
 The client can prove control over a permanent identifier of a device by
 providing an attestation statement containing the identifier of the device.
 
@@ -185,6 +217,7 @@ The webauthn payload MAY contain any identifiers registered in "WebAuthn Attesta
 Although this document focuses guidance on implementing new type and challenge for certificate issuance using ACME, it does not define a New Protocol, a Protocol Extension, or an architecture.
 
 ## Enterprise PKI
+
 ACME was originally envisioned for issuing certificates in the Web PKI, however this extension will primarily be useful in enterprise PKI. The subsection below covers some operational considerations for an ACME-based enterprise CA.
 <!-- TODO: ^^^ perhaps also mention/cover IoT attestation PKI usecases -->
 
