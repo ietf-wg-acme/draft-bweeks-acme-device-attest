@@ -1052,7 +1052,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Weeks, et al.</td>
-<td class="center">Expires 24 September 2026</td>
+<td class="center">Expires 25 September 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-acme-device-attest-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-03-23" class="published">23 March 2026</time>
+<time datetime="2026-03-24" class="published">24 March 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-09-24">24 September 2026</time></dd>
+<dd class="expires"><time datetime="2026-09-25">25 September 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1110,7 +1110,7 @@ Automated Certificate Management Environment (ACME) protocol which allows valida
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 24 September 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 25 September 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1277,22 +1277,35 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-permanent-identifier">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-permanent-identifier" class="section-name selfRef">Permanent Identifier</a>
       </h2>
-<p id="section-3-1">A new identifier type, "permanent-identifier" is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. The name of this identifier type was chosen to align with <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span>. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-1">A new identifier type, "permanent-identifier" is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier <span class="bcp14">MAY</span> also be specified. The name of this identifier type was chosen to align with <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span>. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">Although <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span> permits any valid UTF-8 string to be used as the identifier, this specification mandates that identifiers <span class="bcp14">MUST NOT</span> contain the forward-slash "/" (UTF-8: U+002F) character. This restriction is required to make the ABNF production rule for the <code>permanent-identifier-value</code> unambiguous.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <div id="representation-in-order-resources">
 <section id="section-3.1">
         <h3 id="name-representation-in-order-res">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-representation-in-order-res" class="section-name selfRef">Representation in Order resources</a>
         </h3>
-<p id="section-3.1-1">The identifier's <code>value</code> field contains a UTF-8 string representation of the identity of the device.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.1-2">Example identifier:<a href="#section-3.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.1-3"><code>
+<p id="section-3.1-1">The identifier's <code>value</code> field contains a UTF-8 string representation of the identity of the device. In addition to the value being a valid UTF-8 string, the value <span class="bcp14">MUST</span> match the <code>permanent-identifier-value</code> production rule as defined in this ABNF <span>[<a href="#RFC5234" class="cite xref">RFC5234</a>]</span> syntax:<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">```
+assigner-value = ("0" / "1" / "2")  1<em>("." 1</em>DIGIT)
+device-identifier-value = 1*(%x00-2E / %x30-FF)<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">permanent-identifier-value = device-identifier-value ["/" assigner-value]
+```<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-4">Example identifier without an assigner:<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.1-5"><code>
 {
   "type": "permanent-identifier",
   "value": "ABCDEF123456"
 }
-</code><a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.1-4">Clients <span class="bcp14">MUST</span> include the identifier in new order requests if the identifier is to be included in certificates. Server implementations that conform to this specification <span class="bcp14">MUST</span> accept identifiers of this type in order requests if the server accepts such identifiers in the CSR.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
-<p id="section-3.1-5">Some server implementations exist that do not permit the inclusion of this identifier type in order requests. In this case, clients <span class="bcp14">MAY</span> omit the inclusion of this identifier in new order requests when requesting certificates from servers that reject this identifier type. Such server implementations <span class="bcp14">MUST</span> be modified to include support for this identifier type in order requests as soon as feasible.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+</code><a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<p id="section-3.1-6">Example identifier with an assigner:<a href="#section-3.1-6" class="pilcrow">¶</a></p>
+<p id="section-3.1-7"><code>
+{
+  "type": "permanent-identifier",
+  "value": "ABCDEF123456/1.2.3.4"
+}
+</code><a href="#section-3.1-7" class="pilcrow">¶</a></p>
+<p id="section-3.1-8">Clients <span class="bcp14">MUST</span> include the identifier in new order requests if the identifier is to be included in certificates. Server implementations that conform to this specification <span class="bcp14">MUST</span> accept identifiers of this type in order requests if the server accepts such identifiers in the CSR.<a href="#section-3.1-8" class="pilcrow">¶</a></p>
+<p id="section-3.1-9">Some server implementations exist that do not permit the inclusion of this identifier type in order requests. In this case, clients <span class="bcp14">MAY</span> omit the inclusion of this identifier in new order requests when requesting certificates from servers that reject this identifier type. Such server implementations <span class="bcp14">MUST</span> be modified to include support for this identifier type in order requests as soon as feasible.<a href="#section-3.1-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="representation-in-certificate-signing-requests">
@@ -1300,16 +1313,8 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <h3 id="name-representation-in-certifica">
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-representation-in-certifica" class="section-name selfRef">Representation in Certificate Signing Requests</a>
         </h3>
-<p id="section-3.2-1">The identity is included in the Subject Alternative Name Extension using the <code>identifierValue</code> field of the PermanentIdentifier form described in <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span>, with the following two restrictions:<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-3.2-2">
-<li id="section-3.2-2.1">
-            <p id="section-3.2-2.1.1">Although <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span> permits the requester to include the <code>identifierValue</code> in a <code>serialNumber</code> subject attribute, this specification mandates that the <code>identifierValue</code> field of the PermanentIdentifier <span class="bcp14">MUST</span> be present and <span class="bcp14">MUST</span> contain the identifier.<a href="#section-3.2-2.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li id="section-3.2-2.2">
-            <p id="section-3.2-2.2.1">The <code>assigner</code> field of the PermanentIdentifier form <span class="bcp14">MUST</span> be absent.<a href="#section-3.2-2.2.1" class="pilcrow">¶</a></p>
-</li>
-        </ol>
-<p id="section-3.2-3"><span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span> section 7.4 mandates that "The CSR <span class="bcp14">MUST</span> indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where including the identifier in a certificate poses a privacy concern. To support privacy-preserving certificates, clients <span class="bcp14">MAY</span> omit this identifier in the certificate signing request (CSR). Similarly, if the server wishes to issue privacy-preserving certificates, it <span class="bcp14">MAY</span> reject CSRs containing a PermanentIdentifier in the subjectAltName extension.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-1">The identity is included in the Subject Alternative Name Extension using the <code>identifierValue</code> field of the PermanentIdentifier form described in <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span>. Although <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span> permits the requester to include the <code>identifierValue</code> in a <code>serialNumber</code> subject attribute, this specification mandates that the <code>identifierValue</code> field of the PermanentIdentifier <span class="bcp14">MUST</span> be present and <span class="bcp14">MUST</span> contain the identifier.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2"><span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span> section 7.4 mandates that "The CSR <span class="bcp14">MUST</span> indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where including the identifier in a certificate poses a privacy concern. To support privacy-preserving certificates, clients <span class="bcp14">MAY</span> omit this identifier in the certificate signing request (CSR). Similarly, if the server wishes to issue privacy-preserving certificates, it <span class="bcp14">MAY</span> reject CSRs containing a PermanentIdentifier in the subjectAltName extension.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1320,15 +1325,32 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-hardware-module" class="section-name selfRef">Hardware Module</a>
       </h2>
 <p id="section-4-1">A new identifier type, "hardware-module" is introduced to represent the identity of the secure crypto-processor that generated the certificate key. The identity is modeled after the HardwareModuleName form described in <span>[<a href="#RFC4108" class="cite xref">RFC4108</a>]</span>. It consists of two components: an OBJECT IDENTIFIER to represent the type of hardware module, and a serial number that identifies the specific hardware module.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">Although <span>[<a href="#RFC4108" class="cite xref">RFC4108</a>]</span> specifies that serial numbers can be represented as any sequence of bytes, this specification requires that serial numbers be representable as valid UTF-8 strings consisting of at least one code point. This restriction ensures that serial numbers can be included in <code>hardware-module</code> identifier values.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-2">Although <span>[<a href="#RFC4108" class="cite xref">RFC4108</a>]</span> specifies that serial numbers can be represented as any sequence of bytes, this specification requires that serial numbers <span class="bcp14">MUST</span> be representable as valid UTF-8 strings consisting of at least one code point and <span class="bcp14">MUST NOT</span> contain a forward-slash "/" (UTF-8: U+002F) character. These restriction ensures that serial numbers can be included in <code>hardware-module</code> identifier string values and that the ABNF production rule for the value is unambiguous.<a href="#section-4-2" class="pilcrow">¶</a></p>
 <div id="representation-in-order-resources-1">
 <section id="section-4.1">
         <h3 id="name-representation-in-order-reso">
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-representation-in-order-reso" class="section-name selfRef">Representation in Order resources</a>
         </h3>
-<p id="section-4.1-1">The identifier's <code>value</code> field contains a string representation of the identity of the hardware module. The value consists of the the "dotted decimal" representation of the OBJECT IDENTIFIER hardware module's type and the UTF-8 string representation of the serial number, separated by a hyphen-minus "-" (UTF-8: U+002D) character.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.1-2">As an example, assume that the type of the hardware module is represented using the OBJECT IDENTIFIER "1.2.3.4" and the serial number is "ABCD". The identifier for the hardware module would be formatted as:<a href="#section-4.1-2" class="pilcrow">¶</a></p>
-<p id="section-4.1-3"><code>1.2.3.4-ABCD</code>.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.1-1">The identifier's <code>value</code> field contains a UTF-8 string representation of the identity of the hardware module. In addition to the value being a valid UTF-8 string, the value <span class="bcp14">MUST</span> match the <code>hardware-module-value</code> production rule as defined in this ABNF <span>[<a href="#RFC5234" class="cite xref">RFC5234</a>]</span> syntax:<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">```
+hw-type-value = ("0" / "1" / "2")  1<em>("." 1</em>DIGIT)
+hw-serial-num-value = 1*(%x00-2E / %x30-FF)<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.1-3">hardware-module-value = hw-serial-num-value ["/" hw-type-value]
+```<a href="#section-4.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.1-4">Example identifier with the type of the hardware module represented using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":<a href="#section-4.1-4" class="pilcrow">¶</a></p>
+<p id="section-4.1-5"><code>
+{
+  "type": "hardware-module",
+  "value": "ABCD/1.2.3.4"
+}
+</code><a href="#section-4.1-5" class="pilcrow">¶</a></p>
+<p id="section-4.1-6">Example identifier with no type specified and a serial number of "ABCD":<a href="#section-4.1-6" class="pilcrow">¶</a></p>
+<p id="section-4.1-7"><code>
+{
+  "type": "hardware-module",
+  "value": "ABCD"
+}
+</code><a href="#section-4.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="representation-in-certificate-signing-requests-1">
@@ -1577,6 +1599,10 @@ base64url alphabet, including padding characters ("="). See <span>[<a href="#I-D
 <dt id="RFC4108">[RFC4108]</dt>
         <dd>
 <span class="refAuthor">Housley, R.</span>, <span class="refTitle">"Using Cryptographic Message Syntax (CMS) to Protect Firmware Packages"</span>, <span class="seriesInfo">RFC 4108</span>, <span class="seriesInfo">DOI 10.17487/RFC4108</span>, <time datetime="2005-08" class="refDate">August 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4108">https://www.rfc-editor.org/rfc/rfc4108</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5234">[RFC5234]</dt>
+        <dd>
+<span class="refAuthor">Crocker, D., Ed.</span> and <span class="refAuthor">P. Overell</span>, <span class="refTitle">"Augmented BNF for Syntax Specifications: ABNF"</span>, <span class="seriesInfo">STD 68</span>, <span class="seriesInfo">RFC 5234</span>, <span class="seriesInfo">DOI 10.17487/RFC5234</span>, <time datetime="2008-01" class="refDate">January 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5234">https://www.rfc-editor.org/rfc/rfc5234</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
         <dd>
