@@ -95,13 +95,22 @@ Efforts are underway within the Remote ATtestation ProcedureS (RATS) working gro
 
 # Permanent Identifier
 
-A new identifier type, "permanent-identifier" is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. The name of this identifier type was chosen to align with {{!RFC4043}}. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
+A new identifier type, "permanent-identifier" is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier MAY also be specified. The name of this identifier type was chosen to align with {{!RFC4043}}. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
+
+Although {{!RFC4043}} permits any valid UTF-8 string to be used as the identifier, this specification mandates that identifiers MUST NOT contain the forward-slash "/" (UTF-8: U+002F) character. This restriction is required to make the ABNF production rule for the `permanent-identifier-value` unambiguous.
 
 ## Representation in Order resources
 
-The identifier's `value` field contains a UTF-8 string representation of the identity of the device.
+The identifier's `value` field contains a UTF-8 string representation of the identity of the device. In addition to the value being a valid UTF-8 string, the value MUST match the `permanent-identifier-value` production rule as defined in this ABNF {{!RFC5234}} syntax:
 
-Example identifier:
+```
+assigner-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
+device-identifier-value = 1*(%x00-2E / %x30-FF)
+
+permanent-identifier-value = device-identifier-value ["/" assigner-value]
+```
+
+Example identifier without an assigner:
 
 ```
 {
@@ -110,16 +119,23 @@ Example identifier:
 }
 ```
 
+Example identifier with an assigner:
+
+```
+{
+  "type": "permanent-identifier",
+  "value": "ABCDEF123456/1.2.3.4"
+}
+```
+
+
 Clients MUST include the identifier in new order requests if the identifier is to be included in certificates. Server implementations that conform to this specification MUST accept identifiers of this type in order requests if the server accepts such identifiers in the CSR.
 
 Some server implementations exist that do not permit the inclusion of this identifier type in order requests. In this case, clients MAY omit the inclusion of this identifier in new order requests when requesting certificates from servers that reject this identifier type. Such server implementations MUST be modified to include support for this identifier type in order requests as soon as feasible.
 
 ## Representation in Certificate Signing Requests
 
-The identity is included in the Subject Alternative Name Extension using the `identifierValue` field of the PermanentIdentifier form described in {{!RFC4043}}, with the following two restrictions:
-
-1. Although {{!RFC4043}} permits the requester to include the `identifierValue` in a `serialNumber` subject attribute, this specification mandates that the `identifierValue` field of the PermanentIdentifier MUST be present and MUST contain the identifier.
-2. The `assigner` field of the PermanentIdentifier form MUST be absent.
+The identity is included in the Subject Alternative Name Extension using the `identifierValue` field of the PermanentIdentifier form described in {{!RFC4043}}. Although {{!RFC4043}} permits the requester to include the `identifierValue` in a `serialNumber` subject attribute, this specification mandates that the `identifierValue` field of the PermanentIdentifier MUST be present and MUST contain the identifier.
 
 {{!RFC8555}} section 7.4 mandates that "The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where including the identifier in a certificate poses a privacy concern. To support privacy-preserving certificates, clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the server wishes to issue privacy-preserving certificates, it MAY reject CSRs containing a PermanentIdentifier in the subjectAltName extension.
 
@@ -127,15 +143,36 @@ The identity is included in the Subject Alternative Name Extension using the `id
 
 A new identifier type, "hardware-module" is introduced to represent the identity of the secure crypto-processor that generated the certificate key. The identity is modeled after the HardwareModuleName form described in [RFC4108]. It consists of two components: an OBJECT IDENTIFIER to represent the type of hardware module, and a serial number that identifies the specific hardware module.
 
-Although [RFC4108] specifies that serial numbers can be represented as any sequence of bytes, this specification requires that serial numbers be representable as valid UTF-8 strings consisting of at least one code point. This restriction ensures that serial numbers can be included in `hardware-module` identifier values.
+Although [RFC4108] specifies that serial numbers can be represented as any sequence of bytes, this specification requires that serial numbers MUST be representable as valid UTF-8 strings consisting of at least one code point and MUST NOT contain a forward-slash "/" (UTF-8: U+002F) character. These restriction ensures that serial numbers can be included in `hardware-module` identifier string values and that the ABNF production rule for the value is unambiguous.
 
 ## Representation in Order resources
 
-The identifier's `value` field contains a string representation of the identity of the hardware module. The value consists of the the "dotted decimal" representation of the OBJECT IDENTIFIER hardware module's type and the UTF-8 string representation of the serial number, separated by a hyphen-minus "-" (UTF-8: U+002D) character.
+The identifier's `value` field contains a UTF-8 string representation of the identity of the hardware module. In addition to the value being a valid UTF-8 string, the value MUST match the `hardware-module-value` production rule as defined in this ABNF {{!RFC5234}} syntax:
 
-As an example, assume that the type of the hardware module is represented using the OBJECT IDENTIFIER "1.2.3.4" and the serial number is "ABCD". The identifier for the hardware module would be formatted as:
+```
+hw-type-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
+hw-serial-num-value = 1*(%x00-2E / %x30-FF)
 
-`1.2.3.4-ABCD`.
+hardware-module-value = hw-serial-num-value ["/" hw-type-value]
+```
+
+Example identifier with the type of the hardware module represented using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":
+
+```
+{
+  "type": "hardware-module",
+  "value": "ABCD/1.2.3.4"
+}
+```
+
+Example identifier with no type specified and a serial number of "ABCD":
+
+```
+{
+  "type": "hardware-module",
+  "value": "ABCD"
+}
+```
 
 ## Representation in Certificate Signing Requests
 
