@@ -5,9 +5,9 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                          
 Intended status: Standards Track                              G. Mallaya
-Expires: 25 September 2026                                              
+Expires: 26 September 2026                                              
                                                                S. Rajala
-                                                           24 March 2026
+                                                           25 March 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 September 2026.
+   This Internet-Draft will expire on 26 September 2026.
 
 Copyright Notice
 
@@ -198,6 +198,14 @@ Table of Contents
    specification mandates that the identifierValue field of the
    PermanentIdentifier MUST be present and MUST contain the identifier.
 
+   The value of the identifierValue field of the PermanentIdentifier
+   MUST be an octet-for-octet match of the device-identifier-value value
+   as encoded in the Order resource.  If the assigner-value value is
+   included in the identifier as encoded in the Order resource, then the
+   assigner field of the PermanentIdentifier MUST be the encoding of the
+   "dotted-decimal" object identifier encoded as the assigner-value
+   value.
+
    [RFC8555] section 7.4 mandates that "The CSR MUST indicate the exact
    same set of requested identifiers as the initial newOrder request".
    However, there are some environments where including the identifier
@@ -260,8 +268,12 @@ Table of Contents
    *  hwSerialNum: An OCTET STRING containing the hardware module serial
       number
 
-   The value of the hwSerialNum field MUST contain the encoding of the
-   UTF-8 string of the serial number of the hardware module.
+   The value of the hwSerialNum field of the HardwareModuleName MUST be
+   an octet-for-octet match of the hw-serial-num-value value as encoded
+   in the Order resource.  If the hw-type-value value is included in the
+   identifier as encoded in the Order resource, then the hwType field of
+   the HardwareModuleName MUST be the encoding of the "dotted-decimal"
+   object identifier encoded as the hw-type-value value.
 
    [RFC8555] section 7.4 mandates that "The CSR MUST indicate the exact
    same set of requested identifiers as the initial newOrder request".
