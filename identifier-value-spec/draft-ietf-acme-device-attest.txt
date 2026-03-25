@@ -175,20 +175,6 @@ Table of Contents
 
    { "type": "permanent-identifier", "value": "ABCDEF123456/1.2.3.4" }
 
-   Clients MUST include the identifier in new order requests if the
-   identifier is to be included in certificates.  Server implementations
-   that conform to this specification MUST accept identifiers of this
-   type in order requests if the server accepts such identifiers in the
-   CSR.
-
-   Some server implementations exist that do not permit the inclusion of
-   this identifier type in order requests.  In this case, clients MAY
-   omit the inclusion of this identifier in new order requests when
-   requesting certificates from servers that reject this identifier
-   type.  Such server implementations MUST be modified to include
-   support for this identifier type in order requests as soon as
-   feasible.
-
 3.2.  Representation in Certificate Signing Requests
 
    The identity is included in the Subject Alternative Name Extension

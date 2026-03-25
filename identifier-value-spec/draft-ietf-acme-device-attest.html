@@ -1304,8 +1304,6 @@ device-identifier-value = 1*(%x00-2E / %x30-FF)<a href="#section-3.1-2" class="p
   "value": "ABCDEF123456/1.2.3.4"
 }
 </code><a href="#section-3.1-7" class="pilcrow">¶</a></p>
-<p id="section-3.1-8">Clients <span class="bcp14">MUST</span> include the identifier in new order requests if the identifier is to be included in certificates. Server implementations that conform to this specification <span class="bcp14">MUST</span> accept identifiers of this type in order requests if the server accepts such identifiers in the CSR.<a href="#section-3.1-8" class="pilcrow">¶</a></p>
-<p id="section-3.1-9">Some server implementations exist that do not permit the inclusion of this identifier type in order requests. In this case, clients <span class="bcp14">MAY</span> omit the inclusion of this identifier in new order requests when requesting certificates from servers that reject this identifier type. Such server implementations <span class="bcp14">MUST</span> be modified to include support for this identifier type in order requests as soon as feasible.<a href="#section-3.1-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="representation-in-certificate-signing-requests">
