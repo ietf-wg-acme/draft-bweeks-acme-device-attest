@@ -128,11 +128,6 @@ Example identifier with an assigner:
 }
 ```
 
-
-Clients MUST include the identifier in new order requests if the identifier is to be included in certificates. Server implementations that conform to this specification MUST accept identifiers of this type in order requests if the server accepts such identifiers in the CSR.
-
-Some server implementations exist that do not permit the inclusion of this identifier type in order requests. In this case, clients MAY omit the inclusion of this identifier in new order requests when requesting certificates from servers that reject this identifier type. Such server implementations MUST be modified to include support for this identifier type in order requests as soon as feasible.
-
 ## Representation in Certificate Signing Requests
 
 The identity is included in the Subject Alternative Name Extension using the `identifierValue` field of the PermanentIdentifier form described in {{!RFC4043}}. Although {{!RFC4043}} permits the requester to include the `identifierValue` in a `serialNumber` subject attribute, this specification mandates that the `identifierValue` field of the PermanentIdentifier MUST be present and MUST contain the identifier.
