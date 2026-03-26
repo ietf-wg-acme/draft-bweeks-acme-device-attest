@@ -136,6 +136,8 @@ The identity is included in the Subject Alternative Name Extension using the `id
 
 The value of the `identifierValue` field of the PermanentIdentifier MUST be an octet-for-octet match of the `device-identifier-value` value as encoded in the Order resource. If the `assigner-value` value is included in the identifier as encoded in the Order resource, then the `assigner` field of the PermanentIdentifier MUST be the encoding of the "dotted-decimal" object identifier encoded as the `assigner-value` value.
 
+To ensure that the identifier as presented in the Order resource and CSR match, the Server MUST perform the logical equivalent of extracting the `device-identifier-value` and `assigner-value` values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server MUST then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise.
+
 {{!RFC8555}} section 7.4 mandates that "The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where the Server requires validation of the identifier but does not include the identifier in certificates due to privacy concerns. To support privacy-preserving certificates, Clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it MAY reject CSRs containing a PermanentIdentifier in the subjectAltName extension.
 
 # Hardware Module
@@ -184,6 +186,8 @@ The hardware module identity is included in the Subject Alternate Name Extension
 
 
 The value of the `hwSerialNum` field of the HardwareModuleName MUST be an octet-for-octet match of the `hw-serial-num-value` value as encoded in the Order resource. If the `hw-type-value` value is included in the identifier as encoded in the Order resource, then the `hwType` field of the HardwareModuleName MUST be the encoding of the "dotted-decimal" object identifier encoded as the `hw-type-value` value.
+
+To ensure that the identifier as presented in the Order resource and CSR match, the Server MUST perform the logical equivalent of extracting the `hw-serial-num-value` and `hw-type-value` values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server MUST then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise.
 
 {{!RFC8555}} section 7.4 mandates that "The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where the Server requires validation of the identifier but does not include the identifier in certificates due to privacy concerns. To support privacy-preserving certificates, Clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it MAY reject CSRs containing a HardwareModuleName in the subjectAltName extension.
 
