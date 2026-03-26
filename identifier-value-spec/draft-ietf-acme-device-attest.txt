@@ -57,10 +57,12 @@ Table of Contents
    2.  Conventions and Definitions
    3.  Permanent Identifier
      3.1.  Representation in Order resources
-     3.2.  Representation in Certificate Signing Requests
+     3.2.  Representation in Certificate Signing Requests and X.509
+           Certificates
    4.  Hardware Module
      4.1.  Representation in Order resources
-     4.2.  Representation in Certificate Signing Requests
+     4.2.  Representation in Certificate Signing Requests and X.509
+           Certificates
    5.  Device Attestation Challenge
    6.  Operational Considerations
      6.1.  Enterprise PKI
@@ -175,7 +177,8 @@ Table of Contents
 
    { "type": "permanent-identifier", "value": "ABCDEF123456/1.2.3.4" }
 
-3.2.  Representation in Certificate Signing Requests
+3.2.  Representation in Certificate Signing Requests and X.509
+      Certificates
 
    The identity is included in the Subject Alternative Name Extension
    using the identifierValue field of the PermanentIdentifier form
@@ -194,12 +197,13 @@ Table of Contents
 
    [RFC8555] section 7.4 mandates that "The CSR MUST indicate the exact
    same set of requested identifiers as the initial newOrder request".
-   However, there are some environments where including the identifier
-   in a certificate poses a privacy concern.  To support privacy-
-   preserving certificates, Clients MAY omit this identifier in the
-   certificate signing request (CSR).  Similarly, if the Server wishes
-   to issue privacy-preserving certificates, it MAY reject CSRs
-   containing a PermanentIdentifier in the subjectAltName extension.
+   However, there are some environments where the Server requires
+   validation of the identifier but does not include the identifier in
+   certificates due to privacy concerns.  To support privacy-preserving
+   certificates, Clients MAY omit this identifier in the certificate
+   signing request (CSR).  Similarly, if the Server wishes to issue
+   privacy-preserving certificates, it MAY reject CSRs containing a
+   PermanentIdentifier in the subjectAltName extension.
 
 4.  Hardware Module
 
@@ -241,7 +245,8 @@ Table of Contents
 
    { "type": "hardware-module", "value": "ABCD" }
 
-4.2.  Representation in Certificate Signing Requests
+4.2.  Representation in Certificate Signing Requests and X.509
+      Certificates
 
    The hardware module identity is included in the Subject Alternate
    Name Extension using the HardwareModuleName form described in
@@ -263,12 +268,13 @@ Table of Contents
 
    [RFC8555] section 7.4 mandates that "The CSR MUST indicate the exact
    same set of requested identifiers as the initial newOrder request".
-   However, there are some environments where including the identifier
-   in a certificate poses a privacy concern.  To support privacy-
-   preserving certificates, Clients MAY omit this identifier in the
-   certificate signing request (CSR).  Similarly, if the Server wishes
-   to issue privacy-preserving certificates, it MAY reject CSRs
-   containing a HardwareModuleName in the subjectAltName extension.
+   However, there are some environments where the Server requires
+   validation of the identifier but does not include the identifier in
+   certificates due to privacy concerns.  To support privacy-preserving
+   certificates, Clients MAY omit this identifier in the certificate
+   signing request (CSR).  Similarly, if the Server wishes to issue
+   privacy-preserving certificates, it MAY reject CSRs containing a
+   HardwareModuleName in the subjectAltName extension.
 
 5.  Device Attestation Challenge
 
