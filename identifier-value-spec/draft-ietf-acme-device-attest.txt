@@ -169,6 +169,12 @@ Table of Contents
    permanent-identifier-value = device-identifier-value ["/" assigner-
    value] ```
 
+   A valid permanent-identifier-value value is a UTF-8 string that
+   contains an identity consisting of one or more characters without any
+   forward-slash "/" (UTF-8: U+002F) characters.  Optionally, a forward-
+   slash "/" character and "dotted-decimal" object identifier
+   identifying the assigner may follow the identity.
+
    Example identifier without an assigner:
 
    { "type": "permanent-identifier", "value": "ABCDEF123456" }
@@ -234,6 +240,12 @@ Table of Contents
    value = 1*(%x00-2E / %x30-FF)
 
    hardware-module-value = hw-serial-num-value ["/" hw-type-value] ```
+
+   A valid hardware-module-value value is a UTF-8 string that contains a
+   serial number consisting of one or more characters without any
+   forward-slash "/" (UTF-8: U+002F) characters.  Optionally, a forward-
+   slash "/" character and "dotted-decimal" object identifier
+   identifying the hardware type may follow the serial number.
 
    Example identifier with the type of the hardware module represented
    using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":
