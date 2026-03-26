@@ -23,6 +23,11 @@ author:
     company: Keyfactor
     email: sven.rajala@keyfactor.com
 
+ -
+    fullname: Corey Bonnell
+    company: DigiCert, Inc.
+    email: corey.bonnell@digicert.com
+
 normative:
   RFC4108:
   RFC4043:
@@ -321,4 +326,4 @@ This document adds the following entries to the ACME Error Type registry:
 # Acknowledgments
 {:numbered="false"}
 
-Thank you for all the reviews from the work group.
+We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Mike Ounsworth, Deb Cooley, Aaron Gable, Richard Barnes, and  Herman Slatman for their reviews and suggestions, which greatly improved the quality of this document.
