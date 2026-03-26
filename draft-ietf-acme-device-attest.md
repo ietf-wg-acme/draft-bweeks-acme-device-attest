@@ -94,32 +94,106 @@ Efforts are underway within the Remote ATtestation ProcedureS (RATS) working gro
 {::boilerplate bcp14-tagged}
 
 # Permanent Identifier
-A new identifier type, "permanent-identifier" is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. The name of this identifier type was chosen to align with {{!RFC4043}}, it does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
 
-The identity along with the assigning organization can be included in the Subject Alternate Name Extension using the PermanentIdentifier form described in {{!RFC4043}}.
+A new identifier type, "permanent-identifier" is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier MAY also be specified. The name of this identifier type was chosen to align with {{!RFC4043}}. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
 
-<!-- Section 7.4 of RFC 8555 states "Specifications that define new identifier types must specify where in the certificate signing request these identifiers can appear." -->
+Although {{!RFC4043}} permits any valid UTF-8 string to be used as the identifier, this specification mandates that identifiers MUST NOT contain the forward-slash "/" (UTF-8: U+002F) character. This restriction is required to make the ABNF production rule for the `permanent-identifier-value` unambiguous.
 
-Clients MAY include this identifier in the certificate signing request (CSR). Alternatively if the server wishes to only issue privacy-preserving certificates, it MAY reject CSRs containing a PermanentIdentifier in the subjectAltName extension.
+## Representation in Order resources
+
+The identifier's `value` field contains a UTF-8 string representation of the identity of the device. In addition to the value being a valid UTF-8 string, the value MUST match the `permanent-identifier-value` production rule as defined in this ABNF {{!RFC5234}} syntax:
+
+```
+assigner-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
+device-identifier-value = 1*(%x00-2E / %x30-FF)
+
+permanent-identifier-value = device-identifier-value ["/" assigner-value]
+```
+
+A valid `permanent-identifier-value` value is a UTF-8 string that contains an identity consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. Optionally, a forward-slash "/" character and "dotted-decimal" object identifier identifying the assigner may follow the identity.
+
+Example identifier without an assigner:
+
+```
+{
+  "type": "permanent-identifier",
+  "value": "ABCDEF123456"
+}
+```
+
+Example identifier with an assigner:
+
+```
+{
+  "type": "permanent-identifier",
+  "value": "ABCDEF123456/1.2.3.4"
+}
+```
+
+## Representation in Certificate Signing Requests and X.509 Certificates
+
+The identity is included in the Subject Alternative Name Extension using the `identifierValue` field of the PermanentIdentifier form described in {{!RFC4043}}. Although {{!RFC4043}} permits the requester to include the `identifierValue` in a `serialNumber` subject attribute, this specification mandates that the `identifierValue` field of the PermanentIdentifier MUST be present and MUST contain the identifier.
+
+The value of the `identifierValue` field of the PermanentIdentifier MUST be an octet-for-octet match of the `device-identifier-value` value as encoded in the Order resource. If the `assigner-value` value is included in the identifier as encoded in the Order resource, then the `assigner` field of the PermanentIdentifier MUST be the encoding of the "dotted-decimal" object identifier encoded as the `assigner-value` value.
+
+To ensure that the identifier as presented in the Order resource and CSR match, the Server MUST perform the logical equivalent of extracting the `device-identifier-value` and `assigner-value` values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server MUST then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise.
+
+{{!RFC8555}} section 7.4 mandates that "The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where the Server requires validation of the identifier but does not include the identifier in certificates due to privacy concerns. To support privacy-preserving certificates, Clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it MAY reject CSRs containing a PermanentIdentifier in the subjectAltName extension.
 
 # Hardware Module
-A new identifier type, "hardware-module" is introduced to represent the identity of the secure cryptoprocessor that generated the certificate key.
 
-<!-- TODO: describe the certificate representation -->
-<!-- TODO: describe how the CA assert the key is hardware backed without an identifier -->
-The hardware module identity can be included in the Subject Alternate Name Extension using the HardwareModuleName form described in [RFC4108]. The HardwareModuleName is encoded as an otherName with the OID id-on-hardwareModuleName (1.3.6.1.5.5.7.8.4) and consists of:
+A new identifier type, "hardware-module" is introduced to represent the identity of the secure crypto-processor that generated the certificate key. The identity is modeled after the HardwareModuleName form described in [RFC4108]. It consists of two components: an OBJECT IDENTIFIER to represent the type of hardware module, and a serial number that identifies the specific hardware module.
+
+Although [RFC4108] specifies that serial numbers can be represented as any sequence of bytes, this specification requires that serial numbers MUST be representable as valid UTF-8 strings consisting of at least one code point and MUST NOT contain a forward-slash "/" (UTF-8: U+002F) character. These restriction ensures that serial numbers can be included in `hardware-module` identifier string values and that the ABNF production rule for the value is unambiguous.
+
+## Representation in Order resources
+
+The identifier's `value` field contains a UTF-8 string representation of the identity of the hardware module. In addition to the value being a valid UTF-8 string, the value MUST match the `hardware-module-value` production rule as defined in this ABNF {{!RFC5234}} syntax:
+
+```
+hw-type-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
+hw-serial-num-value = 1*(%x00-2E / %x30-FF)
+
+hardware-module-value = hw-serial-num-value ["/" hw-type-value]
+```
+
+A valid `hardware-module-value` value is a UTF-8 string that contains a serial number consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. Optionally, a forward-slash "/" character and "dotted-decimal" object identifier identifying the hardware type may follow the serial number.
+
+Example identifier with the type of the hardware module represented using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":
+
+```
+{
+  "type": "hardware-module",
+  "value": "ABCD/1.2.3.4"
+}
+```
+
+Example identifier with no type specified and a serial number of "ABCD":
+
+```
+{
+  "type": "hardware-module",
+  "value": "ABCD"
+}
+```
+
+## Representation in Certificate Signing Requests and X.509 Certificates
+
+The hardware module identity is included in the Subject Alternate Name Extension using the HardwareModuleName form described in [RFC4108]. The HardwareModuleName is encoded as an otherName with the OID id-on-hardwareModuleName (1.3.6.1.5.5.7.8.4) and consists of:
 
 - hwType: An OBJECT IDENTIFIER that identifies the type of hardware module
 - hwSerialNum: An OCTET STRING containing the hardware module serial number
 
-Clients MAY include this identifier in the certificate signing request (CSR). When included in a CSR, it MUST appear in an extensionRequest attribute {{!RFC2985}} requesting a subjectAltName extension.
 
-If the server includes HardwareModule in the subjectAltName extension the CA MUST verify that the certificate key was generated on the secure cryptoprocessor with the asserted identity and type. The key MUST NOT be able to be exported from the cryptoprocessor.
+The value of the `hwSerialNum` field of the HardwareModuleName MUST be an octet-for-octet match of the `hw-serial-num-value` value as encoded in the Order resource. If the `hw-type-value` value is included in the identifier as encoded in the Order resource, then the `hwType` field of the HardwareModuleName MUST be the encoding of the "dotted-decimal" object identifier encoded as the `hw-type-value` value.
 
-If the server wishes to issue privacy-preserving certificates, it MAY omit HardwareModule from the subjectAltName extension.
+To ensure that the identifier as presented in the Order resource and CSR match, the Server MUST perform the logical equivalent of extracting the `hw-serial-num-value` and `hw-type-value` values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server MUST then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise.
+
+{{!RFC8555}} section 7.4 mandates that "The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where the Server requires validation of the identifier but does not include the identifier in certificates due to privacy concerns. To support privacy-preserving certificates, Clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it MAY reject CSRs containing a HardwareModuleName in the subjectAltName extension.
 
 # Device Attestation Challenge
-The client can prove control over a permanent identifier of a device by
+
+The Client can prove control over a permanent identifier of a device by
 providing an attestation statement containing the identifier of the device.
 
 The device-attest-01 ACME challenge object has the following format:
@@ -139,23 +213,23 @@ token (required, string):
 }
 ~~~~~~~~~~
 
- A client fulfills this challenge by constructing a key authorization ({{Section 8.1 of !RFC8555}})
- from the "token" value provided in the challenge and the client's
- account key. The client then generates a WebAuthn attestation object using the key authorization as the challenge.
+ A Client fulfills this challenge by constructing a key authorization ({{Section 8.1 of !RFC8555}})
+ from the "token" value provided in the challenge and the Client's
+ account key. The Client then generates a WebAuthn attestation object using the key authorization as the challenge.
 
 This specification borrows the WebAuthn _attestation object_ representation as described in Section 6.5.4 of [WebAuthn] for encapsulating attestation formats, but with these modifications:
 
 - The key authorization is used to form _attToBeSigned_. This replaces the concatenation of _authenticatorData_ and _clientDataHash_. _attToBeSigned_ is hashed using an algorithm specified by the attestation format. <!-- TODO: ^^^ perhaps add more cross-refs or context about "using an algorithm specified by the attestation format" -->
 - The _authData_ field is unused and SHOULD be omitted.
 
-A client responds with the response object containing the WebAuthn attestation object in the "attObj" field to acknowledge that the challenge can be validated by the server.
+A Client responds with the response object containing the WebAuthn attestation object in the "attObj" field to acknowledge that the challenge can be validated by the Server.
 
-On receiving a response, the server constructs and stores the key authorization from the challenge's "token" value and the current client account key.
+On receiving a response, the Server constructs and stores the key authorization from the challenge's "token" value and the current Client account key.
 
-To validate a device attestation challenge, the server performs the following steps:
+To validate a device attestation challenge, the Server performs the following steps:
 
 1. Perform the verification procedures described in Section 6 of [WebAuthn].
-2. Verify that key authorization conveyed by _attToBeSigned_ matches the key authorization stored by the server.
+2. Verify that key authorization conveyed by _attToBeSigned_ matches the key authorization stored by the Server.
 
 <!-- This specification defines a new challenge response field `attObj` to contain WebAuthn attestation objects as described in Section 7.5.1 of {{!RFC8555}}. -->
 
@@ -185,14 +259,15 @@ The webauthn payload MAY contain any identifiers registered in "WebAuthn Attesta
 Although this document focuses guidance on implementing new type and challenge for certificate issuance using ACME, it does not define a New Protocol, a Protocol Extension, or an architecture.
 
 ## Enterprise PKI
+
 ACME was originally envisioned for issuing certificates in the Web PKI, however this extension will primarily be useful in enterprise PKI. The subsection below covers some operational considerations for an ACME-based enterprise CA.
 <!-- TODO: ^^^ perhaps also mention/cover IoT attestation PKI usecases -->
 
 ### External Account Binding
-An enterprise CA likely only wants to receive requests from authorized devices. It is RECOMMENDED that the server require a value for the "externalAccountBinding" field to be
+An enterprise CA likely only wants to receive requests from authorized devices. It is RECOMMENDED that the Server require a value for the "externalAccountBinding" field to be
 present in "newAccount" requests.
 
-If an enterprise CA desires to limit the number of certificates that can be requested with a given account, including limiting an account to a single certificate. After the desired number of certificates have been issued to an account, the server MAY revoke the account as described in Section 7.1.2 of {{RFC8555}}.
+If an enterprise CA desires to limit the number of certificates that can be requested with a given account, including limiting an account to a single certificate. After the desired number of certificates have been issued to an account, the Server MAY revoke the account as described in Section 7.1.2 of {{RFC8555}}.
 
 # Security Considerations
 
@@ -200,7 +275,7 @@ Please reference {{!RFC8555}} for other security considerations.
 
 See Section 13 of {{WebAuthn}} for additional security considerations related to attestation statement formats, including certificate revocation.
 
-Key attestation statements may include a variety of information in addition to the public key being attested. While not described in this document, the server MAY use any policy when evaluating this information. This evaluation can result in rejection of a certificate request that features a verifiable key attestation for the public key contained in the request. For example, an attestation statement may indicate use of an unacceptable firmware version.
+Key attestation statements may include a variety of information in addition to the public key being attested. While not described in this document, the Server MAY use any policy when evaluating this information. This evaluation can result in rejection of a certificate request that features a verifiable key attestation for the public key contained in the request. For example, an attestation statement may indicate use of an unacceptable firmware version.
 
 The "token" value MUST have at least 128 bits of entropy. It MUST NOT contain any characters outside the
 base64url alphabet, including padding characters ("="). See {{I-D.ietf-tls-rfc8446bis}}, Appendix C.1 for additional information on randomness requirements.
