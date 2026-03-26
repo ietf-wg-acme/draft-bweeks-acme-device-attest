@@ -7,6 +7,8 @@ Internet-Draft
 Intended status: Standards Track                              G. Mallaya
 Expires: 27 September 2026                                              
                                                                S. Rajala
+                                                                        
+                                                              C. Bonnell
                                                            26 March 2026
 
 
@@ -533,7 +535,11 @@ Table of Contents
 
 Acknowledgments
 
-   Thank you for all the reviews from the work group.
+   We thank the participants on the ACME Working Group mailing list for
+   their insightful feedback and comments.  In particular, the authors
+   extend sincere appreciation to Mike Ounsworth, Deb Cooley, Aaron
+   Gable, Richard Barnes, and Herman Slatman for their reviews and
+   suggestions, which greatly improved the quality of this document.
 
 Authors' Addresses
 
@@ -547,3 +553,7 @@ Authors' Addresses
 
    Sven Rajala
    Email: sven.rajala@keyfactor.com
+
+
+   Corey Bonnell
+   Email: corey.bonnell@digicert.com
