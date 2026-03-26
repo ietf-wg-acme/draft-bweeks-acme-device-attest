@@ -5,9 +5,9 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                          
 Intended status: Standards Track                              G. Mallaya
-Expires: 26 September 2026                                              
+Expires: 27 September 2026                                              
                                                                S. Rajala
-                                                           25 March 2026
+                                                           26 March 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 September 2026.
+   This Internet-Draft will expire on 27 September 2026.
 
 Copyright Notice
 
@@ -196,8 +196,8 @@ Table of Contents
    same set of requested identifiers as the initial newOrder request".
    However, there are some environments where including the identifier
    in a certificate poses a privacy concern.  To support privacy-
-   preserving certificates, clients MAY omit this identifier in the
-   certificate signing request (CSR).  Similarly, if the server wishes
+   preserving certificates, Clients MAY omit this identifier in the
+   certificate signing request (CSR).  Similarly, if the Server wishes
    to issue privacy-preserving certificates, it MAY reject CSRs
    containing a PermanentIdentifier in the subjectAltName extension.
 
@@ -265,14 +265,14 @@ Table of Contents
    same set of requested identifiers as the initial newOrder request".
    However, there are some environments where including the identifier
    in a certificate poses a privacy concern.  To support privacy-
-   preserving certificates, clients MAY omit this identifier in the
-   certificate signing request (CSR).  Similarly, if the server wishes
+   preserving certificates, Clients MAY omit this identifier in the
+   certificate signing request (CSR).  Similarly, if the Server wishes
    to issue privacy-preserving certificates, it MAY reject CSRs
    containing a HardwareModuleName in the subjectAltName extension.
 
 5.  Device Attestation Challenge
 
-   The client can prove control over a permanent identifier of a device
+   The Client can prove control over a permanent identifier of a device
    by providing an attestation statement containing the identifier of
    the device.
 
@@ -290,9 +290,9 @@ Table of Contents
      "token": "evaGxfADs6pSRb2LAv9IZf17Dt3juxGJ-PCt92wr-oA"
    }
 
-   A client fulfills this challenge by constructing a key authorization
+   A Client fulfills this challenge by constructing a key authorization
    (Section 8.1 of [RFC8555]) from the "token" value provided in the
-   challenge and the client's account key.  The client then generates a
+   challenge and the Client's account key.  The Client then generates a
    WebAuthn attestation object using the key authorization as the
    challenge.
 
@@ -307,22 +307,22 @@ Table of Contents
 
    *  The _authData_ field is unused and SHOULD be omitted.
 
-   A client responds with the response object containing the WebAuthn
+   A Client responds with the response object containing the WebAuthn
    attestation object in the "attObj" field to acknowledge that the
-   challenge can be validated by the server.
+   challenge can be validated by the Server.
 
-   On receiving a response, the server constructs and stores the key
+   On receiving a response, the Server constructs and stores the key
    authorization from the challenge's "token" value and the current
-   client account key.
+   Client account key.
 
-   To validate a device attestation challenge, the server performs the
+   To validate a device attestation challenge, the Server performs the
    following steps:
 
    1.  Perform the verification procedures described in Section 6 of
        [WebAuthn].
 
    2.  Verify that key authorization conveyed by _attToBeSigned_ matches
-       the key authorization stored by the server.
+       the key authorization stored by the Server.
 
    POST /acme/chall/Rg5dV14Gh1Q
    Host: example.com
@@ -362,14 +362,14 @@ Table of Contents
 6.1.1.  External Account Binding
 
    An enterprise CA likely only wants to receive requests from
-   authorized devices.  It is RECOMMENDED that the server require a
+   authorized devices.  It is RECOMMENDED that the Server require a
    value for the "externalAccountBinding" field to be present in
    "newAccount" requests.
 
    If an enterprise CA desires to limit the number of certificates that
    can be requested with a given account, including limiting an account
    to a single certificate.  After the desired number of certificates
-   have been issued to an account, the server MAY revoke the account as
+   have been issued to an account, the Server MAY revoke the account as
    described in Section 7.1.2 of [RFC8555].
 
 7.  Security Considerations
@@ -382,7 +382,7 @@ Table of Contents
 
    Key attestation statements may include a variety of information in
    addition to the public key being attested.  While not described in
-   this document, the server MAY use any policy when evaluating this
+   this document, the Server MAY use any policy when evaluating this
    information.  This evaluation can result in rejection of a
    certificate request that features a verifiable key attestation for
    the public key contained in the request.  For example, an attestation
