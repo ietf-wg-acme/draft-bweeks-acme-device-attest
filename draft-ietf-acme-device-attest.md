@@ -134,7 +134,7 @@ The identity is included in the Subject Alternative Name Extension using the `id
 
 The value of the `identifierValue` field of the PermanentIdentifier MUST be an octet-for-octet match of the `device-identifier-value` value as encoded in the Order resource. If the `assigner-value` value is included in the identifier as encoded in the Order resource, then the `assigner` field of the PermanentIdentifier MUST be the encoding of the "dotted-decimal" object identifier encoded as the `assigner-value` value.
 
-{{!RFC8555}} section 7.4 mandates that "The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where including the identifier in a certificate poses a privacy concern. To support privacy-preserving certificates, clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the server wishes to issue privacy-preserving certificates, it MAY reject CSRs containing a PermanentIdentifier in the subjectAltName extension.
+{{!RFC8555}} section 7.4 mandates that "The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where including the identifier in a certificate poses a privacy concern. To support privacy-preserving certificates, Clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it MAY reject CSRs containing a PermanentIdentifier in the subjectAltName extension.
 
 # Hardware Module
 
@@ -182,11 +182,11 @@ The hardware module identity is included in the Subject Alternate Name Extension
 
 The value of the `hwSerialNum` field of the HardwareModuleName MUST be an octet-for-octet match of the `hw-serial-num-value` value as encoded in the Order resource. If the `hw-type-value` value is included in the identifier as encoded in the Order resource, then the `hwType` field of the HardwareModuleName MUST be the encoding of the "dotted-decimal" object identifier encoded as the `hw-type-value` value.
 
-{{!RFC8555}} section 7.4 mandates that "The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where including the identifier in a certificate poses a privacy concern. To support privacy-preserving certificates, clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the server wishes to issue privacy-preserving certificates, it MAY reject CSRs containing a HardwareModuleName in the subjectAltName extension.
+{{!RFC8555}} section 7.4 mandates that "The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where including the identifier in a certificate poses a privacy concern. To support privacy-preserving certificates, Clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it MAY reject CSRs containing a HardwareModuleName in the subjectAltName extension.
 
 # Device Attestation Challenge
 
-The client can prove control over a permanent identifier of a device by
+The Client can prove control over a permanent identifier of a device by
 providing an attestation statement containing the identifier of the device.
 
 The device-attest-01 ACME challenge object has the following format:
@@ -206,23 +206,23 @@ token (required, string):
 }
 ~~~~~~~~~~
 
- A client fulfills this challenge by constructing a key authorization ({{Section 8.1 of !RFC8555}})
- from the "token" value provided in the challenge and the client's
- account key. The client then generates a WebAuthn attestation object using the key authorization as the challenge.
+ A Client fulfills this challenge by constructing a key authorization ({{Section 8.1 of !RFC8555}})
+ from the "token" value provided in the challenge and the Client's
+ account key. The Client then generates a WebAuthn attestation object using the key authorization as the challenge.
 
 This specification borrows the WebAuthn _attestation object_ representation as described in Section 6.5.4 of [WebAuthn] for encapsulating attestation formats, but with these modifications:
 
 - The key authorization is used to form _attToBeSigned_. This replaces the concatenation of _authenticatorData_ and _clientDataHash_. _attToBeSigned_ is hashed using an algorithm specified by the attestation format. <!-- TODO: ^^^ perhaps add more cross-refs or context about "using an algorithm specified by the attestation format" -->
 - The _authData_ field is unused and SHOULD be omitted.
 
-A client responds with the response object containing the WebAuthn attestation object in the "attObj" field to acknowledge that the challenge can be validated by the server.
+A Client responds with the response object containing the WebAuthn attestation object in the "attObj" field to acknowledge that the challenge can be validated by the Server.
 
-On receiving a response, the server constructs and stores the key authorization from the challenge's "token" value and the current client account key.
+On receiving a response, the Server constructs and stores the key authorization from the challenge's "token" value and the current Client account key.
 
-To validate a device attestation challenge, the server performs the following steps:
+To validate a device attestation challenge, the Server performs the following steps:
 
 1. Perform the verification procedures described in Section 6 of [WebAuthn].
-2. Verify that key authorization conveyed by _attToBeSigned_ matches the key authorization stored by the server.
+2. Verify that key authorization conveyed by _attToBeSigned_ matches the key authorization stored by the Server.
 
 <!-- This specification defines a new challenge response field `attObj` to contain WebAuthn attestation objects as described in Section 7.5.1 of {{!RFC8555}}. -->
 
@@ -257,10 +257,10 @@ ACME was originally envisioned for issuing certificates in the Web PKI, however 
 <!-- TODO: ^^^ perhaps also mention/cover IoT attestation PKI usecases -->
 
 ### External Account Binding
-An enterprise CA likely only wants to receive requests from authorized devices. It is RECOMMENDED that the server require a value for the "externalAccountBinding" field to be
+An enterprise CA likely only wants to receive requests from authorized devices. It is RECOMMENDED that the Server require a value for the "externalAccountBinding" field to be
 present in "newAccount" requests.
 
-If an enterprise CA desires to limit the number of certificates that can be requested with a given account, including limiting an account to a single certificate. After the desired number of certificates have been issued to an account, the server MAY revoke the account as described in Section 7.1.2 of {{RFC8555}}.
+If an enterprise CA desires to limit the number of certificates that can be requested with a given account, including limiting an account to a single certificate. After the desired number of certificates have been issued to an account, the Server MAY revoke the account as described in Section 7.1.2 of {{RFC8555}}.
 
 # Security Considerations
 
@@ -268,7 +268,7 @@ Please reference {{!RFC8555}} for other security considerations.
 
 See Section 13 of {{WebAuthn}} for additional security considerations related to attestation statement formats, including certificate revocation.
 
-Key attestation statements may include a variety of information in addition to the public key being attested. While not described in this document, the server MAY use any policy when evaluating this information. This evaluation can result in rejection of a certificate request that features a verifiable key attestation for the public key contained in the request. For example, an attestation statement may indicate use of an unacceptable firmware version.
+Key attestation statements may include a variety of information in addition to the public key being attested. While not described in this document, the Server MAY use any policy when evaluating this information. This evaluation can result in rejection of a certificate request that features a verifiable key attestation for the public key contained in the request. For example, an attestation statement may indicate use of an unacceptable firmware version.
 
 The "token" value MUST have at least 128 bits of entropy. It MUST NOT contain any characters outside the
 base64url alphabet, including padding characters ("="). See {{I-D.ietf-tls-rfc8446bis}}, Appendix C.1 for additional information on randomness requirements.
