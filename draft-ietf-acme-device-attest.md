@@ -108,32 +108,32 @@ Although {{!RFC4043}} permits any valid UTF-8 string to be used as the identifie
 
 The identifier's `value` field contains a UTF-8 string representation of the identity of the device. In addition to the value being a valid UTF-8 string, the value MUST match the `permanent-identifier-value` production rule as defined in this ABNF {{!RFC5234}} syntax:
 
-```
+~~~
 assigner-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
 device-identifier-value = 1*(%x00-2E / %x30-FF)
 
 permanent-identifier-value = device-identifier-value ["/" assigner-value]
-```
+~~~
 
 A valid `permanent-identifier-value` value is a UTF-8 string that contains an identity consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. Optionally, a forward-slash "/" character and "dotted-decimal" object identifier identifying the assigner may follow the identity.
 
 Example identifier without an assigner:
 
-```
+~~~
 {
   "type": "permanent-identifier",
   "value": "ABCDEF123456"
 }
-```
+~~~
 
 Example identifier with an assigner:
 
-```
+~~~
 {
   "type": "permanent-identifier",
   "value": "ABCDEF123456/1.2.3.4"
 }
-```
+~~~
 
 ## Representation in Certificate Signing Requests and X.509 Certificates
 
@@ -155,32 +155,32 @@ Although [RFC4108] specifies that serial numbers can be represented as any seque
 
 The identifier's `value` field contains a UTF-8 string representation of the identity of the hardware module. In addition to the value being a valid UTF-8 string, the value MUST match the `hardware-module-value` production rule as defined in this ABNF {{!RFC5234}} syntax:
 
-```
+~~~
 hw-type-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
 hw-serial-num-value = 1*(%x00-2E / %x30-FF)
 
 hardware-module-value = hw-serial-num-value ["/" hw-type-value]
-```
+~~~
 
 A valid `hardware-module-value` value is a UTF-8 string that contains a serial number consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. Optionally, a forward-slash "/" character and "dotted-decimal" object identifier identifying the hardware type may follow the serial number.
 
 Example identifier with the type of the hardware module represented using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":
 
-```
+~~~
 {
   "type": "hardware-module",
   "value": "ABCD/1.2.3.4"
 }
-```
+~~~
 
 Example identifier with no type specified and a serial number of "ABCD":
 
-```
+~~~
 {
   "type": "hardware-module",
   "value": "ABCD"
 }
-```
+~~~
 
 ## Representation in Certificate Signing Requests and X.509 Certificates
 
@@ -298,11 +298,12 @@ The "ACME Identifier Types" registry is to be updated to include the following e
 
 ## ACME Validation Method
 
-The "ACME Validation Methods" registry is to be updated to include the following entry:
+The "ACME Validation Methods" registry is to be updated to include the following entries:
 
 | Label            | Identifier Type      | ACME   | Reference |
 | :--------------- | :------------------- | :----- | :-------- |
 | device-attest-01 | permanent-identifier |   Y    | RFC XXXX  |
+| device-attest-01 | hardware-module     |   Y    | RFC XXXX  |
 
 <!-- Begin WebAuthn registry text -->
 <!-- Editor's note: the below text was written by Carl Wallance as part of draft-wallace-lamps-key-attestation-ext. These registries only need to be established by a single document, so if they are established by another document prior to this document being approved, this text will be removed and replaced with a reference to the other document.  -->
