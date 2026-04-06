@@ -121,7 +121,7 @@ Example identifier without an assigner:
 
 ~~~
 {
-  "type": `permanent-identifier`,
+  "type": "permanent-identifier",
   "value": "ABCDEF123456"
 }
 ~~~
@@ -130,7 +130,7 @@ Example identifier with an assigner:
 
 ~~~
 {
-  "type": `permanent-identifier`,
+  "type": "permanent-identifier",
   "value": "ABCDEF123456/1.2.3.4"
 }
 ~~~
@@ -168,7 +168,7 @@ Example identifier with the type of the hardware module represented using the OB
 
 ~~~
 {
-  "type": `hardware-module`,
+  "type": "hardware-module",
   "value": "ABCD/1.2.3.4"
 }
 ~~~
@@ -177,7 +177,7 @@ Example identifier with no type specified and a serial number of "ABCD":
 
 ~~~
 {
-  "type": `hardware-module`,
+  "type": "hardware-module",
   "value": "ABCD"
 }
 ~~~
@@ -314,11 +314,11 @@ This document provides an explicit mechanism to decouple attestation-based valid
 
 Implementers should treat this privacy-preserving mode as the default posture unless there is a specific operational requirement for the identifier to appear in the certificate. The following considerations apply to this decision:
 
-    If the issued certificate will be presented to relying parties outside the issuing organization's trust boundary, embedding a `permanent-identifier` or `hardware-module` value in the certificate enables those relying parties to correlate certificate presentations with specific physical hardware. This may be acceptable in closed enterprise environments but is likely inappropriate in any context where the certificate is presented to external services, counter-parties, or public infrastructure.
+- If the issued certificate will be presented to relying parties outside the issuing organization's trust boundary, embedding a `permanent-identifier` or `hardware-module` value in the certificate enables those relying parties to correlate certificate presentations with specific physical hardware. This may be acceptable in closed enterprise environments but is likely inappropriate in any context where the certificate is presented to external services, counter-parties, or public infrastructure.
 
-    If the certificate is used for mutual TLS in a workload identity context, embedding an unchanging hardware identifier couples the cryptographic identity of the workload to the physical device rather than to the logical identity of the workload. This can impede key rotation, device replacement, and workload migration, in addition to creating the correlation risks described above. In such cases, implementers should prefer logical workload identifiers (such as SPIFFE URIs) in the issued certificate and treat the hardware attestation as a bootstrap authorization mechanism only.
+- If the certificate is used for mutual TLS in a workload identity context, embedding an unchanging hardware identifier couples the cryptographic identity of the workload to the physical device rather than to the logical identity of the workload. This can impede key rotation, device replacement, and workload migration, in addition to creating the correlation risks described above. In such cases, implementers should prefer logical workload identifiers (such as SPIFFE URIs) in the issued certificate and treat the hardware attestation as a bootstrap authorization mechanism only.
 
-    If the certificate is intended for use in certificate transparency logs, implementers MUST consider that embedding a `permanent-identifier` or `hardware-module` value will make that identifier permanently and publicly discoverable, indexed by issuance time, issuer, and subject. This constitutes an irreversible disclosure under {{!RFC6973}} Section 5.2.4 and should be avoided unless public discoverability of the device identifier is an explicit operational requirement.
+- If the certificate is intended for use in certificate transparency logs, implementers MUST consider that embedding a `permanent-identifier` or `hardware-module` value will make that identifier permanently and publicly discoverable, indexed by issuance time, issuer, and subject. This constitutes an irreversible disclosure under {{!RFC6973}} Section 5.2.4 and should be avoided unless public discoverability of the device identifier is an explicit operational requirement.
 
 ## Stored Data and Account Binding
 
@@ -330,15 +330,15 @@ Implementers operating ACME servers should store account-to-device bindings usin
 
 Implementers considering whether to include `permanent-identifier` or `hardware-module` in CSRs and issued certificates SHOULD work through the following questions before enabling these identifiers: 
 
-    Is unchanging hardware identity in the certificate necessary for the relying party to make authorization decisions, or is it sufficient for the ACME server to have validated it at issuance time? If the latter, prefer privacy-preserving certificate mode.
+- Is unchanging hardware identity in the certificate necessary for the relying party to make authorization decisions, or is it sufficient for the ACME server to have validated it at issuance time? If the latter, prefer privacy-preserving certificate mode.
 
-    Will the certificate be logged to a certificate transparency log or otherwise made publicly accessible? If so, embedding a permanent hardware identifier creates an irrevocable, publicly indexed disclosure and should be avoided unless explicitly required.
+- Will the certificate be logged to a certificate transparency log or otherwise made publicly accessible? If so, embedding a permanent hardware identifier creates an irrevocable, publicly indexed disclosure and should be avoided unless explicitly required.
 
-    Will the certificate be presented to parties outside the issuing organization's administrative control? If so, consider whether those parties should have visibility into the device's hardware identity. 
+- Will the certificate be presented to parties outside the issuing organization's administrative control? If so, consider whether those parties should have visibility into the device's hardware identity. 
 
-    Does the deployment have requirements for device replacement or key rotation without service interruption? Binding the certificate's identity to a specific hardware module OID and serial number complicates these operational scenarios and may require reissuance policies that expose additional identifier churn in logs.
+- Does the deployment have requirements for device replacement or key rotation without service interruption? Binding the certificate's identity to a specific hardware module OID and serial number complicates these operational scenarios and may require reissuance policies that expose additional identifier churn in logs.
 
-    What is the attestation data handling policy of the ACME server operator? If this is not documented or auditable, device operators SHOULD treat the attestation exchange as a full disclosure of all attributes present in the attestation payload.
+- What is the attestation data handling policy of the ACME server operator? If this is not documented or auditable, device operators SHOULD treat the attestation exchange as a full disclosure of all attributes present in the attestation payload.
 
 # Security Considerations
 
