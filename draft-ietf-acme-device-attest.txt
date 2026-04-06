@@ -5,11 +5,11 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                          
 Intended status: Standards Track                              G. Mallaya
-Expires: 27 September 2026                                              
+Expires: 8 October 2026                                                 
                                                                S. Rajala
                                                                         
                                                               C. Bonnell
-                                                           26 March 2026
+                                                            6 April 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -37,7 +37,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 September 2026.
+   This Internet-Draft will expire on 8 October 2026.
 
 Copyright Notice
 
@@ -165,11 +165,10 @@ Table of Contents
    valid UTF-8 string, the value MUST match the permanent-identifier-
    value production rule as defined in this ABNF [RFC5234] syntax:
 
-   ``` assigner-value = ("0" / "1" / "2") 1_("." 1_DIGIT) device-
-   identifier-value = 1*(%x00-2E / %x30-FF)
+assigner-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
+device-identifier-value = 1*(%x00-2E / %x30-FF)
 
-   permanent-identifier-value = device-identifier-value ["/" assigner-
-   value] ```
+permanent-identifier-value = device-identifier-value ["/" assigner-value]
 
    A valid permanent-identifier-value value is a UTF-8 string that
    contains an identity consisting of one or more characters without any
@@ -179,11 +178,17 @@ Table of Contents
 
    Example identifier without an assigner:
 
-   { "type": "permanent-identifier", "value": "ABCDEF123456" }
+   {
+     "type": "permanent-identifier",
+     "value": "ABCDEF123456"
+   }
 
    Example identifier with an assigner:
 
-   { "type": "permanent-identifier", "value": "ABCDEF123456/1.2.3.4" }
+   {
+     "type": "permanent-identifier",
+     "value": "ABCDEF123456/1.2.3.4"
+   }
 
 3.2.  Representation in Certificate Signing Requests and X.509
       Certificates
@@ -246,10 +251,10 @@ Table of Contents
    being a valid UTF-8 string, the value MUST match the hardware-module-
    value production rule as defined in this ABNF [RFC5234] syntax:
 
-   ``` hw-type-value = ("0" / "1" / "2") 1_("." 1_DIGIT) hw-serial-num-
-   value = 1*(%x00-2E / %x30-FF)
+   hw-type-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
+   hw-serial-num-value = 1*(%x00-2E / %x30-FF)
 
-   hardware-module-value = hw-serial-num-value ["/" hw-type-value] ```
+   hardware-module-value = hw-serial-num-value ["/" hw-type-value]
 
    A valid hardware-module-value value is a UTF-8 string that contains a
    serial number consisting of one or more characters without any
@@ -260,12 +265,18 @@ Table of Contents
    Example identifier with the type of the hardware module represented
    using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":
 
-   { "type": "hardware-module", "value": "ABCD/1.2.3.4" }
+   {
+     "type": "hardware-module",
+     "value": "ABCD/1.2.3.4"
+   }
 
    Example identifier with no type specified and a serial number of
    "ABCD":
 
-   { "type": "hardware-module", "value": "ABCD" }
+   {
+     "type": "hardware-module",
+     "value": "ABCD"
+   }
 
 4.2.  Representation in Certificate Signing Requests and X.509
       Certificates
@@ -449,12 +460,14 @@ Table of Contents
 8.2.  ACME Validation Method
 
    The "ACME Validation Methods" registry is to be updated to include
-   the following entry:
+   the following entries:
 
       +==================+======================+======+===========+
       | Label            | Identifier Type      | ACME | Reference |
       +==================+======================+======+===========+
       | device-attest-01 | permanent-identifier | Y    | RFC XXXX  |
+      +------------------+----------------------+------+-----------+
+      | device-attest-01 | hardware-module      | Y    | RFC XXXX  |
       +------------------+----------------------+------+-----------+
 
                                  Table 2

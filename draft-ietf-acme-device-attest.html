@@ -1049,11 +1049,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">ACME DA</td>
-<td class="right">March 2026</td>
+<td class="right">April 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Weeks, et al.</td>
-<td class="center">Expires 27 September 2026</td>
+<td class="center">Expires 8 October 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1066,12 +1066,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-acme-device-attest-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-03-26" class="published">26 March 2026</time>
+<time datetime="2026-04-06" class="published">6 April 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-09-27">27 September 2026</time></dd>
+<dd class="expires"><time datetime="2026-10-08">8 October 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1114,7 +1114,7 @@ Automated Certificate Management Environment (ACME) protocol which allows valida
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 27 September 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 8 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1289,26 +1289,33 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-representation-in-order-res" class="section-name selfRef">Representation in Order resources</a>
         </h3>
 <p id="section-3.1-1">The identifier's <code>value</code> field contains a UTF-8 string representation of the identity of the device. In addition to the value being a valid UTF-8 string, the value <span class="bcp14">MUST</span> match the <code>permanent-identifier-value</code> production rule as defined in this ABNF <span>[<a href="#RFC5234" class="cite xref">RFC5234</a>]</span> syntax:<a href="#section-3.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.1-2">```
-assigner-value = ("0" / "1" / "2")  1<em>("." 1</em>DIGIT)
-device-identifier-value = 1*(%x00-2E / %x30-FF)<a href="#section-3.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.1-3">permanent-identifier-value = device-identifier-value ["/" assigner-value]
-```<a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.1-4">A valid <code>permanent-identifier-value</code> value is a UTF-8 string that contains an identity consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. Optionally, a forward-slash "/" character and "dotted-decimal" object identifier identifying the assigner may follow the identity.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
-<p id="section-3.1-5">Example identifier without an assigner:<a href="#section-3.1-5" class="pilcrow">¶</a></p>
-<p id="section-3.1-6"><code>
+<div class="alignLeft art-text artwork" id="section-3.1-2">
+<pre>
+assigner-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
+device-identifier-value = 1*(%x00-2E / %x30-FF)
+
+permanent-identifier-value = device-identifier-value ["/" assigner-value]
+</pre><a href="#section-3.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-3.1-3">A valid <code>permanent-identifier-value</code> value is a UTF-8 string that contains an identity consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. Optionally, a forward-slash "/" character and "dotted-decimal" object identifier identifying the assigner may follow the identity.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-4">Example identifier without an assigner:<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1-5">
+<pre>
 {
   "type": "permanent-identifier",
   "value": "ABCDEF123456"
 }
-</code><a href="#section-3.1-6" class="pilcrow">¶</a></p>
-<p id="section-3.1-7">Example identifier with an assigner:<a href="#section-3.1-7" class="pilcrow">¶</a></p>
-<p id="section-3.1-8"><code>
+</pre><a href="#section-3.1-5" class="pilcrow">¶</a>
+</div>
+<p id="section-3.1-6">Example identifier with an assigner:<a href="#section-3.1-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1-7">
+<pre>
 {
   "type": "permanent-identifier",
   "value": "ABCDEF123456/1.2.3.4"
 }
-</code><a href="#section-3.1-8" class="pilcrow">¶</a></p>
+</pre><a href="#section-3.1-7" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 <div id="representation-in-certificate-signing-requests-and-x509-certificates">
@@ -1337,26 +1344,33 @@ device-identifier-value = 1*(%x00-2E / %x30-FF)<a href="#section-3.1-2" class="p
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-representation-in-order-reso" class="section-name selfRef">Representation in Order resources</a>
         </h3>
 <p id="section-4.1-1">The identifier's <code>value</code> field contains a UTF-8 string representation of the identity of the hardware module. In addition to the value being a valid UTF-8 string, the value <span class="bcp14">MUST</span> match the <code>hardware-module-value</code> production rule as defined in this ABNF <span>[<a href="#RFC5234" class="cite xref">RFC5234</a>]</span> syntax:<a href="#section-4.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.1-2">```
-hw-type-value = ("0" / "1" / "2")  1<em>("." 1</em>DIGIT)
-hw-serial-num-value = 1*(%x00-2E / %x30-FF)<a href="#section-4.1-2" class="pilcrow">¶</a></p>
-<p id="section-4.1-3">hardware-module-value = hw-serial-num-value ["/" hw-type-value]
-```<a href="#section-4.1-3" class="pilcrow">¶</a></p>
-<p id="section-4.1-4">A valid <code>hardware-module-value</code> value is a UTF-8 string that contains a serial number consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. Optionally, a forward-slash "/" character and "dotted-decimal" object identifier identifying the hardware type may follow the serial number.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
-<p id="section-4.1-5">Example identifier with the type of the hardware module represented using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":<a href="#section-4.1-5" class="pilcrow">¶</a></p>
-<p id="section-4.1-6"><code>
+<div class="alignLeft art-text artwork" id="section-4.1-2">
+<pre>
+hw-type-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
+hw-serial-num-value = 1*(%x00-2E / %x30-FF)
+
+hardware-module-value = hw-serial-num-value ["/" hw-type-value]
+</pre><a href="#section-4.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-4.1-3">A valid <code>hardware-module-value</code> value is a UTF-8 string that contains a serial number consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. Optionally, a forward-slash "/" character and "dotted-decimal" object identifier identifying the hardware type may follow the serial number.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.1-4">Example identifier with the type of the hardware module represented using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":<a href="#section-4.1-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4.1-5">
+<pre>
 {
   "type": "hardware-module",
   "value": "ABCD/1.2.3.4"
 }
-</code><a href="#section-4.1-6" class="pilcrow">¶</a></p>
-<p id="section-4.1-7">Example identifier with no type specified and a serial number of "ABCD":<a href="#section-4.1-7" class="pilcrow">¶</a></p>
-<p id="section-4.1-8"><code>
+</pre><a href="#section-4.1-5" class="pilcrow">¶</a>
+</div>
+<p id="section-4.1-6">Example identifier with no type specified and a serial number of "ABCD":<a href="#section-4.1-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4.1-7">
+<pre>
 {
   "type": "hardware-module",
   "value": "ABCD"
 }
-</code><a href="#section-4.1-8" class="pilcrow">¶</a></p>
+</pre><a href="#section-4.1-7" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 <div id="representation-in-certificate-signing-requests-and-x509-certificates-1">
@@ -1531,7 +1545,7 @@ base64url alphabet, including padding characters ("="). See <span>[<a href="#I-D
         <h3 id="name-acme-validation-method">
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-acme-validation-method" class="section-name selfRef">ACME Validation Method</a>
         </h3>
-<p id="section-8.2-1">The "ACME Validation Methods" registry is to be updated to include the following entry:<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.2-1">The "ACME Validation Methods" registry is to be updated to include the following entries:<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <table class="center" id="table-2">
           <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
 <thead>
@@ -1546,6 +1560,12 @@ base64url alphabet, including padding characters ("="). See <span>[<a href="#I-D
             <tr>
               <td class="text-left" rowspan="1" colspan="1">device-attest-01</td>
               <td class="text-left" rowspan="1" colspan="1">permanent-identifier</td>
+              <td class="text-left" rowspan="1" colspan="1">Y</td>
+              <td class="text-left" rowspan="1" colspan="1">RFC XXXX</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">device-attest-01</td>
+              <td class="text-left" rowspan="1" colspan="1">hardware-module</td>
               <td class="text-left" rowspan="1" colspan="1">Y</td>
               <td class="text-left" rowspan="1" colspan="1">RFC XXXX</td>
             </tr>
