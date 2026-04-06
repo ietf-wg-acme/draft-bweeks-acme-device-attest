@@ -100,7 +100,7 @@ Efforts are underway within the Remote ATtestation ProcedureS (RATS) working gro
 
 # Permanent Identifier
 
-A new identifier type, `permanent-identifier` is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier MAY also be specified. The name of this identifier type was chosen to align with {{!RFC4043}}. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
+A new identifier type, "permanent-identifier" is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier MAY also be specified. The name of this identifier type was chosen to align with {{!RFC4043}}. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
 
 Although {{!RFC4043}} permits any valid UTF-8 string to be used as the identifier, this specification mandates that identifiers MUST NOT contain the forward-slash "/" (UTF-8: U+002F) character. This restriction is required to make the ABNF production rule for the `permanent-identifier-value` unambiguous.
 
@@ -147,7 +147,7 @@ To ensure that the identifier as presented in the Order resource and CSR match, 
 
 # Hardware Module
 
-A new identifier type, `hardware-module` is introduced to represent the identity of the secure crypto-processor that generated the certificate key. The identity is modeled after the HardwareModuleName form described in [RFC4108]. It consists of two components: an OBJECT IDENTIFIER to represent the type of hardware module, and a serial number that identifies the specific hardware module.
+A new identifier type, "hardware-module" is introduced to represent the identity of the secure crypto-processor that generated the certificate key. The identity is modeled after the HardwareModuleName form described in [RFC4108]. It consists of two components: an OBJECT IDENTIFIER to represent the type of hardware module, and a serial number that identifies the specific hardware module.
 
 Although [RFC4108] specifies that serial numbers can be represented as any sequence of bytes, this specification requires that serial numbers MUST be representable as valid UTF-8 strings consisting of at least one code point and MUST NOT contain a forward-slash "/" (UTF-8: U+002F) character. These restriction ensures that serial numbers can be included in `hardware-module` identifier string values and that the ABNF production rule for the value is unambiguous.
 
