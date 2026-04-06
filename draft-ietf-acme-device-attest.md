@@ -100,7 +100,7 @@ Efforts are underway within the Remote ATtestation ProcedureS (RATS) working gro
 
 # Permanent Identifier
 
-A new identifier type, "permanent-identifier" is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier MAY also be specified. The name of this identifier type was chosen to align with {{!RFC4043}}. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
+A new identifier type, `permanent-identifier` is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier MAY also be specified. The name of this identifier type was chosen to align with {{!RFC4043}}. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
 
 Although {{!RFC4043}} permits any valid UTF-8 string to be used as the identifier, this specification mandates that identifiers MUST NOT contain the forward-slash "/" (UTF-8: U+002F) character. This restriction is required to make the ABNF production rule for the `permanent-identifier-value` unambiguous.
 
@@ -121,7 +121,7 @@ Example identifier without an assigner:
 
 ~~~
 {
-  "type": "permanent-identifier",
+  "type": `permanent-identifier`,
   "value": "ABCDEF123456"
 }
 ~~~
@@ -130,7 +130,7 @@ Example identifier with an assigner:
 
 ~~~
 {
-  "type": "permanent-identifier",
+  "type": `permanent-identifier`,
   "value": "ABCDEF123456/1.2.3.4"
 }
 ~~~
@@ -147,7 +147,7 @@ To ensure that the identifier as presented in the Order resource and CSR match, 
 
 # Hardware Module
 
-A new identifier type, "hardware-module" is introduced to represent the identity of the secure crypto-processor that generated the certificate key. The identity is modeled after the HardwareModuleName form described in [RFC4108]. It consists of two components: an OBJECT IDENTIFIER to represent the type of hardware module, and a serial number that identifies the specific hardware module.
+A new identifier type, `hardware-module` is introduced to represent the identity of the secure crypto-processor that generated the certificate key. The identity is modeled after the HardwareModuleName form described in [RFC4108]. It consists of two components: an OBJECT IDENTIFIER to represent the type of hardware module, and a serial number that identifies the specific hardware module.
 
 Although [RFC4108] specifies that serial numbers can be represented as any sequence of bytes, this specification requires that serial numbers MUST be representable as valid UTF-8 strings consisting of at least one code point and MUST NOT contain a forward-slash "/" (UTF-8: U+002F) character. These restriction ensures that serial numbers can be included in `hardware-module` identifier string values and that the ABNF production rule for the value is unambiguous.
 
@@ -168,7 +168,7 @@ Example identifier with the type of the hardware module represented using the OB
 
 ~~~
 {
-  "type": "hardware-module",
+  "type": `hardware-module`,
   "value": "ABCD/1.2.3.4"
 }
 ~~~
@@ -177,7 +177,7 @@ Example identifier with no type specified and a serial number of "ABCD":
 
 ~~~
 {
-  "type": "hardware-module",
+  "type": `hardware-module`,
   "value": "ABCD"
 }
 ~~~
@@ -273,6 +273,72 @@ An enterprise CA likely only wants to receive requests from authorized devices. 
 present in "newAccount" requests.
 
 If an enterprise CA desires to limit the number of certificates that can be requested with a given account, including limiting an account to a single certificate. After the desired number of certificates have been issued to an account, the Server MAY revoke the account as described in Section 7.1.2 of {{RFC8555}}.
+
+# Privacy Considerations
+
+This section analyzes the privacy implications of the `permanent-identifier` and `hardware-module` identifier types introduced in this document. The guidance here is informed by the threat taxonomy defined in {{!RFC6973}} and is intended to help implementers make informed decisions about whether and when to include these identifiers in certificate requests and issued certificates.
+
+Both identifier types represent unchanging hardware-bound properties of a device. Unlike domain names or other identifiers whose lifetime is bounded by operational changes, these identifiers typically persist across the entire operational life of a device and cannot be rotated or revoked by the device owner. This permanence has material privacy consequences that implementers must weigh carefully.
+
+The privacy analysis below addresses the two phases in which these identifiers appear: the attestation exchange between the client and ACME server during challenge validation, and the optional embedding of identifiers in the issued certificate.
+
+## Identification and Correlation
+
+The `permanent-identifier` type encodes a manufacturer assigned device identity, typically a serial number. The `hardware-module` type encodes the identity of the secure cryptoprocessor that generated the certificate key. In both cases, the identifier is globally unique within its assigner scope and unchanging for the lifetime of the device or hardware module.
+
+From the perspective of {{!RFC6973}} Section 5.2.2, such identifiers enable direct identification of a device across protocol interactions, deployments, and time. Any entity that receives or observes these identifiers, including the ACME server, intermediary infrastructure, and any relying party that processes the issued certificate acquires an observable reference that can be used to track the device's certificate issuance history, renewal patterns, and operational context.
+
+When the same `permanent-identifier` or `hardware-module` value appears across multiple certificate requests (as it will in any recurring renewal workflow), it enables {{!RFC6973}} correlation: an observer with access to ACME server logs or certificate transparency logs can reconstruct the full lifecycle of a device's certificate activity. In enterprise environments where certificate issuance is logged centrally, this produces a persistent device audit trail regardless of whether the organization intends to maintain one.
+
+Implementers SHOULD assess whether the operational benefit of unchanging device identification outweighs this correlation exposure. In deployments where device anonymity or pseudonymity is a requirement, such as systems handling sensitive workloads on behalf of individuals, implementers SHOULD consider whether alternative validation mechanisms that do not bind the certificate to a permanent hardware identifier are more appropriate.
+
+## Fingerprinting via Attestation Payloads
+
+The `device-attest-01` challenge response carries a WebAuthn attestation object that may contain significantly more information than the identifier value alone. Depending on the attestation format, this payload may include device model, firmware version, bootloader state, hardware security level, and operating system version. Even when the resulting certificate is issued in a privacy-preserving form that omits the identifier from the subjectAltName extension (see Section 3.2 and Section 4.2), the attestation payload itself is transmitted to and evaluated by the ACME server during challenge validation.
+
+This constitutes a fingerprinting surface as defined in {{!RFC6973}} Section 3.2. The combination of a hardware serial number, hardware type OID, and firmware attestation attributes may uniquely identify not just the device model but the specific device unit, even in the absence of an explicit `permanent-identifier` value. Implementers operating ACME servers may consider applying data minimization principles to attestation payload handling by limiting only the attributes necessary to make the authorization decision should be evaluated, and the full attestation payload should not be retained beyond the duration of the challenge validation exchange unless there is a specific, documented operational requirement to do so.
+
+Implementers operating ACME clients SHOULD be aware that the attestation format selected may expose more device state than is necessary to satisfy the server's authorization policy. Where multiple attestation formats are available, clients SHOULD prefer formats that minimize the set of disclosed attributes.
+
+## Secondary Use of Attestation Data
+
+The ACME server receives attestation data in the context of authorizing a certificate issuance request. {{!RFC6973}} Section 5.2.3 identifies secondary use as the processing of data for purposes beyond the original collection context and as a distinct privacy threat.
+
+Attestation payloads received during challenge validation may contain information about device health, software configuration, and hardware capability that is operationally useful beyond certificate issuance. For example, for asset inventory, compliance monitoring, or security posture assessment. Implementers operating ACME servers must clearly define and document the purposes for which attestation data is processed and must not process attestation data for purposes materially different from authorization of the certificate request without explicit policy disclosure to the device owner or operator.
+
+Implementers integrating ACME device attestation into enterprise PKI platforms should publish a clear attestation data handling policy that specifies what attributes are evaluated, how long they are retained, and whether they are shared with other systems.
+
+## Privacy-Preserving Certificate Issuance
+
+This document provides an explicit mechanism to decouple attestation-based validation from identifier disclosure in the issued certificate. Clients MAY omit the `permanent-identifier` or `hardware-module` from the CSR, and ACME servers MAY issue certificates that do not contain these identifiers in the subjectAltName extension, even when those identifiers were used to authorize the request.
+
+Implementers should treat this privacy-preserving mode as the default posture unless there is a specific operational requirement for the identifier to appear in the certificate. The following considerations apply to this decision:
+
+    If the issued certificate will be presented to relying parties outside the issuing organization's trust boundary, embedding a `permanent-identifier` or `hardware-module` value in the certificate enables those relying parties to correlate certificate presentations with specific physical hardware. This may be acceptable in closed enterprise environments but is likely inappropriate in any context where the certificate is presented to external services, counter-parties, or public infrastructure.
+
+    If the certificate is used for mutual TLS in a workload identity context, embedding an unchanging hardware identifier couples the cryptographic identity of the workload to the physical device rather than to the logical identity of the workload. This can impede key rotation, device replacement, and workload migration, in addition to creating the correlation risks described above. In such cases, implementers should prefer logical workload identifiers (such as SPIFFE URIs) in the issued certificate and treat the hardware attestation as a bootstrap authorization mechanism only.
+
+    If the certificate is intended for use in certificate transparency logs, implementers MUST consider that embedding a `permanent-identifier` or `hardware-module` value will make that identifier permanently and publicly discoverable, indexed by issuance time, issuer, and subject. This constitutes an irreversible disclosure under {{!RFC6973}} Section 5.2.4 and should be avoided unless public discoverability of the device identifier is an explicit operational requirement.
+
+## Stored Data and Account Binding
+
+This document recommends the use of externalAccountBinding to pre-authenticate device requests to an enterprise ACME server. When an ACME account is persistently bound to a device identity, the server's account store contains a durable mapping between the cryptographic account credential and the physical device. Per {{!RFC6973}} Section 5.1.2, this stored association constitutes a target for compromise: an attacker who obtains the account store gains not only account credentials but a historical record of device-to-identity mappings across all certificate issuances.
+
+Implementers operating ACME servers should store account-to-device bindings using the minimum fidelity necessary for authorization decisions. Where the operational requirement is only to confirm that a given device is authorized to request certificates, it may be sufficient to store a hash or other one-way transformation of the device identifier rather than the identifier itself. Implementers should also define and enforce retention limits on historical account-to-certificate linkage records.
+
+## Implementer Decision Guidance
+
+Implementers considering whether to include `permanent-identifier` or `hardware-module` in CSRs and issued certificates SHOULD work through the following questions before enabling these identifiers: 
+
+    Is unchanging hardware identity in the certificate necessary for the relying party to make authorization decisions, or is it sufficient for the ACME server to have validated it at issuance time? If the latter, prefer privacy-preserving certificate mode.
+
+    Will the certificate be logged to a certificate transparency log or otherwise made publicly accessible? If so, embedding a permanent hardware identifier creates an irrevocable, publicly indexed disclosure and should be avoided unless explicitly required.
+
+    Will the certificate be presented to parties outside the issuing organization's administrative control? If so, consider whether those parties should have visibility into the device's hardware identity. 
+
+    Does the deployment have requirements for device replacement or key rotation without service interruption? Binding the certificate's identity to a specific hardware module OID and serial number complicates these operational scenarios and may require reissuance policies that expose additional identifier churn in logs.
+
+    What is the attestation data handling policy of the ACME server operator? If this is not documented or auditable, device operators SHOULD treat the attestation exchange as a full disclosure of all attributes present in the attestation payload.
 
 # Security Considerations
 
