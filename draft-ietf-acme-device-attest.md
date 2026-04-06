@@ -328,13 +328,13 @@ Implementers operating ACME servers should store account-to-device bindings usin
 
 ## Implementer Decision Guidance
 
-Implementers considering whether to include `permanent-identifier` or `hardware-module` in CSRs and issued certificates SHOULD work through the following questions before enabling these identifiers: 
+Implementers considering whether to include `permanent-identifier` or `hardware-module` in CSRs and issued certificates SHOULD work through the following questions before enabling these identifiers:
 
 - Is unchanging hardware identity in the certificate necessary for the relying party to make authorization decisions, or is it sufficient for the ACME server to have validated it at issuance time? If the latter, prefer privacy-preserving certificate mode.
 
 - Will the certificate be logged to a certificate transparency log or otherwise made publicly accessible? If so, embedding a permanent hardware identifier creates an irrevocable, publicly indexed disclosure and should be avoided unless explicitly required.
 
-- Will the certificate be presented to parties outside the issuing organization's administrative control? If so, consider whether those parties should have visibility into the device's hardware identity. 
+- Will the certificate be presented to parties outside the issuing organization's administrative control? If so, consider whether those parties should have visibility into the device's hardware identity.
 
 - Does the deployment have requirements for device replacement or key rotation without service interruption? Binding the certificate's identity to a specific hardware module OID and serial number complicates these operational scenarios and may require reissuance policies that expose additional identifier churn in logs.
 
