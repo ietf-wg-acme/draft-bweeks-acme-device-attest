@@ -5,11 +5,11 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                          
 Intended status: Standards Track                              G. Mallaya
-Expires: 8 October 2026                                                 
+Expires: 11 October 2026                                                
                                                                S. Rajala
                                                                         
                                                               C. Bonnell
-                                                            6 April 2026
+                                                            9 April 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -37,7 +37,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 October 2026.
+   This Internet-Draft will expire on 11 October 2026.
 
 Copyright Notice
 
@@ -468,11 +468,12 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    When the same permanent-identifier or hardware-module value appears
    across multiple certificate requests (as it will in any recurring
    renewal workflow), it enables [RFC6973] correlation: an observer with
-   access to ACME server logs or certificate transparency logs can
-   reconstruct the full lifecycle of a device's certificate activity.
-   In enterprise environments where certificate issuance is logged
-   centrally, this produces a persistent device audit trail regardless
-   of whether the organization intends to maintain one.
+   access to ACME server logs can reconstruct the full lifecycle of a
+   device's certificate activity.  Similarly, when such identifiers are
+   included in issued certificates, logging issued certificates in a
+   central location (in certificate transparency logs, etc.) produces a
+   persistent device audit trail regardless of whether the log operator
+   intends to maintain one.
 
    Implementers SHOULD assess whether the operational benefit of
    unchanging device identification outweighs this correlation exposure.
