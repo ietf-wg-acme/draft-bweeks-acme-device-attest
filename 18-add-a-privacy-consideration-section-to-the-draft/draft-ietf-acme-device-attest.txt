@@ -504,7 +504,7 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    operating ACME servers may consider applying data minimization
    principles to attestation payload handling by limiting only the
    attributes necessary to make the authorization decision should be
-   evaluated, and the full attestation payload should not be retained
+   evaluated, and the full attestation payload SHOULD NOT be retained
    beyond the duration of the challenge validation exchange unless there
    is a specific, documented operational requirement to do so.
 
