@@ -592,7 +592,7 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    account credentials but a historical record of device-to-identity
    mappings across all certificate issuances.
 
-   Implementers operating ACME servers should store account-to-device
+   Implementers operating ACME servers SHOULD store account-to-device
    bindings using the minimum fidelity necessary for authorization
    decisions.  Where the operational requirement is only to confirm that
    a given device is authorized to request certificates, it may be
