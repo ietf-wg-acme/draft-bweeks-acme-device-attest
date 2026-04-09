@@ -231,7 +231,8 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    certificates, Clients MAY omit this identifier in the certificate
    signing request (CSR).  Similarly, if the Server wishes to issue
    privacy-preserving certificates, it MAY reject CSRs containing a
-   PermanentIdentifier in the subjectAltName extension.
+   PermanentIdentifier in the subjectAltName extension.  See the privacy
+   considerations for more information.
 
 4.  Hardware Module
 
@@ -322,7 +323,8 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    certificates, Clients MAY omit this identifier in the certificate
    signing request (CSR).  Similarly, if the Server wishes to issue
    privacy-preserving certificates, it MAY reject CSRs containing a
-   HardwareModuleName in the subjectAltName extension.
+   HardwareModuleName in the subjectAltName extension.  See the privacy
+   considerations for more information.
 
 5.  Device Attestation Challenge
 
@@ -443,9 +445,9 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    privacy consequences that implementers must weigh carefully.
 
    The privacy analysis below addresses the two phases in which these
-   identifiers appear: the attestation exchange between the client and
-   ACME server during challenge validation, and the optional embedding
-   of identifiers in the issued certificate.
+   identifiers appear: the attestation exchange between the Client and
+   server during challenge validation, and the optional embedding of
+   identifiers in the issued certificate.
 
 7.1.  Identification and Correlation
 
@@ -459,7 +461,7 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    From the perspective of [RFC6973] Section 5.2.2, such identifiers
    enable direct identification of a device across protocol
    interactions, deployments, and time.  Any entity that receives or
-   observes these identifiers, including the ACME server, intermediary
+   observes these identifiers, including the server, intermediary
    infrastructure, and any relying party that processes the issued
    certificate acquires an observable reference that can be used to
    track the device's certificate issuance history, renewal patterns,
@@ -468,7 +470,7 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    When the same permanent-identifier or hardware-module value appears
    across multiple certificate requests (as it will in any recurring
    renewal workflow), it enables [RFC6973] correlation: an observer with
-   access to ACME server logs can reconstruct the full lifecycle of a
+   access to server logs can reconstruct the full lifecycle of a
    device's certificate activity.  Similarly, when such identifiers are
    included in issued certificates, logging issued certificates in a
    central location (in certificate transparency logs, etc.) produces a
@@ -493,40 +495,39 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    version.  Even when the resulting certificate is issued in a privacy-
    preserving form that omits the identifier from the subjectAltName
    extension (see Section 3.2 and Section 4.2), the attestation payload
-   itself is transmitted to and evaluated by the ACME server during
-   challenge validation.
+   itself is transmitted to and evaluated by the server during challenge
+   validation.
 
    This constitutes a fingerprinting surface as defined in [RFC6973]
    Section 3.2.  The combination of a hardware serial number, hardware
    type OID, and firmware attestation attributes may uniquely identify
    not just the device model but the specific device unit, even in the
    absence of an explicit permanent-identifier value.  Implementers
-   operating ACME servers may consider applying data minimization
-   principles to attestation payload handling by limiting only the
-   attributes necessary to make the authorization decision should be
-   evaluated, and the full attestation payload SHOULD NOT be retained
-   beyond the duration of the challenge validation exchange unless there
-   is a specific, documented operational requirement to do so.
+   operating servers may consider applying data minimization principles
+   to attestation payload handling by limiting only the attributes
+   necessary to make the authorization decision should be evaluated, and
+   the full attestation payload SHOULD NOT be retained beyond the
+   duration of the challenge validation exchange unless there is a
+   specific, documented operational requirement to do so.
 
-   Implementers operating ACME clients SHOULD be aware that the
+   Implementers operating ACME Clients SHOULD be aware that the
    attestation format selected may expose more device state than is
    necessary to satisfy the server's authorization policy.  Where
-   multiple attestation formats are available, clients SHOULD prefer
+   multiple attestation formats are available, Clients SHOULD prefer
    formats that minimize the set of disclosed attributes.
 
 7.3.  Secondary Use of Attestation Data
 
-   The ACME server receives attestation data in the context of
-   authorizing a certificate issuance request.  [RFC6973] Section 5.2.3
-   identifies secondary use as the processing of data for purposes
-   beyond the original collection context and as a distinct privacy
-   threat.
+   The server receives attestation data in the context of authorizing a
+   certificate issuance request.  [RFC6973] Section 5.2.3 identifies
+   secondary use as the processing of data for purposes beyond the
+   original collection context and as a distinct privacy threat.
 
    Attestation payloads received during challenge validation may contain
    information about device health, software configuration, and hardware
    capability that is operationally useful beyond certificate issuance.
    For example, for asset inventory, compliance monitoring, or security
-   posture assessment.  Implementers operating ACME servers must clearly
+   posture assessment.  Implementers operating servers must clearly
    define and document the purposes for which attestation data is
    processed and must not process attestation data for purposes
    materially different from authorization of the certificate request
@@ -542,9 +543,9 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    This document provides an explicit mechanism to decouple attestation-
    based validation from identifier disclosure in the issued
    certificate.  Clients MAY omit the permanent-identifier or hardware-
-   module from the CSR, and ACME servers MAY issue certificates that do
-   not contain these identifiers in the subjectAltName extension, even
-   when those identifiers were used to authorize the request.
+   module from the CSR, and servers MAY issue certificates that do not
+   contain these identifiers in the subjectAltName extension, even when
+   those identifiers were used to authorize the request.
 
    Implementers should treat this privacy-preserving mode as the default
    posture unless there is a specific operational requirement for the
@@ -583,8 +584,8 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
 7.5.  Stored Data and Account Binding
 
    This document recommends the use of externalAccountBinding to pre-
-   authenticate device requests to an enterprise ACME server.  When an
-   ACME account is persistently bound to a device identity, the server's
+   authenticate device requests to an enterprise server.  When an ACME
+   account is persistently bound to a device identity, the server's
    account store contains a durable mapping between the cryptographic
    account credential and the physical device.  Per [RFC6973]
    Section 5.1.2, this stored association constitutes a target for
@@ -592,7 +593,7 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    account credentials but a historical record of device-to-identity
    mappings across all certificate issuances.
 
-   Implementers operating ACME servers SHOULD store account-to-device
+   Implementers operating servers SHOULD store account-to-device
    bindings using the minimum fidelity necessary for authorization
    decisions.  Where the operational requirement is only to confirm that
    a given device is authorized to request certificates, it may be
@@ -609,8 +610,8 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
 
    *  Is unchanging hardware identity in the certificate necessary for
       the relying party to make authorization decisions, or is it
-      sufficient for the ACME server to have validated it at issuance
-      time?  If the latter, prefer privacy-preserving certificate mode.
+      sufficient for the server to have validated it at issuance time?
+      If the latter, prefer privacy-preserving certificate mode.
 
    *  Will the certificate be logged to a certificate transparency log
       or otherwise made publicly accessible?  If so, embedding a
@@ -630,7 +631,7 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
       require reissuance policies that expose additional identifier
       churn in logs.
 
-   *  What is the attestation data handling policy of the ACME server
+   *  What is the attestation data handling policy of the server
       operator?  If this is not documented or auditable, device
       operators SHOULD treat the attestation exchange as a full
       disclosure of all attributes present in the attestation payload.
