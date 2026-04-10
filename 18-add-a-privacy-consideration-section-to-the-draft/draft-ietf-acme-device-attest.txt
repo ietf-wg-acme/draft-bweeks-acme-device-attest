@@ -5,11 +5,11 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                          
 Intended status: Standards Track                              G. Mallaya
-Expires: 11 October 2026                                                
+Expires: 12 October 2026                                                
                                                                S. Rajala
                                                                         
                                                               C. Bonnell
-                                                            9 April 2026
+                                                           10 April 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -37,7 +37,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 October 2026.
+   This Internet-Draft will expire on 12 October 2026.
 
 Copyright Notice
 
@@ -231,8 +231,8 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    certificates, Clients MAY omit this identifier in the certificate
    signing request (CSR).  Similarly, if the Server wishes to issue
    privacy-preserving certificates, it MAY reject CSRs containing a
-   PermanentIdentifier in the subjectAltName extension.  See the privacy
-   considerations for more information.
+   PermanentIdentifier in the subjectAltName extension.  See the
+   Section 7 for more information.
 
 4.  Hardware Module
 
@@ -323,8 +323,8 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    certificates, Clients MAY omit this identifier in the certificate
    signing request (CSR).  Similarly, if the Server wishes to issue
    privacy-preserving certificates, it MAY reject CSRs containing a
-   HardwareModuleName in the subjectAltName extension.  See the privacy
-   considerations for more information.
+   HardwareModuleName in the subjectAltName extension.  See the
+   Section 7 for more information.
 
 5.  Device Attestation Challenge
 
