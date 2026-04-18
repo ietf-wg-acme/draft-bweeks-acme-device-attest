@@ -1,0 +1,352 @@
+---
+title: "Automated Certificate Management Environment (ACME) Device Attestation Extension"
+abbrev: "ACME DA"
+category: std
+submissiontype: IETF
+
+docname: draft-ietf-acme-device-attest-latest
+v: 3
+area: Security
+workgroup: ACME Working Group
+keyword: Internet-Draft
+
+author:
+ -
+    fullname: Brandon Weeks
+    email: me@brandonweeks.com
+ -
+    fullname: Ganesh Mallaya
+    company: AppViewX
+    email: ganesh.mallaya@appviewx.com
+ -
+    fullname: Sven Rajala
+    company: Keyfactor
+    email: sven.rajala@keyfactor.com
+
+ -
+    fullname: Corey Bonnell
+    company: DigiCert, Inc.
+    email: corey.bonnell@digicert.com
+
+ - 
+    fullname: Ryan Hurst
+    company: Peculiar Ventures
+    email: ryan.hurst+ietf@peculiarventures.com
+
+normative:
+RFC4043:
+RFC4108:
+RFC5234:
+RFC8555:
+RFC8809:
+I-D.ietf-tls-rfc8446bis:
+WebAuthn:
+target: https://www.w3.org/TR/webauthn-2/
+title: “Web Authentication: An API for accessing Public Key Credentials Level 2”
+date: 2021-04
+author:
+- ins: J. Hodges
+name: Jeff Hodges
+org: Google
+- ins: J.C. Jones
+name: J.C. Jones
+org: Mozilla
+- ins: M. Jones
+name: Michael B. Jones
+org: Microsoft
+- ins: A. Kumar
+name: Akshay Kumar
+org: Microsoft
+- ins: E. Lundberg
+name: Emil Lundberg
+org: Yubico
+
+informative:
+RFC6973:
+IANA-Webauthn:
+target: https://www.iana.org/assignments/webauthn/webauthn.xhtml
+title: IANA Registries for Web Authentication (WebAuthn)
+author:
+- org: IANA
+
+— abstract
+
+This document specifies new identifiers and a challenge for the Automated Certificate Management Environment (ACME) protocol which allows validating the identity of a device using attestation.
+
+— middle
+
+# Introduction
+
+The Automatic Certificate Management Environment (ACME) {{RFC8555}} standard specifies methods for validating control over identifiers, such as domain names. It is also useful to be able to validate properties of the device requesting the certificate, such as the identity of the device and whether the certificate key is protected by a secure cryptoprocessor.
+
+Many operating systems and device vendors offer functionality enabling a device to generate a cryptographic attestation of their identity, such as:
+
+- [Android Key Attestation](https://source.android.com/security/keystore/attestation)
+- [Chrome OS Verified Access](https://developers.google.com/chrome/verified-access/overview)
+- [Trusted Platform Module](https://trustedcomputinggroup.org/resource/trusted-platform-module-tpm-summary/)
+- [Managed Device Attestation for Apple Devices](https://support.apple.com/en-om/guide/deployment/dep28afbde6a/web)
+
+Using ACME and device attestation to issue client certificates for enterprise PKI is a common use case. The following variances to the ACME specification are described in this document:
+
+- Addition of `permanent-identifier` {{RFC4043}} and `hardware-module` {{RFC4108}} identifier types.
+- Addition of the `device-attest-01` challenge type to prove control of the `permanent-identifier` and `hardware-module` identifier types.
+- The challenge response payload contains a serialized WebAuthn attestation statement format instead of an empty JSON object (`{}`).
+- Accounts and external account binding being used as a mechanism to pre-authenticate requests to an enterprise CA.
+
+This document does not specify the attestation verification procedures. Section 13 of {{WebAuthn}} gives some guidance, however verification procedures are complex and may require changes to address future security issues.
+
+Efforts are underway within the Remote ATtestation ProcedureS (RATS) working group to define a set of standard formats and protocols for attestation. An explicit aim of this document is to support vendor specific formats and protocols that are widely deployed at publication time of this specification.
+
+# Conventions and Definitions
+
+{::boilerplate bcp14-tagged}
+
+# Permanent Identifier
+
+A new identifier type, “permanent-identifier” is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier MAY also be specified. The name of this identifier type was chosen to align with {{RFC4043}}. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
+
+Although {{RFC4043}} permits any valid UTF-8 string to be used as the identifier, this specification mandates that identifiers MUST NOT contain the forward-slash “/” (UTF-8: U+002F) character. This restriction is required to make the ABNF production rule for the `permanent-identifier-value` unambiguous.
+
+## Representation in Order resources
+
+The identifier’s `value` field contains a UTF-8 string representation of the identity of the device. In addition to the value being a valid UTF-8 string, the value MUST match the `permanent-identifier-value` production rule as defined in this ABNF {{RFC5234}} syntax:
+
+~~~
+assigner-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
+device-identifier-value = 1*(%x00-2E / %x30-FF)
+
+permanent-identifier-value = device-identifier-value ["/" assigner-value]
+~~~
+
+A valid `permanent-identifier-value` value is a UTF-8 string that contains an identity consisting of one or more characters without any forward-slash “/” (UTF-8: U+002F) characters. Optionally, a forward-slash “/” character and “dotted-decimal” object identifier identifying the assigner may follow the identity.
+
+The Server MUST verify that identifier values in newOrder requests conform to the `permanent-identifier-value` production rule and MUST reject requests containing non-conforming values with a “malformed” error.
+
+Example identifier without an assigner:
+
+~~~
+{
+  "type": "permanent-identifier",
+  "value": "ABCDEF123456"
+}
+~~~
+
+Example identifier with an assigner:
+
+~~~
+{
+  "type": "permanent-identifier",
+  "value": "ABCDEF123456/1.2.3.4"
+}
+~~~
+
+## Representation in Certificate Signing Requests and X.509 Certificates
+
+This section describes the X.509 representation of the `permanent-identifier`. Other credential types may use the same identifier values with representations appropriate to those credential types.
+
+The identity is included in the Subject Alternative Name Extension using the `identifierValue` field of the PermanentIdentifier form described in {{RFC4043}}. Although {{RFC4043}} permits the requester to include the `identifierValue` in a `serialNumber` subject attribute, this specification mandates that the `identifierValue` field of the PermanentIdentifier MUST be present and MUST contain the identifier.
+
+The value of the `identifierValue` field of the PermanentIdentifier MUST be an octet-for-octet match of the `device-identifier-value` value as encoded in the Order resource. If the `assigner-value` value is included in the identifier as encoded in the Order resource, then the `assigner` field of the PermanentIdentifier MUST be the encoding of the “dotted-decimal” object identifier encoded as the `assigner-value` value.
+
+To ensure that the identifier as presented in the Order resource and CSR match, the Server MUST perform the logical equivalent of extracting the `device-identifier-value` and `assigner-value` values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server MUST then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise. Servers that derive identifier values directly from verified attestation evidence and construct the certificate SAN from that evidence, provided the derived values are verified against the attested device identity in the attestation statement, satisfy the intent of this requirement.
+
+{{RFC8555}} section 7.4 mandates that “The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request”. However, there are some environments where the Server requires validation of the identifier but does not include the identifier in certificates due to privacy concerns. To support privacy-preserving certificates, Clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it MAY reject CSRs containing a PermanentIdentifier in the subjectAltName extension.
+
+# Hardware Module
+
+A new identifier type, “hardware-module” is introduced to represent the identity of the secure crypto-processor that generated the certificate key. The identity is modeled after the HardwareModuleName form described in {{RFC4108}}. It consists of two components: an OBJECT IDENTIFIER to represent the type of hardware module, and a serial number that identifies the specific hardware module.
+
+Although {{RFC4108}} specifies that serial numbers can be represented as any sequence of bytes, this specification requires that serial numbers MUST be representable as valid UTF-8 strings consisting of at least one code point and MUST NOT contain a forward-slash “/” (UTF-8: U+002F) character. This restriction ensures that serial numbers can be included in `hardware-module` identifier string values and that the ABNF production rule for the value is unambiguous.
+
+## Representation in Order resources
+
+The identifier’s `value` field contains a UTF-8 string representation of the identity of the hardware module. In addition to the value being a valid UTF-8 string, the value MUST match the `hardware-module-value` production rule as defined in this ABNF {{RFC5234}} syntax:
+
+~~~
+hw-type-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
+hw-serial-num-value = 1*(%x00-2E / %x30-FF)
+
+hardware-module-value = hw-serial-num-value ["/" hw-type-value]
+~~~
+
+A valid `hardware-module-value` value is a UTF-8 string that contains a serial number consisting of one or more characters without any forward-slash “/” (UTF-8: U+002F) characters. Optionally, a forward-slash “/” character and “dotted-decimal” object identifier identifying the hardware type may follow the serial number.
+
+The Server MUST verify that identifier values in newOrder requests conform to the `hardware-module-value` production rule and MUST reject requests containing non-conforming values with a “malformed” error.
+
+Example identifier with the type of the hardware module representedusing the OBJECT IDENTIFIER “1.2.3.4” and a serial number of “ABCD”:
+
+~~
+{
+  "type": "hardware-module",
+  "value": "ABCD/1.2.3.4"
+}
+~~~
+
+Example identifier with no type specified and a serial number of "ABCD":
+
+~~~
+{
+  "type": "hardware-module",
+  "value": "ABCD"
+}
+~~~
+ 
+## Representation in Certificate Signing Requests and X.509 Certificates
+
+This section describes the X.509 representation of the `hardware-module` identifier. Other credential types may use the same identifier values with representations appropriate to those credential types.
+
+The hardware module identity is included in the Subject Alternate Name Extension using the HardwareModuleName form described in {{RFC4108}}. The HardwareModuleName is encoded as an otherName with the OID id-on-hardwareModuleName (1.3.6.1.5.5.7.8.4) and consists of:
+
+- hwType: An OBJECT IDENTIFIER that identifies the type of hardware
+  module
+- hwSerialNum: An OCTET STRING containing the hardware module serial
+  number
+
+The value of the `hwSerialNum` field of the HardwareModuleName MUST be an octet-for-octet match of the `hw-serial-num-value` value as encoded in the Order resource. If the `hw-type-value` value is included in the identifier as encoded in the Order resource, then the `hwType` field of the HardwareModuleName MUST be the encoding of the “dotted-decimal” object identifier encoded as the `hw-type-value` value.
+
+To ensure that the identifier as presented in the Order resource and CSR match, the Server MUST perform the logical equivalent of extracting the `hw-serial-num-value` and `hw-type-value` values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server MUST then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise. Servers that derive identifier values directly from verified attestation evidence and construct the certificate SAN from that evidence, provided the derived values are verified against the attested device identity in the attestation statement, satisfy the intent of this requirement.
+
+{{RFC8555}} section 7.4 mandates that “The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request”. However, there are some environments where the Server requires validation of the identifier but does not include the identifier in certificates due to privacy concerns. To support privacy-preserving certificates, Clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it MAY reject CSRs containing a HardwareModuleName in the subjectAltName extension.
+
+# Device Attestation Challenge {#device-attestation-challenge}
+
+The Client can prove control over a permanent identifier of a device by providing an attestation statement containing the identifier of the device.
+
+The device-attest-01 ACME challenge object has the following format:
+
+type (required, string):
+: The string “device-attest-01”.
+
+token (required, string):
+: A random value that uniquely identifies the challenge.
+
+
+~~~~~~~~~~
+{
+  "type": "device-attest-01",
+  "url": "https://example.com/acme/chall/Rg5dV14Gh1Q",
+  "status": "pending",
+  "token": "evaGxfADs6pSRb2LAv9IZf17Dt3juxGJ-PCt92wr-oA"
+}
+~~~~~~~~~~
+
+A Client fulfills this challenge by constructing a key authorization ({{Section 8.1 of RFC8555}}) from the “token” value provided in the challenge and the Client’s account key. The Client then generates a WebAuthn attestation object using the key authorization as the challenge.
+
+This specification borrows the WebAuthn *attestation object* representation as described in Section 6.5.4 of {{WebAuthn}} for encapsulating attestation formats, but with these modifications:
+
+- The key authorization is used to form *attToBeSigned*. This replaces the concatenation of *authenticatorData* and *clientDataHash*. *attToBeSigned* is hashed using an algorithm specified by the attestation format.
+  
+  Some attestation formats use an external attestation authority that issues a certificate binding the challenge to the device before the Client’s account key is available. In these formats, *attToBeSigned* is formed from the token alone rather than the full key authorization, because the external authority signs at attestation time before the account key thumbprint can be incorporated. The token construction provides freshness. The key authorization construction additionally binds the attestation to a specific account key. The Server MUST consult format-specific documentation to determine which construction applies and MUST verify accordingly. Attestation formats whose signing procedure does not incorporate *attToBeSigned* cannot be used to satisfy this challenge type.
+- The *authData* field carries browser-context data (including the RP ID hash) that has no meaning in the ACME context and SHOULD be omitted.
+
+A Client responds with the response object containing the WebAuthn attestation object in the “attObj” field to acknowledge that the challenge can be validated by the Server. Clients MAY include additional fields beyond “attObj” in the response object. Servers MUST ignore unrecognized fields in the challenge response.
+
+On receiving a response, the Server constructs and stores the key authorization from the challenge’s “token” value and the current Client account key.
+
+To validate a device attestation challenge, the Server performs the
+following steps:
+
+1. Perform the verification procedures described in Section 6 of {{WebAuthn}}.
+2. Verify that *attToBeSigned* contains the key authorization or the token, according to the construction required by the attestation format, and that the value matches what the Server stored.
+3. Verify that the attestation statement contains a device identifier and that it matches the identifier in the Order. The means by which the identifier is encoded in the attestation statement are specific to the attestation format.
+
+~~~~~~~~~~
+POST /acme/chall/Rg5dV14Gh1Q
+Host: example.com
+Content-Type: application/jose+json
+
+{
+  "protected": base64url({
+    "alg": "ES256",
+    "kid": "https://example.com/acme/acct/evOfKhNU60wg",
+    "nonce": "SS2sSl1PtspvFZ08kNtzKd",
+    "url": "https://example.com/acme/chall/Rg5dV14Gh1Q"
+  }),
+  "payload": base64url({
+    "attObj": base64url(/* WebAuthn attestation object */),
+  }),
+  "signature": "Q1bURgJoEslbD1c5...3pYdSMLio57mQNN4"
+}
+~~~~~~~~~~
+
+The webauthn payload MAY contain any identifiers registered in “WebAuthn Attestation Statement Format Identifiers” and any extensions registered in “WebAuthn Extension Identifiers” {{IANA-Webauthn}}, {{RFC8809}}.
+
+# Operational Considerations
+
+Although this document focuses guidance on implementing new identifier
+types and a challenge for certificate issuance using ACME, it does not
+define a new protocol, a protocol extension, or an architecture.
+
+## Enterprise PKI
+
+ACME was originally envisioned for issuing certificates in the Web PKI, however this extension will primarily be useful in enterprise PKI.
+
+### External Account Binding
+
+An enterprise CA likely only wants to receive requests from authorized devices. It is RECOMMENDED that the Server require a value for the “externalAccountBinding” field to be present in “newAccount” requests.
+
+If an enterprise CA desires to limit the number of certificates that can be requested with a given account, including limiting an account to a single certificate, after the desired number of certificates have been issued to an account the Server MAY revoke the account as described in Section 7.1.2 of {{RFC8555}}.
+
+### Attestation Posture
+
+Enterprise deployments often consist of heterogeneous device fleets where not all devices are capable of hardware attestation. A Server MAY offer device-attest-01 alongside other challenge types within a single authorization, allowing capable devices to complete device-attest-01 while other devices complete an alternative challenge. This posture allows operators to observe fleet attestation coverage before enforcing policy and is compatible with phased deployments.
+
+Servers that issue certificates without requiring a completed device-attest-01 challenge rely on other authorization mechanisms, such as external account binding or pre-authorized accounts, to establish device identity.
+
+### Multiple Challenge Types
+
+{{RFC8555}} permits a Server to offer multiple challenge types within a single authorization, with any one being sufficient to complete it. Servers MAY offer device-attest-01 alongside other challenge types for the same authorization, allowing capable devices to attest while other devices use an alternative challenge type.
+
+## Attestation Trust
+
+Attestation formats differ in the authority that enforces the boundary around the attested key and in the claims that authority can make. At one end, dedicated security hardware (such as a TPM or HSM) provides manufacturer-backed guarantees that the key is generated and stored within the hardware and cannot be exported. At the other end, OS-enforced isolation boundaries (such as platform keystores protected by the operating system kernel) provide meaningful key protection guarantees without discrete security hardware. Intermediate cases include TEE-based attestation where a hypervisor or trusted execution environment acts as the authority.
+
+Servers SHOULD consider the trust properties of each attestation format when establishing issuance policy, including the nature of the authority making the attestation and the key protection guarantees it can assert. The key authorization construction described in {{device-attestation-challenge}} also contributes to this trust model: formats that use the full key authorization as *attToBeSigned* bind the attestation to a specific account key, while formats that use the token alone provide freshness without account key binding.
+
+# Security Considerations
+
+Please reference {{RFC8555}} for other security considerations.
+
+See Section 13 of {{WebAuthn}} for additional security considerations related to attestation statement formats, including certificate revocation.
+
+Key attestation statements may include a variety of information in addition to the public key being attested. While not described in this document, the Server MAY use any policy when evaluating this information. This evaluation can result in rejection of a certificate request that features a verifiable key attestation for the public key contained in the request. For example, an attestation statement may indicate use of an unacceptable firmware version.
+
+The “token” value MUST have at least 128 bits of entropy. It MUST NOT contain any characters outside the base64url alphabet, including padding characters (”=”). See {{I-D.ietf-tls-rfc8446bis}}, Appendix C.1 for additional information on randomness requirements.
+
+The binding between the certified public key and the device identifier is established through the attestation statement rather than through the CSR alone. The attestation authority cryptographically binds the public key to the device identity, either by signing the attestation statement directly, by issuing an attestation certificate, or by other cryptographic means specific to the attestation format. The Server verifies this chain: the attestation is produced by a trusted attestation authority, the public key in the attestation matches the public key in the CSR, and the device identifier in the attestation matches the identifier in the Order. This three-way binding is the basis on which the Server can associate a certified public key with a particular device.
+
+# IANA Considerations
+
+## ACME Identifier Types
+
+The “ACME Identifier Types” registry is to be updated to include the following entries:
+
+|Label               |Reference|
+|:-------------------|:--------|
+|permanent-identifier|RFC XXXX |
+|hardware-module     |RFC XXXX |
+
+## ACME Validation Method
+
+The “ACME Validation Methods” registry is to be updated to include the following entries:
+
+|Label           |Identifier Type     |ACME|Reference|
+|:---------------|:-------------------|:---|:--------|
+|device-attest-01|permanent-identifier|Y   |RFC XXXX |
+|device-attest-01|hardware-module     |Y   |RFC XXXX |
+
+## New Error Types
+
+This document adds the following entries to the ACME Error Type registry:
+
+|Type                   |Description                                                                                              |Reference|
+|:----------------------|:--------------------------------------------------------------------------------------------------------|:--------|
+|badAttestationStatement|The attestation statement is unacceptable (e.g. not signed by an attestation authority trusted by the CA)|RFC XXXX |
+
+— back
+
+# Acknowledgments
+
+{:numbered=“false”}
+
+We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Mike Ounsworth, Deb Cooley, Aaron Gable, Richard Barnes, and Herman Slatman for their reviews and suggestions, which greatly improved the quality of this document.
