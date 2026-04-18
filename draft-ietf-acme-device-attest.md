@@ -344,7 +344,9 @@ This document adds the following entries to the ACME Error Type registry:
 |:----------------------|:--------------------------------------------------------------------------------------------------------|:--------|
 |badAttestationStatement|The attestation statement is unacceptable (e.g. not signed by an attestation authority trusted by the CA)|RFC XXXX |
 
-— back
+<!-- End WebAuthn registry text -->
+
+—-- back
 
 # Acknowledgments
 
