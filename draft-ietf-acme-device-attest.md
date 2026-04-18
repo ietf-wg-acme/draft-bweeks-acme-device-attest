@@ -71,11 +71,11 @@ informative:
     title: "IANA Registries for Web Authentication (WebAuthn)"
     target: https://www.iana.org/assignments/webauthn/webauthn.xhtml
 
-— abstract
+--- abstract
 
 This document specifies new identifiers and a challenge for the Automated Certificate Management Environment (ACME) protocol which allows validating the identity of a device using attestation.
 
-— middle
+—-- middle
 
 # Introduction
 
