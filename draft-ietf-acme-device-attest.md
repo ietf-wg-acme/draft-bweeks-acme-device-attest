@@ -34,40 +34,42 @@ author:
     email: ryan.hurst+ietf@peculiarventures.com
 
 normative:
-RFC4043:
-RFC4108:
-RFC5234:
-RFC8555:
-RFC8809:
-I-D.ietf-tls-rfc8446bis:
-WebAuthn:
-target: https://www.w3.org/TR/webauthn-2/
-title: “Web Authentication: An API for accessing Public Key Credentials Level 2”
-date: 2021-04
-author:
-- ins: J. Hodges
-name: Jeff Hodges
-org: Google
-- ins: J.C. Jones
-name: J.C. Jones
-org: Mozilla
-- ins: M. Jones
-name: Michael B. Jones
-org: Microsoft
-- ins: A. Kumar
-name: Akshay Kumar
-org: Microsoft
-- ins: E. Lundberg
-name: Emil Lundberg
-org: Yubico
+  RFC4043:
+  RFC4108:
+  RFC5234:
+  RFC8555:
+  RFC8809:
+  I-D.ietf-tls-rfc8446bis:
+  WebAuthn:
+    title: "Web Authentication: An API for accessing Public Key Credentials Level 2"
+    author:
+      -
+        fullname: Jeff Hodges
+        organization: Google
+        email: jdhodges@google.com
+      -
+        fullname: J.C. Jones
+        organization: Mozilla
+        email: jc@mozilla.com
+      -
+        fullname: Michael B. Jones
+        organization: Microsoft
+        email: mbj@microsoft.com
+      -
+        fullname: Akshay Kumar
+        organization: Microsoft
+        email: akshayku@microsoft.com
+      -
+        fullname: Emil Lundberg
+        organization: Yubico
+        email: emil@yubico.com
+    date: 2021-04
+    target: https://www.w3.org/TR/webauthn-2/
 
 informative:
-RFC6973:
-IANA-Webauthn:
-target: https://www.iana.org/assignments/webauthn/webauthn.xhtml
-title: IANA Registries for Web Authentication (WebAuthn)
-author:
-- org: IANA
+  IANA-Webauthn:
+    title: "IANA Registries for Web Authentication (WebAuthn)"
+    target: https://www.iana.org/assignments/webauthn/webauthn.xhtml
 
 — abstract
 
