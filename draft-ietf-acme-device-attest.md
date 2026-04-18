@@ -28,7 +28,7 @@ author:
     company: DigiCert, Inc.
     email: corey.bonnell@digicert.com
 
- - 
+ -
     fullname: Ryan Hurst
     company: Peculiar Ventures
     email: ryan.hurst+ietf@peculiarventures.com
