@@ -234,7 +234,7 @@ A Client fulfills this challenge by constructing a key authorization ({{Section 
 
 This specification borrows the WebAuthn *attestation object* representation as described in Section 6.5.4 of {{WebAuthn}} for encapsulating attestation formats, but with these modifications:
 
-- The key authorization is used to form *attToBeSigned*. This replaces the concatenation of *authenticatorData* and *clientDataHash*. *attToBeSigned* is hashed using an algorithm specified by the attestation format. 
+- The key authorization is used to form *attToBeSigned*. This replaces the concatenation of *authenticatorData* and *clientDataHash*. *attToBeSigned* is hashed using an algorithm specified by the attestation format.
 -  Some attestation formats use an external attestation authority that issues a certificate binding the challenge to the device before the Client’s account key is available. In these formats, *attToBeSigned* is formed from the token alone rather than the full key authorization, because the external authority signs at attestation time before the account key thumbprint can be incorporated. The token construction provides freshness. The key authorization construction additionally binds the attestation to a specific account key. The Server MUST consult format-specific documentation to determine which construction applies and MUST verify accordingly. Attestation formats whose signing procedure does not incorporate *attToBeSigned* cannot be used to satisfy this challenge type.
 - The *authData* field carries browser-context data (including the RP ID hash) that has no meaning in the ACME context and SHOULD be omitted.
 
