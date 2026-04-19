@@ -136,7 +136,7 @@ Example identifier with an assigner:
 
 ~~~
 {
-  "type": `permanent-identifier`,
+  "type": "permanent-identifier",
   "value": "ABCDEF123456/1.2.3.4"
 }
 ~~~
