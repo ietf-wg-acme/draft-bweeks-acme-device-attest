@@ -104,7 +104,7 @@ Efforts are underway within the Remote ATtestation ProcedureS (RATS) working gro
 
 # Permanent Identifier
 
-A new identifier type, "permanent-identifier" is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier MAY also be specified. The name of this identifier type was chosen to align with {{!RFC4043}}. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
+A new identifier type, `permanent-identifier` is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier MAY also be specified. The name of this identifier type was chosen to align with {{!RFC4043}}. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
 
 Although {{!RFC4043}} permits any valid UTF-8 string to be used as the identifier, this specification mandates that identifiers MUST NOT contain the forward-slash "/" (UTF-8: U+002F) character. This restriction is required to make the ABNF production rule for the `permanent-identifier-value` unambiguous.
 
@@ -127,7 +127,7 @@ Example identifier without an assigner:
 
 ~~~
 {
-  "type": "permanent-identifier",
+  "type": `permanent-identifier`,
   "value": "ABCDEF123456"
 }
 ~~~
@@ -136,7 +136,7 @@ Example identifier with an assigner:
 
 ~~~
 {
-  "type": "permanent-identifier",
+  "type": `permanent-identifier`,
   "value": "ABCDEF123456/1.2.3.4"
 }
 ~~~
@@ -155,7 +155,7 @@ To ensure that the identifier as presented in the Order resource and CSR match, 
 
 # Hardware Module
 
-A new identifier type, "hardware-module" is introduced to represent the identity of the secure crypto-processor that generated the certificate key. The identity is modeled after the HardwareModuleName form described in [RFC4108]. It consists of two components: an OBJECT IDENTIFIER to represent the type of hardware module, and a serial number that identifies the specific hardware module.
+A new identifier type, `hardware-module` is introduced to represent the identity of the secure crypto-processor that generated the certificate key. The identity is modeled after the HardwareModuleName form described in [RFC4108]. It consists of two components: an OBJECT IDENTIFIER to represent the type of hardware module, and a serial number that identifies the specific hardware module.
 
 Although [RFC4108] specifies that serial numbers can be represented as any sequence of bytes, this specification requires that serial numbers MUST be representable as valid UTF-8 strings consisting of at least one code point and MUST NOT contain a forward-slash "/" (UTF-8: U+002F) character. This restriction ensures that serial numbers can be included in `hardware-module` identifier string values and that the ABNF production rule for the value is unambiguous.
 
@@ -174,11 +174,11 @@ A valid `hardware-module-value` value is a UTF-8 string that contains a serial n
 
 The Server MUST verify that identifier values in newOrder requests conform to the `hardware-module-value` production rule and MUST reject requests containing non-conforming values with a "malformed" error.
 
-Example identifier with the type of the hardware module representedusing the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":
+Example identifier with the type of the hardware module represented using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":
 
-~~
+~~~
 {
-  "type": "hardware-module",
+  "type": `hardware-module`,
   "value": "ABCD/1.2.3.4"
 }
 ~~~
@@ -187,7 +187,7 @@ Example identifier with no type specified and a serial number of "ABCD":
 
 ~~~
 {
-  "type": "hardware-module",
+  "type": `hardware-module`,
   "value": "ABCD"
 }
 ~~~
@@ -218,7 +218,6 @@ type (required, string):
 
 token (required, string):
 : A random value that uniquely identifies the challenge.
-
 
 ~~~~~~~~~~
 {
@@ -338,16 +337,19 @@ The "ACME Validation Methods" registry is to be updated to include the following
 
 This document adds the following entries to the ACME Error Type registry:
 
+
 | Type       |Description   |Reference |
 |-----------------------|-------------|-----------|
 | badAttestationStatement | The attestation statement is unacceptable (e.g. not signed by an attestation authority trusted by the CA) | RFC XXXX  |
+
 
 <!-- End WebAuthn registry text -->
 
 --- back
 
-# Acknowledgments
 
+
+# Acknowledgments
 {:numbered="false"}
 
 We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Mike Ounsworth, Deb Cooley, Aaron Gable, Richard Barnes, and  Herman Slatman for their reviews and suggestions, which greatly improved the quality of this document.
