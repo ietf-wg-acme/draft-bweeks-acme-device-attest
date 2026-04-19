@@ -127,7 +127,7 @@ Example identifier without an assigner:
 
 ~~~
 {
-  "type": `permanent-identifier`,
+  "type": "permanent-identifier",
   "value": "ABCDEF123456"
 }
 ~~~
