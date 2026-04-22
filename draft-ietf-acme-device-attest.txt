@@ -9,6 +9,8 @@ Expires: 24 October 2026
                                                                S. Rajala
                                                                         
                                                               C. Bonnell
+                                                                        
+                                                                R. Hurst
                                                            22 April 2026
 
 
@@ -68,7 +70,9 @@ Table of Contents
    5.  Device Attestation Challenge
    6.  Operational Considerations
      6.1.  Enterprise PKI
-       6.1.1.  External Account Binding
+       6.1.1.  Attestation Posture
+       6.1.2.  Multiple Challenge Types
+     6.2.  Attestation Trust
    7.  Privacy Considerations
      7.1.  Identification and Correlation
      7.2.  Fingerprinting via Attestation Payloads
@@ -151,7 +155,7 @@ Table of Contents
 
 3.  Permanent Identifier
 
-   A new identifier type, "permanent-identifier" is introduced to
+   A new identifier type, permanent-identifier is introduced to
    represent the identity of a device assigned by the manufacturer,
    typically a serial number.  Additionally, the assigner of the
    identifier MAY also be specified.  The name of this identifier type
@@ -183,6 +187,11 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    slash "/" character and "dotted-decimal" object identifier
    identifying the assigner may follow the identity.
 
+   The Server MUST verify that identifier values in newOrder requests
+   conform to the permanent-identifier-value production rule and MUST
+   reject requests containing non-conforming values with a "malformed"
+   error.
+
    Example identifier without an assigner:
 
    {
@@ -199,6 +208,10 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
 
 3.2.  Representation in Certificate Signing Requests and X.509
       Certificates
+
+   This section describes the X.509 representation of the permanent-
+   identifier.  Other credential types may use the same identifier
+   values with representations appropriate to those credential types.
 
    The identity is included in the Subject Alternative Name Extension
    using the identifierValue field of the PermanentIdentifier form
@@ -221,7 +234,12 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    the CSR and reconstructing the UTF-8 representation of the
    identifier.  The Server MUST then ensure that the UTF-8
    representation and the identifier presented in the Order resource are
-   an octet-for-octet match and reject the Order otherwise.
+   an octet-for-octet match and reject the Order otherwise.  Servers
+   that derive identifier values directly from verified attestation
+   evidence and construct the certificate SAN from that evidence,
+   provided the derived values are verified against the attested device
+   identity in the attestation statement, satisfy the intent of this
+   requirement.
 
    [RFC8555] section 7.4 mandates that "The CSR MUST indicate the exact
    same set of requested identifiers as the initial newOrder request".
@@ -236,8 +254,8 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
 
 4.  Hardware Module
 
-   A new identifier type, "hardware-module" is introduced to represent
-   the identity of the secure crypto-processor that generated the
+   A new identifier type, hardware-module is introduced to represent the
+   identity of the secure crypto-processor that generated the
    certificate key.  The identity is modeled after the
    HardwareModuleName form described in [RFC4108].  It consists of two
    components: an OBJECT IDENTIFIER to represent the type of hardware
@@ -248,7 +266,7 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    as any sequence of bytes, this specification requires that serial
    numbers MUST be representable as valid UTF-8 strings consisting of at
    least one code point and MUST NOT contain a forward-slash "/" (UTF-8:
-   U+002F) character.  These restriction ensures that serial numbers can
+   U+002F) character.  This restriction ensures that serial numbers can
    be included in hardware-module identifier string values and that the
    ABNF production rule for the value is unambiguous.
 
@@ -270,11 +288,15 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    slash "/" character and "dotted-decimal" object identifier
    identifying the hardware type may follow the serial number.
 
+   The Server MUST verify that identifier values in newOrder requests
+   conform to the hardware-module-value production rule and MUST reject
+   requests containing non-conforming values with a "malformed" error.
+
    Example identifier with the type of the hardware module represented
    using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":
 
    {
-     "type": "hardware-module",
+     "type": `hardware-module`,
      "value": "ABCD/1.2.3.4"
    }
 
@@ -282,12 +304,17 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    "ABCD":
 
    {
-     "type": "hardware-module",
+     "type": `hardware-module`,
      "value": "ABCD"
    }
 
 4.2.  Representation in Certificate Signing Requests and X.509
       Certificates
+
+   This section describes the X.509 representation of the hardware-
+   module identifier.  Other credential types may use the same
+   identifier values with representations appropriate to those
+   credential types.
 
    The hardware module identity is included in the Subject Alternate
    Name Extension using the HardwareModuleName form described in
@@ -313,7 +340,11 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    CSR and reconstructing the UTF-8 representation of the identifier.
    The Server MUST then ensure that the UTF-8 representation and the
    identifier presented in the Order resource are an octet-for-octet
-   match and reject the Order otherwise.
+   match and reject the Order otherwise.  Servers that derive identifier
+   values directly from verified attestation evidence and construct the
+   certificate SAN from that evidence, provided the derived values are
+   verified against the attested device identity in the attestation
+   statement, satisfy the intent of this requirement.
 
    [RFC8555] section 7.4 mandates that "The CSR MUST indicate the exact
    same set of requested identifiers as the initial newOrder request".
@@ -361,11 +392,29 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
       _clientDataHash_. _attToBeSigned_ is hashed using an algorithm
       specified by the attestation format.
 
-   *  The _authData_ field is unused and SHOULD be omitted.
+   *  Some attestation formats use an external attestation authority
+      that issues a certificate binding the challenge to the device
+      before the Client's account key is available.  In these formats,
+      _attToBeSigned_ is formed from the token alone rather than the
+      full key authorization, because the external authority signs at
+      attestation time before the account key thumbprint can be
+      incorporated.  The token construction provides freshness.  The key
+      authorization construction additionally binds the attestation to a
+      specific account key.  The Server MUST consult format-specific
+      documentation to determine which construction applies and MUST
+      verify accordingly.  Attestation formats whose signing procedure
+      does not incorporate _attToBeSigned_ cannot be used to satisfy
+      this challenge type.
+
+   *  The _authData_ field carries browser-context data (including the
+      RP ID hash) that has no meaning in the ACME context and SHOULD be
+      omitted.
 
    A Client responds with the response object containing the WebAuthn
    attestation object in the "attObj" field to acknowledge that the
-   challenge can be validated by the Server.
+   challenge can be validated by the Server.  Clients MAY include
+   additional fields beyond "attObj" in the response object.  Servers
+   MUST ignore unrecognized fields in the challenge response.
 
    On receiving a response, the Server constructs and stores the key
    authorization from the challenge's "token" value and the current
@@ -377,8 +426,14 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    1.  Perform the verification procedures described in Section 6 of
        [WebAuthn].
 
-   2.  Verify that key authorization conveyed by _attToBeSigned_ matches
-       the key authorization stored by the Server.
+   2.  Verify that _attToBeSigned_ contains the key authorization or the
+       token, according to the construction required by the attestation
+       format, and that the value matches what the Server stored.
+
+   3.  Verify that the attestation statement contains a device
+       identifier and that it matches the identifier in the Order.  The
+       means by which the identifier is encoded in the attestation
+       statement are specific to the attestation format.
 
    POST /acme/chall/Rg5dV14Gh1Q
    Host: example.com
@@ -404,18 +459,16 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
 
 6.  Operational Considerations
 
-   Although this document focuses guidance on implementing new type and
-   challenge for certificate issuance using ACME, it does not define a
-   New Protocol, a Protocol Extension, or an architecture.
+   Although this document focuses guidance on implementing new
+   identifier types and a challenge for certificate issuance using ACME,
+   it does not define a new protocol, a protocol extension, or an
+   architecture.
 
 6.1.  Enterprise PKI
 
    ACME was originally envisioned for issuing certificates in the Web
    PKI, however this extension will primarily be useful in enterprise
-   PKI.  The subsection below covers some operational considerations for
-   an ACME-based enterprise CA.
-
-6.1.1.  External Account Binding
+   PKI. ### External Account Binding
 
    An enterprise CA likely only wants to receive requests from
    authorized devices.  It is RECOMMENDED that the Server require a
@@ -424,9 +477,54 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
 
    If an enterprise CA desires to limit the number of certificates that
    can be requested with a given account, including limiting an account
-   to a single certificate.  After the desired number of certificates
-   have been issued to an account, the Server MAY revoke the account as
+   to a single certificate, after the desired number of certificates
+   have been issued to an account the Server MAY revoke the account as
    described in Section 7.1.2 of [RFC8555].
+
+6.1.1.  Attestation Posture
+
+   Enterprise deployments often consist of heterogeneous device fleets
+   where not all devices are capable of hardware attestation.  A Server
+   MAY offer device-attest-01 alongside other challenge types within a
+   single authorization, allowing capable devices to complete device-
+   attest-01 while other devices complete an alternative challenge.
+   This posture allows operators to observe fleet attestation coverage
+   before enforcing policy and is compatible with phased deployments.
+
+   Servers that issue certificates without requiring a completed device-
+   attest-01 challenge rely on other authorization mechanisms, such as
+   external account binding or pre-authorized accounts, to establish
+   device identity.
+
+6.1.2.  Multiple Challenge Types
+
+   [RFC8555] permits a Server to offer multiple challenge types within a
+   single authorization, with any one being sufficient to complete it.
+   Servers MAY offer device-attest-01 alongside other challenge types
+   for the same authorization, allowing capable devices to attest while
+   other devices use an alternative challenge type.
+
+6.2.  Attestation Trust
+
+   Attestation formats differ in the authority that enforces the
+   boundary around the attested key and in the claims that authority can
+   make.  At one end, dedicated security hardware (such as a TPM or HSM)
+   provides manufacturer-backed guarantees that the key is generated and
+   stored within the hardware and cannot be exported.  At the other end,
+   OS-enforced isolation boundaries (such as platform keystores
+   protected by the operating system kernel) provide meaningful key
+   protection guarantees without discrete security hardware.
+   Intermediate cases include TEE-based attestation where a hypervisor
+   or trusted execution environment acts as the authority.
+
+   Servers SHOULD consider the trust properties of each attestation
+   format when establishing issuance policy, including the nature of the
+   authority making the attestation and the key protection guarantees it
+   can assert.  The key authorization construction described in
+   Section 5 also contributes to this trust model: formats that use the
+   full key authorization as _attToBeSigned_ bind the attestation to a
+   specific account key, while formats that use the token alone provide
+   freshness without account key binding.
 
 7.  Privacy Considerations
 
@@ -657,6 +755,19 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    padding characters ("=").  See [I-D.ietf-tls-rfc8446bis],
    Appendix C.1 for additional information on randomness requirements.
 
+   The binding between the certified public key and the device
+   identifier is established through the attestation statement rather
+   than through the CSR alone.  The attestation authority
+   cryptographically binds the public key to the device identity, either
+   by signing the attestation statement directly, by issuing an
+   attestation certificate, or by other cryptographic means specific to
+   the attestation format.  The Server verifies this chain: the
+   attestation is produced by a trusted attestation authority, the
+   public key in the attestation matches the public key in the CSR, and
+   the device identifier in the attestation matches the identifier in
+   the Order.  This three-way binding is the basis on which the Server
+   can associate a certified public key with a particular device.
+
 9.  IANA Considerations
 
 9.1.  ACME Identifier Types
@@ -793,3 +904,7 @@ Authors' Addresses
 
    Corey Bonnell
    Email: corey.bonnell@digicert.com
+
+
+   Ryan Hurst
+   Email: ryan.hurst+ietf@peculiarventures.com

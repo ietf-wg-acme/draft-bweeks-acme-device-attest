@@ -9,9 +9,9 @@
 <meta content="Ganesh Mallaya" name="author">
 <meta content="Sven Rajala" name="author">
 <meta content="Corey Bonnell" name="author">
+<meta content="Ryan Hurst" name="author">
 <meta content="
-       This document specifies new identifiers and a challenge for the
-Automated Certificate Management Environment (ACME) protocol which allows validating the identity of a device using attestation. 
+       This document specifies new identifiers and a challenge for the Automated Certificate Management Environment (ACME) protocol which allows validating the identity of a device using attestation. 
     " name="description">
 <meta content="xml2rfc 3.33.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
@@ -1086,14 +1086,16 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <div class="author">
       <div class="author-name">C. Bonnell</div>
 </div>
+<div class="author">
+      <div class="author-name">R. Hurst</div>
+</div>
 </dd>
 </dl>
 </div>
 <h1 id="title">Automated Certificate Management Environment (ACME) Device Attestation Extension</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document specifies new identifiers and a challenge for the
-Automated Certificate Management Environment (ACME) protocol which allows validating the identity of a device using attestation.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document specifies new identifiers and a challenge for the Automated Certificate Management Environment (ACME) protocol which allows validating the identity of a device using attestation.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1181,9 +1183,15 @@ Automated Certificate Management Environment (ACME) protocol which allows valida
                 <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-enterprise-pki" class="internal xref">Enterprise PKI</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.1">
-                    <p id="section-toc.1-1.6.2.1.2.1.1"><a href="#section-6.1.1" class="auto internal xref">6.1.1</a>.  <a href="#name-external-account-binding" class="internal xref">External Account Binding</a></p>
+                    <p id="section-toc.1-1.6.2.1.2.1.1"><a href="#section-6.1.1" class="auto internal xref">6.1.1</a>.  <a href="#name-attestation-posture" class="internal xref">Attestation Posture</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.2">
+                    <p id="section-toc.1-1.6.2.1.2.2.1"><a href="#section-6.1.2" class="auto internal xref">6.1.2</a>.  <a href="#name-multiple-challenge-types" class="internal xref">Multiple Challenge Types</a></p>
 </li>
                 </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-attestation-trust" class="internal xref">Attestation Trust</a></p>
 </li>
             </ul>
 </li>
@@ -1304,7 +1312,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-permanent-identifier">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-permanent-identifier" class="section-name selfRef">Permanent Identifier</a>
       </h2>
-<p id="section-3-1">A new identifier type, "permanent-identifier" is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier <span class="bcp14">MAY</span> also be specified. The name of this identifier type was chosen to align with <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span>. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-1">A new identifier type, <code>permanent-identifier</code> is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier <span class="bcp14">MAY</span> also be specified. The name of this identifier type was chosen to align with <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span>. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">Although <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span> permits any valid UTF-8 string to be used as the identifier, this specification mandates that identifiers <span class="bcp14">MUST NOT</span> contain the forward-slash "/" (UTF-8: U+002F) character. This restriction is required to make the ABNF production rule for the <code>permanent-identifier-value</code> unambiguous.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <div id="representation-in-order-resources">
 <section id="section-3.1">
@@ -1321,23 +1329,24 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
 </pre><a href="#section-3.1-2" class="pilcrow">¶</a>
 </div>
 <p id="section-3.1-3">A valid <code>permanent-identifier-value</code> value is a UTF-8 string that contains an identity consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. Optionally, a forward-slash "/" character and "dotted-decimal" object identifier identifying the assigner may follow the identity.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.1-4">Example identifier without an assigner:<a href="#section-3.1-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.1-5">
+<p id="section-3.1-4">The Server <span class="bcp14">MUST</span> verify that identifier values in newOrder requests conform to the <code>permanent-identifier-value</code> production rule and <span class="bcp14">MUST</span> reject requests containing non-conforming values with a "malformed" error.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.1-5">Example identifier without an assigner:<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1-6">
 <pre>
 {
   "type": "permanent-identifier",
   "value": "ABCDEF123456"
 }
-</pre><a href="#section-3.1-5" class="pilcrow">¶</a>
+</pre><a href="#section-3.1-6" class="pilcrow">¶</a>
 </div>
-<p id="section-3.1-6">Example identifier with an assigner:<a href="#section-3.1-6" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.1-7">
+<p id="section-3.1-7">Example identifier with an assigner:<a href="#section-3.1-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.1-8">
 <pre>
 {
   "type": "permanent-identifier",
   "value": "ABCDEF123456/1.2.3.4"
 }
-</pre><a href="#section-3.1-7" class="pilcrow">¶</a>
+</pre><a href="#section-3.1-8" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
@@ -1346,10 +1355,11 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
         <h3 id="name-representation-in-certifica">
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-representation-in-certifica" class="section-name selfRef">Representation in Certificate Signing Requests and X.509 Certificates</a>
         </h3>
-<p id="section-3.2-1">The identity is included in the Subject Alternative Name Extension using the <code>identifierValue</code> field of the PermanentIdentifier form described in <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span>. Although <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span> permits the requester to include the <code>identifierValue</code> in a <code>serialNumber</code> subject attribute, this specification mandates that the <code>identifierValue</code> field of the PermanentIdentifier <span class="bcp14">MUST</span> be present and <span class="bcp14">MUST</span> contain the identifier.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2">The value of the <code>identifierValue</code> field of the PermanentIdentifier <span class="bcp14">MUST</span> be an octet-for-octet match of the <code>device-identifier-value</code> value as encoded in the Order resource. If the <code>assigner-value</code> value is included in the identifier as encoded in the Order resource, then the <code>assigner</code> field of the PermanentIdentifier <span class="bcp14">MUST</span> be the encoding of the "dotted-decimal" object identifier encoded as the <code>assigner-value</code> value.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.2-3">To ensure that the identifier as presented in the Order resource and CSR match, the Server <span class="bcp14">MUST</span> perform the logical equivalent of extracting the <code>device-identifier-value</code> and <code>assigner-value</code> values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server <span class="bcp14">MUST</span> then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
-<p id="section-3.2-4"><span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span> section 7.4 mandates that "The CSR <span class="bcp14">MUST</span> indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where the Server requires validation of the identifier but does not include the identifier in certificates due to privacy concerns. To support privacy-preserving certificates, Clients <span class="bcp14">MAY</span> omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it <span class="bcp14">MAY</span> reject CSRs containing a PermanentIdentifier in the subjectAltName extension. See the <a href="#privacy-considerations" class="auto internal xref">Section 7</a> for more information.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
+<p id="section-3.2-1">This section describes the X.509 representation of the <code>permanent-identifier</code>. Other credential types may use the same identifier values with representations appropriate to those credential types.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">The identity is included in the Subject Alternative Name Extension using the <code>identifierValue</code> field of the PermanentIdentifier form described in <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span>. Although <span>[<a href="#RFC4043" class="cite xref">RFC4043</a>]</span> permits the requester to include the <code>identifierValue</code> in a <code>serialNumber</code> subject attribute, this specification mandates that the <code>identifierValue</code> field of the PermanentIdentifier <span class="bcp14">MUST</span> be present and <span class="bcp14">MUST</span> contain the identifier.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-3">The value of the <code>identifierValue</code> field of the PermanentIdentifier <span class="bcp14">MUST</span> be an octet-for-octet match of the <code>device-identifier-value</code> value as encoded in the Order resource. If the <code>assigner-value</code> value is included in the identifier as encoded in the Order resource, then the <code>assigner</code> field of the PermanentIdentifier <span class="bcp14">MUST</span> be the encoding of the "dotted-decimal" object identifier encoded as the <code>assigner-value</code> value.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-4">To ensure that the identifier as presented in the Order resource and CSR match, the Server <span class="bcp14">MUST</span> perform the logical equivalent of extracting the <code>device-identifier-value</code> and <code>assigner-value</code> values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server <span class="bcp14">MUST</span> then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise. Servers that derive identifier values directly from verified attestation evidence and construct the certificate SAN from that evidence, provided the derived values are verified against the attested device identity in the attestation statement, satisfy the intent of this requirement.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
+<p id="section-3.2-5"><span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span> section 7.4 mandates that "The CSR <span class="bcp14">MUST</span> indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where the Server requires validation of the identifier but does not include the identifier in certificates due to privacy concerns. To support privacy-preserving certificates, Clients <span class="bcp14">MAY</span> omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it <span class="bcp14">MAY</span> reject CSRs containing a PermanentIdentifier in the subjectAltName extension. See the <a href="#privacy-considerations" class="auto internal xref">Section 7</a> for more information.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1359,8 +1369,8 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
       <h2 id="name-hardware-module">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-hardware-module" class="section-name selfRef">Hardware Module</a>
       </h2>
-<p id="section-4-1">A new identifier type, "hardware-module" is introduced to represent the identity of the secure crypto-processor that generated the certificate key. The identity is modeled after the HardwareModuleName form described in <span>[<a href="#RFC4108" class="cite xref">RFC4108</a>]</span>. It consists of two components: an OBJECT IDENTIFIER to represent the type of hardware module, and a serial number that identifies the specific hardware module.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">Although <span>[<a href="#RFC4108" class="cite xref">RFC4108</a>]</span> specifies that serial numbers can be represented as any sequence of bytes, this specification requires that serial numbers <span class="bcp14">MUST</span> be representable as valid UTF-8 strings consisting of at least one code point and <span class="bcp14">MUST NOT</span> contain a forward-slash "/" (UTF-8: U+002F) character. These restriction ensures that serial numbers can be included in <code>hardware-module</code> identifier string values and that the ABNF production rule for the value is unambiguous.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-1">A new identifier type, <code>hardware-module</code> is introduced to represent the identity of the secure crypto-processor that generated the certificate key. The identity is modeled after the HardwareModuleName form described in <span>[<a href="#RFC4108" class="cite xref">RFC4108</a>]</span>. It consists of two components: an OBJECT IDENTIFIER to represent the type of hardware module, and a serial number that identifies the specific hardware module.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-2">Although <span>[<a href="#RFC4108" class="cite xref">RFC4108</a>]</span> specifies that serial numbers can be represented as any sequence of bytes, this specification requires that serial numbers <span class="bcp14">MUST</span> be representable as valid UTF-8 strings consisting of at least one code point and <span class="bcp14">MUST NOT</span> contain a forward-slash "/" (UTF-8: U+002F) character. This restriction ensures that serial numbers can be included in <code>hardware-module</code> identifier string values and that the ABNF production rule for the value is unambiguous.<a href="#section-4-2" class="pilcrow">¶</a></p>
 <div id="representation-in-order-resources-1">
 <section id="section-4.1">
         <h3 id="name-representation-in-order-reso">
@@ -1376,23 +1386,24 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
 </pre><a href="#section-4.1-2" class="pilcrow">¶</a>
 </div>
 <p id="section-4.1-3">A valid <code>hardware-module-value</code> value is a UTF-8 string that contains a serial number consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. Optionally, a forward-slash "/" character and "dotted-decimal" object identifier identifying the hardware type may follow the serial number.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
-<p id="section-4.1-4">Example identifier with the type of the hardware module represented using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":<a href="#section-4.1-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-4.1-5">
+<p id="section-4.1-4">The Server <span class="bcp14">MUST</span> verify that identifier values in newOrder requests conform to the <code>hardware-module-value</code> production rule and <span class="bcp14">MUST</span> reject requests containing non-conforming values with a "malformed" error.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
+<p id="section-4.1-5">Example identifier with the type of the hardware module represented using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":<a href="#section-4.1-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4.1-6">
 <pre>
 {
-  "type": "hardware-module",
+  "type": `hardware-module`,
   "value": "ABCD/1.2.3.4"
 }
-</pre><a href="#section-4.1-5" class="pilcrow">¶</a>
+</pre><a href="#section-4.1-6" class="pilcrow">¶</a>
 </div>
-<p id="section-4.1-6">Example identifier with no type specified and a serial number of "ABCD":<a href="#section-4.1-6" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-4.1-7">
+<p id="section-4.1-7">Example identifier with no type specified and a serial number of "ABCD":<a href="#section-4.1-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4.1-8">
 <pre>
 {
-  "type": "hardware-module",
+  "type": `hardware-module`,
   "value": "ABCD"
 }
-</pre><a href="#section-4.1-7" class="pilcrow">¶</a>
+</pre><a href="#section-4.1-8" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
@@ -1401,18 +1412,19 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
         <h3 id="name-representation-in-certificat">
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-representation-in-certificat" class="section-name selfRef">Representation in Certificate Signing Requests and X.509 Certificates</a>
         </h3>
-<p id="section-4.2-1">The hardware module identity is included in the Subject Alternate Name Extension using the HardwareModuleName form described in <span>[<a href="#RFC4108" class="cite xref">RFC4108</a>]</span>. The HardwareModuleName is encoded as an otherName with the OID id-on-hardwareModuleName (1.3.6.1.5.5.7.8.4) and consists of:<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-1">This section describes the X.509 representation of the <code>hardware-module</code> identifier. Other credential types may use the same identifier values with representations appropriate to those credential types.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">The hardware module identity is included in the Subject Alternate Name Extension using the HardwareModuleName form described in <span>[<a href="#RFC4108" class="cite xref">RFC4108</a>]</span>. The HardwareModuleName is encoded as an otherName with the OID id-on-hardwareModuleName (1.3.6.1.5.5.7.8.4) and consists of:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.2-2.1">
-            <p id="section-4.2-2.1.1">hwType: An OBJECT IDENTIFIER that identifies the type of hardware module<a href="#section-4.2-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.2-3.1">
+            <p id="section-4.2-3.1.1">hwType: An OBJECT IDENTIFIER that identifies the type of hardware module<a href="#section-4.2-3.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.2-2.2">
-            <p id="section-4.2-2.2.1">hwSerialNum: An OCTET STRING containing the hardware module serial number<a href="#section-4.2-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-4.2-3.2">
+            <p id="section-4.2-3.2.1">hwSerialNum: An OCTET STRING containing the hardware module serial number<a href="#section-4.2-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.2-3">The value of the <code>hwSerialNum</code> field of the HardwareModuleName <span class="bcp14">MUST</span> be an octet-for-octet match of the <code>hw-serial-num-value</code> value as encoded in the Order resource. If the <code>hw-type-value</code> value is included in the identifier as encoded in the Order resource, then the <code>hwType</code> field of the HardwareModuleName <span class="bcp14">MUST</span> be the encoding of the "dotted-decimal" object identifier encoded as the <code>hw-type-value</code> value.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
-<p id="section-4.2-4">To ensure that the identifier as presented in the Order resource and CSR match, the Server <span class="bcp14">MUST</span> perform the logical equivalent of extracting the <code>hw-serial-num-value</code> and <code>hw-type-value</code> values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server <span class="bcp14">MUST</span> then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
-<p id="section-4.2-5"><span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span> section 7.4 mandates that "The CSR <span class="bcp14">MUST</span> indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where the Server requires validation of the identifier but does not include the identifier in certificates due to privacy concerns. To support privacy-preserving certificates, Clients <span class="bcp14">MAY</span> omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it <span class="bcp14">MAY</span> reject CSRs containing a HardwareModuleName in the subjectAltName extension. See the <a href="#privacy-considerations" class="auto internal xref">Section 7</a> for more information.<a href="#section-4.2-5" class="pilcrow">¶</a></p>
+<p id="section-4.2-4">The value of the <code>hwSerialNum</code> field of the HardwareModuleName <span class="bcp14">MUST</span> be an octet-for-octet match of the <code>hw-serial-num-value</code> value as encoded in the Order resource. If the <code>hw-type-value</code> value is included in the identifier as encoded in the Order resource, then the <code>hwType</code> field of the HardwareModuleName <span class="bcp14">MUST</span> be the encoding of the "dotted-decimal" object identifier encoded as the <code>hw-type-value</code> value.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.2-5">To ensure that the identifier as presented in the Order resource and CSR match, the Server <span class="bcp14">MUST</span> perform the logical equivalent of extracting the <code>hw-serial-num-value</code> and <code>hw-type-value</code> values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server <span class="bcp14">MUST</span> then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise. Servers that derive identifier values directly from verified attestation evidence and construct the certificate SAN from that evidence, provided the derived values are verified against the attested device identity in the attestation statement, satisfy the intent of this requirement.<a href="#section-4.2-5" class="pilcrow">¶</a></p>
+<p id="section-4.2-6"><span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span> section 7.4 mandates that "The CSR <span class="bcp14">MUST</span> indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where the Server requires validation of the identifier but does not include the identifier in certificates due to privacy concerns. To support privacy-preserving certificates, Clients <span class="bcp14">MAY</span> omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it <span class="bcp14">MAY</span> reject CSRs containing a HardwareModuleName in the subjectAltName extension. See the <a href="#privacy-considerations" class="auto internal xref">Section 7</a> for more information.<a href="#section-4.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1422,8 +1434,7 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
       <h2 id="name-device-attestation-challeng">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-device-attestation-challeng" class="section-name selfRef">Device Attestation Challenge</a>
       </h2>
-<p id="section-5-1">The Client can prove control over a permanent identifier of a device by
-providing an attestation statement containing the identifier of the device.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-1">The Client can prove control over a permanent identifier of a device by providing an attestation statement containing the identifier of the device.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5-2">The device-attest-01 ACME challenge object has the following format:<a href="#section-5-2" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-5-3">
         <dt id="section-5-3.1">type (required, string):</dt>
@@ -1447,19 +1458,20 @@ providing an attestation statement containing the identifier of the device.<a hr
 }
 </pre><a href="#section-5-4" class="pilcrow">¶</a>
 </div>
-<p id="section-5-5">A Client fulfills this challenge by constructing a key authorization (<span><a href="https://rfc-editor.org/rfc/rfc8555#section-8.1" class="relref">Section 8.1</a> of [<a href="#RFC8555" class="cite xref">RFC8555</a>]</span>)
- from the "token" value provided in the challenge and the Client's
- account key. The Client then generates a WebAuthn attestation object using the key authorization as the challenge.<a href="#section-5-5" class="pilcrow">¶</a></p>
+<p id="section-5-5">A Client fulfills this challenge by constructing a key authorization (<span><a href="https://rfc-editor.org/rfc/rfc8555#section-8.1" class="relref">Section 8.1</a> of [<a href="#RFC8555" class="cite xref">RFC8555</a>]</span>) from the "token" value provided in the challenge and the Client's account key. The Client then generates a WebAuthn attestation object using the key authorization as the challenge.<a href="#section-5-5" class="pilcrow">¶</a></p>
 <p id="section-5-6">This specification borrows the WebAuthn <em>attestation object</em> representation as described in Section 6.5.4 of <span>[<a href="#WebAuthn" class="cite xref">WebAuthn</a>]</span> for encapsulating attestation formats, but with these modifications:<a href="#section-5-6" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5-7.1">
           <p id="section-5-7.1.1">The key authorization is used to form <em>attToBeSigned</em>. This replaces the concatenation of <em>authenticatorData</em> and <em>clientDataHash</em>. <em>attToBeSigned</em> is hashed using an algorithm specified by the attestation format.<a href="#section-5-7.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-5-7.2">
-          <p id="section-5-7.2.1">The <em>authData</em> field is unused and <span class="bcp14">SHOULD</span> be omitted.<a href="#section-5-7.2.1" class="pilcrow">¶</a></p>
+          <p id="section-5-7.2.1">Some attestation formats use an external attestation authority that issues a certificate binding the challenge to the device before the Client's account key is available. In these formats, <em>attToBeSigned</em> is formed from the token alone rather than the full key authorization, because the external authority signs at attestation time before the account key thumbprint can be incorporated. The token construction provides freshness. The key authorization construction additionally binds the attestation to a specific account key. The Server <span class="bcp14">MUST</span> consult format-specific documentation to determine which construction applies and <span class="bcp14">MUST</span> verify accordingly. Attestation formats whose signing procedure does not incorporate <em>attToBeSigned</em> cannot be used to satisfy this challenge type.<a href="#section-5-7.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-7.3">
+          <p id="section-5-7.3.1">The <em>authData</em> field carries browser-context data (including the RP ID hash) that has no meaning in the ACME context and <span class="bcp14">SHOULD</span> be omitted.<a href="#section-5-7.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-5-8">A Client responds with the response object containing the WebAuthn attestation object in the "attObj" field to acknowledge that the challenge can be validated by the Server.<a href="#section-5-8" class="pilcrow">¶</a></p>
+<p id="section-5-8">A Client responds with the response object containing the WebAuthn attestation object in the "attObj" field to acknowledge that the challenge can be validated by the Server. Clients <span class="bcp14">MAY</span> include additional fields beyond "attObj" in the response object. Servers <span class="bcp14">MUST</span> ignore unrecognized fields in the challenge response.<a href="#section-5-8" class="pilcrow">¶</a></p>
 <p id="section-5-9">On receiving a response, the Server constructs and stores the key authorization from the challenge's "token" value and the current Client account key.<a href="#section-5-9" class="pilcrow">¶</a></p>
 <p id="section-5-10">To validate a device attestation challenge, the Server performs the following steps:<a href="#section-5-10" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-5-11">
@@ -1467,7 +1479,10 @@ providing an attestation statement containing the identifier of the device.<a hr
           <p id="section-5-11.1.1">Perform the verification procedures described in Section 6 of <span>[<a href="#WebAuthn" class="cite xref">WebAuthn</a>]</span>.<a href="#section-5-11.1.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-5-11.2">
-          <p id="section-5-11.2.1">Verify that key authorization conveyed by <em>attToBeSigned</em> matches the key authorization stored by the Server.<a href="#section-5-11.2.1" class="pilcrow">¶</a></p>
+          <p id="section-5-11.2.1">Verify that <em>attToBeSigned</em> contains the key authorization or the token, according to the construction required by the attestation format, and that the value matches what the Server stored.<a href="#section-5-11.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-5-11.3">
+          <p id="section-5-11.3.1">Verify that the attestation statement contains a device identifier and that it matches the identifier in the Order. The means by which the identifier is encoded in the attestation statement are specific to the attestation format.<a href="#section-5-11.3.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
 <div class="alignLeft art-text artwork" id="section-5-12">
@@ -1498,23 +1513,43 @@ Content-Type: application/jose+json
       <h2 id="name-operational-considerations">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-operational-considerations" class="section-name selfRef">Operational Considerations</a>
       </h2>
-<p id="section-6-1">Although this document focuses guidance on implementing new type and challenge for certificate issuance using ACME, it does not define a New Protocol, a Protocol Extension, or an architecture.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">Although this document focuses guidance on implementing new identifier types and a challenge for certificate issuance using ACME, it does not define a new protocol, a protocol extension, or an architecture.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <div id="enterprise-pki">
 <section id="section-6.1">
         <h3 id="name-enterprise-pki">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-enterprise-pki" class="section-name selfRef">Enterprise PKI</a>
         </h3>
-<p id="section-6.1-1">ACME was originally envisioned for issuing certificates in the Web PKI, however this extension will primarily be useful in enterprise PKI. The subsection below covers some operational considerations for an ACME-based enterprise CA.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
-<div id="external-account-binding">
+<p id="section-6.1-1">ACME was originally envisioned for issuing certificates in the Web PKI, however this extension will primarily be useful in enterprise PKI.
+
+### External Account Binding<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-2">An enterprise CA likely only wants to receive requests from authorized devices. It is <span class="bcp14">RECOMMENDED</span> that the Server require a value for the "externalAccountBinding" field to be present in "newAccount" requests.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+<p id="section-6.1-3">If an enterprise CA desires to limit the number of certificates that can be requested with a given account, including limiting an account to a single certificate, after the desired number of certificates have been issued to an account the Server <span class="bcp14">MAY</span> revoke the account as described in Section 7.1.2 of <span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span>.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
+<div id="attestation-posture">
 <section id="section-6.1.1">
-          <h4 id="name-external-account-binding">
-<a href="#section-6.1.1" class="section-number selfRef">6.1.1. </a><a href="#name-external-account-binding" class="section-name selfRef">External Account Binding</a>
+          <h4 id="name-attestation-posture">
+<a href="#section-6.1.1" class="section-number selfRef">6.1.1. </a><a href="#name-attestation-posture" class="section-name selfRef">Attestation Posture</a>
           </h4>
-<p id="section-6.1.1-1">An enterprise CA likely only wants to receive requests from authorized devices. It is <span class="bcp14">RECOMMENDED</span> that the Server require a value for the "externalAccountBinding" field to be
-present in "newAccount" requests.<a href="#section-6.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-6.1.1-2">If an enterprise CA desires to limit the number of certificates that can be requested with a given account, including limiting an account to a single certificate. After the desired number of certificates have been issued to an account, the Server <span class="bcp14">MAY</span> revoke the account as described in Section 7.1.2 of <span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span>.<a href="#section-6.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-6.1.1-1">Enterprise deployments often consist of heterogeneous device fleets where not all devices are capable of hardware attestation. A Server <span class="bcp14">MAY</span> offer device-attest-01 alongside other challenge types within a single authorization, allowing capable devices to complete device-attest-01 while other devices complete an alternative challenge. This posture allows operators to observe fleet attestation coverage before enforcing policy and is compatible with phased deployments.<a href="#section-6.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1.1-2">Servers that issue certificates without requiring a completed device-attest-01 challenge rely on other authorization mechanisms, such as external account binding or pre-authorized accounts, to establish device identity.<a href="#section-6.1.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
+<div id="multiple-challenge-types">
+<section id="section-6.1.2">
+          <h4 id="name-multiple-challenge-types">
+<a href="#section-6.1.2" class="section-number selfRef">6.1.2. </a><a href="#name-multiple-challenge-types" class="section-name selfRef">Multiple Challenge Types</a>
+          </h4>
+<p id="section-6.1.2-1"><span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span> permits a Server to offer multiple challenge types within a single authorization, with any one being sufficient to complete it. Servers <span class="bcp14">MAY</span> offer device-attest-01 alongside other challenge types for the same authorization, allowing capable devices to attest while other devices use an alternative challenge type.<a href="#section-6.1.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="attestation-trust">
+<section id="section-6.2">
+        <h3 id="name-attestation-trust">
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-attestation-trust" class="section-name selfRef">Attestation Trust</a>
+        </h3>
+<p id="section-6.2-1">Attestation formats differ in the authority that enforces the boundary around the attested key and in the claims that authority can make. At one end, dedicated security hardware (such as a TPM or HSM) provides manufacturer-backed guarantees that the key is generated and stored within the hardware and cannot be exported. At the other end, OS-enforced isolation boundaries (such as platform keystores protected by the operating system kernel) provide meaningful key protection guarantees without discrete security hardware. Intermediate cases include TEE-based attestation where a hypervisor or trusted execution environment acts as the authority.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.2-2">Servers <span class="bcp14">SHOULD</span> consider the trust properties of each attestation format when establishing issuance policy, including the nature of the authority making the attestation and the key protection guarantees it can assert. The key authorization construction described in <a href="#device-attestation-challenge" class="auto internal xref">Section 5</a> also contributes to this trust model: formats that use the full key authorization as <em>attToBeSigned</em> bind the attestation to a specific account key, while formats that use the token alone provide freshness without account key binding.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1622,8 +1657,8 @@ present in "newAccount" requests.<a href="#section-6.1.1-1" class="pilcrow">¶</
 <p id="section-8-1">Please reference <span>[<a href="#RFC8555" class="cite xref">RFC8555</a>]</span> for other security considerations.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">See Section 13 of <span>[<a href="#WebAuthn" class="cite xref">WebAuthn</a>]</span> for additional security considerations related to attestation statement formats, including certificate revocation.<a href="#section-8-2" class="pilcrow">¶</a></p>
 <p id="section-8-3">Key attestation statements may include a variety of information in addition to the public key being attested. While not described in this document, the Server <span class="bcp14">MAY</span> use any policy when evaluating this information. This evaluation can result in rejection of a certificate request that features a verifiable key attestation for the public key contained in the request. For example, an attestation statement may indicate use of an unacceptable firmware version.<a href="#section-8-3" class="pilcrow">¶</a></p>
-<p id="section-8-4">The "token" value <span class="bcp14">MUST</span> have at least 128 bits of entropy. It <span class="bcp14">MUST NOT</span> contain any characters outside the
-base64url alphabet, including padding characters ("="). See <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>, Appendix C.1 for additional information on randomness requirements.<a href="#section-8-4" class="pilcrow">¶</a></p>
+<p id="section-8-4">The "token" value <span class="bcp14">MUST</span> have at least 128 bits of entropy. It <span class="bcp14">MUST NOT</span> contain any characters outside the base64url alphabet, including padding characters ("="). See <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>, Appendix C.1 for additional information on randomness requirements.<a href="#section-8-4" class="pilcrow">¶</a></p>
+<p id="section-8-5">The binding between the certified public key and the device identifier is established through the attestation statement rather than through the CSR alone. The attestation authority cryptographically binds the public key to the device identity, either by signing the attestation statement directly, by issuing an attestation certificate, or by other cryptographic means specific to the attestation format. The Server verifies this chain: the attestation is produced by a trusted attestation authority, the public key in the attestation matches the public key in the CSR, and the device identifier in the attestation matches the identifier in the Order. This three-way binding is the basis on which the Server can associate a certified public key with a particular device.<a href="#section-8-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
@@ -1826,6 +1861,13 @@ base64url alphabet, including padding characters ("="). See <span>[<a href="#I-D
 <div class="email">
 <span>Email:</span>
 <a href="mailto:corey.bonnell@digicert.com" class="email">corey.bonnell@digicert.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Ryan Hurst</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:ryan.hurst+ietf@peculiarventures.com" class="email">ryan.hurst+ietf@peculiarventures.com</a>
 </div>
 </address>
 </section>
