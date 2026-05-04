@@ -87,7 +87,7 @@ Many operating systems and device vendors offer functionality enabling a device 
 - [Trusted Platform Module](https://trustedcomputinggroup.org/resource/trusted-platform-module-tpm-summary/)
 - [Managed Device Attestation for Apple Devices](https://support.apple.com/en-om/guide/deployment/dep28afbde6a/web)
 
-Using ACME and device attestation to issue client certificates for enterprise PKI is to be a common use case. The following variances to the ACME specification are described in this document:
+Using ACME and device attestation to issue client certificates for enterprise PKI will be a common use case. The following variances to the ACME specification are described in this document:
 
 - Addition of `permanent-identifier` {{!RFC4043}} and `hardware-module` {{!RFC4108}} identifier types.
 - Addition of the `device-attest-01` challenge type to prove control of the `permanent-identifier` and `hardware-module` identifier types.
@@ -119,7 +119,7 @@ device-identifier-value = 1*(%x00-2E / %x30-FF)
 permanent-identifier-value = device-identifier-value ["/" assigner-value]
 ~~~
 
-A valid `permanent-identifier-value` value is a UTF-8 string that contains an identity consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. Optionally, a forward-slash "/" character and "dotted-decimal" object identifier identifying the assigner may follow the identity.
+A valid `permanent-identifier-value` value is a UTF-8 string that contains an identity consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. Optionally, a forward-slash "/" character and "dotted-decimal" object identifier identifying the assigner may follow the identity. The assigner-value is a dotted-decimal representation of an ASN.1 OBJECT IDENTIFIER.
 
 The Server MUST verify that identifier values in newOrder requests conform to the `permanent-identifier-value` production rule and MUST reject requests containing non-conforming values with a "malformed" error.
 
@@ -141,13 +141,13 @@ Example identifier with an assigner:
 }
 ~~~
 
-## Representation in Certificate Signing Requests and X.509 Certificates
+## Representation in Certificate Signing Requests (CSRs) and X.509 Certificates
 
 This section describes the X.509 representation of the `permanent-identifier`. Other credential types may use the same identifier values with representations appropriate to those credential types.
 
 The identity is included in the Subject Alternative Name Extension using the `identifierValue` field of the PermanentIdentifier form described in {{!RFC4043}}. Although {{!RFC4043}} permits the requester to include the `identifierValue` in a `serialNumber` subject attribute, this specification mandates that the `identifierValue` field of the PermanentIdentifier MUST be present and MUST contain the identifier.
 
-The value of the `identifierValue` field of the PermanentIdentifier MUST be an octet-for-octet match of the `device-identifier-value` value as encoded in the Order resource. If the `assigner-value` value is included in the identifier as encoded in the Order resource, then the `assigner` field of the PermanentIdentifier MUST be the encoding of the "dotted-decimal" object identifier encoded as the `assigner-value` value.
+The value of the `identifierValue` field of the PermanentIdentifier MUST exactly match (no normalization, case folding, or encoding transformation is permitted) the `device-identifier-value` value as encoded in the Order resource. If the `assigner-value` value is included in the identifier as encoded in the Order resource, then the `assigner` field of the PermanentIdentifier MUST be the encoding of the "dotted-decimal" object identifier encoded as the `assigner-value` value.
 
 To ensure that the identifier as presented in the Order resource and CSR match, the Server MUST perform the logical equivalent of extracting the `device-identifier-value` and `assigner-value` values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server MUST then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise. Servers that derive identifier values directly from verified attestation evidence and construct the certificate SAN from that evidence, provided the derived values are verified against the attested device identity in the attestation statement, satisfy the intent of this requirement.
 
@@ -201,7 +201,7 @@ The hardware module identity is included in the Subject Alternate Name Extension
 - hwType: An OBJECT IDENTIFIER that identifies the type of hardware module
 - hwSerialNum: An OCTET STRING containing the hardware module serial number
 
-The value of the `hwSerialNum` field of the HardwareModuleName MUST be an octet-for-octet match of the `hw-serial-num-value` value as encoded in the Order resource. If the `hw-type-value` value is included in the identifier as encoded in the Order resource, then the `hwType` field of the HardwareModuleName MUST be the encoding of the "dotted-decimal" object identifier encoded as the `hw-type-value` value.
+The value of the `hwSerialNum` field of the HardwareModuleName MUST exactly match (no normalization, case folding, or encoding transformation is permitted) the `hw-serial-num-value` value as encoded in the Order resource. If the `hw-type-value` value is included in the identifier as encoded in the Order resource, then the `hwType` field of the HardwareModuleName MUST be the encoding of the "dotted-decimal" object identifier encoded as the `hw-type-value` value.
 
 To ensure that the identifier as presented in the Order resource and CSR match, the Server MUST perform the logical equivalent of extracting the `hw-serial-num-value` and `hw-type-value` values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server MUST then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise. Servers that derive identifier values directly from verified attestation evidence and construct the certificate SAN from that evidence, provided the derived values are verified against the attested device identity in the attestation statement, satisfy the intent of this requirement.
 
@@ -275,7 +275,8 @@ Although this document focuses guidance on implementing new identifier types and
 ## Enterprise PKI
 
 ACME was originally envisioned for issuing certificates in the Web PKI, however this extension will primarily be useful in enterprise PKI.
-<!-- TODO: ^^^ perhaps also mention/cover IoT attestation PKI usecases -->
+
+
 ### External Account Binding
 
 An enterprise CA likely only wants to receive requests from authorized devices. It is RECOMMENDED that the Server require a value for the "externalAccountBinding" field to be present in "newAccount" requests.
@@ -286,7 +287,7 @@ If an enterprise CA desires to limit the number of certificates that can be requ
 
 Enterprise deployments often consist of heterogeneous device fleets where not all devices are capable of hardware attestation. A Server MAY offer device-attest-01 alongside other challenge types within a single authorization, allowing capable devices to complete device-attest-01 while other devices complete an alternative challenge. This posture allows operators to observe fleet attestation coverage before enforcing policy and is compatible with phased deployments.
 
-Servers that issue certificates without requiring a completed device-attest-01 challenge rely on other authorization mechanisms, such as external account binding or pre-authorized accounts, to establish device identity.
+Servers can rely on other authorization mechanisms, such as external account binding or pre-authorized accounts, to establish device identity instead of requiring completion of the device-attest-01 challenge.
 
 ### Multiple Challenge Types
 
