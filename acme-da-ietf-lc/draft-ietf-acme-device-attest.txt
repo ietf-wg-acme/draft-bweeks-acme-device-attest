@@ -3,14 +3,15 @@
 
 
 ACME Working Group                                              B. Weeks
-Internet-Draft                                                          
+Internet-Draft                                                Google Inc
 Intended status: Standards Track                              G. Mallaya
-Expires: 6 November 2026                                                
+Expires: 6 November 2026                                   AppViewX Inc.
                                                                S. Rajala
-                                                                        
+                                                               Keyfactor
                                                               C. Bonnell
-                                                                        
+                                                          DigiCert, Inc.
                                                                 R. Hurst
+                                                       Peculiar Ventures
                                                               5 May 2026
 
 
@@ -908,20 +909,25 @@ Acknowledgments
 Authors' Addresses
 
    Brandon Weeks
+   Google Inc
    Email: me@brandonweeks.com
 
 
    Ganesh Mallaya
+   AppViewX Inc.
    Email: ganesh.mallaya@appviewx.com
 
 
    Sven Rajala
+   Keyfactor
    Email: sven.rajala@keyfactor.com
 
 
    Corey Bonnell
+   DigiCert, Inc.
    Email: corey.bonnell@digicert.com
 
 
    Ryan Hurst
+   Peculiar Ventures
    Email: ryan.hurst+ietf@peculiarventures.com
