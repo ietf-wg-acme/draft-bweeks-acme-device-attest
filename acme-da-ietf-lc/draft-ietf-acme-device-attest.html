@@ -1545,7 +1545,7 @@ Content-Type: application/jose+json
 <a href="#section-6.1.2" class="section-number selfRef">6.1.2. </a><a href="#name-attestation-posture" class="section-name selfRef">Attestation Posture</a>
           </h4>
 <p id="section-6.1.2-1">Enterprise deployments often consist of heterogeneous device fleets where not all devices are capable of hardware attestation. A Server <span class="bcp14">MAY</span> offer device-attest-01 alongside other challenge types within a single authorization, allowing capable devices to complete device-attest-01 while other devices complete an alternative challenge. This posture allows operators to observe fleet attestation coverage before enforcing policy and is compatible with phased deployments.<a href="#section-6.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-6.1.2-2">Servers can rely on other authorization mechanisms, such as external account binding or pre-authorized accounts, to establish device identity instead of completing the device-attest-01 challenge.<a href="#section-6.1.2-2" class="pilcrow">¶</a></p>
+<p id="section-6.1.2-2">Servers <span class="bcp14">MAY</span> rely on other authorization mechanisms, such as external account binding or pre-authorized accounts, to establish device identity instead of completing the device-attest-01 challenge.<a href="#section-6.1.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="multiple-challenge-types">

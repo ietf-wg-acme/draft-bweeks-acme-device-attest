@@ -510,7 +510,7 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    This posture allows operators to observe fleet attestation coverage
    before enforcing policy and is compatible with phased deployments.
 
-   Servers can rely on other authorization mechanisms, such as external
+   Servers MAY rely on other authorization mechanisms, such as external
    account binding or pre-authorized accounts, to establish device
    identity instead of completing the device-attest-01 challenge.
 
