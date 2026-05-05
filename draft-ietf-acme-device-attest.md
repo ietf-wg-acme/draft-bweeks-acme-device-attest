@@ -12,26 +12,36 @@ keyword: Internet-Draft
 
 author:
  -
-    fullname: Brandon Weeks
+    ins: B. Weeks
+    name: Brandon Weeks
+    org: Google Inc
+    abbrev: Google Inc
     email: me@brandonweeks.com
  -
-    fullname: Ganesh Mallaya
-    company: AppViewX
+    ins: G. Mallaya
+    name: Ganesh Mallaya
+    org: AppViewX Inc.
+    abbrev: AppViewX Inc.
     email: ganesh.mallaya@appviewx.com
  -
-    fullname: Sven Rajala
-    company: Keyfactor
+    ins: S. Rajala
+    name: Sven Rajala
+    org: Keyfactor
+    abbrev: Keyfactor
     email: sven.rajala@keyfactor.com
-
  -
-    fullname: Corey Bonnell
-    company: DigiCert, Inc.
+    ins: C. Bonnell
+    name: Corey Bonnell
+    org: DigiCert, Inc.
+    abbrev: DigiCert, Inc.
     email: corey.bonnell@digicert.com
-
  -
-    fullname: Ryan Hurst
-    company: Peculiar Ventures
+    ins: R. Hurst
+    name: Ryan Hurst
+    org: Peculiar Ventures
+    abbrev: Peculiar Ventures
     email: ryan.hurst+ietf@peculiarventures.com
+
 
 normative:
   RFC4043:
@@ -269,7 +279,6 @@ Content-Type: application/jose+json
   "signature": "Q1bURgJoEslbD1c5...3pYdSMLio57mQNN4"
 }
 ~~~~~~~~~~
-
 The webauthn payload MAY contain any identifiers registered in "WebAuthn Attestation Statement Format Identifiers" and any extensions registered in "WebAuthn Extension Identifiers" [IANA-Webauthn], [RFC8809].
 
 # Operational Considerations
