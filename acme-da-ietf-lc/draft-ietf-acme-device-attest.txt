@@ -5,13 +5,13 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                          
 Intended status: Standards Track                              G. Mallaya
-Expires: 5 November 2026                                                
+Expires: 6 November 2026                                                
                                                                S. Rajala
                                                                         
                                                               C. Bonnell
                                                                         
                                                                 R. Hurst
-                                                              4 May 2026
+                                                              5 May 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 November 2026.
+   This Internet-Draft will expire on 6 November 2026.
 
 Copyright Notice
 
@@ -223,13 +223,19 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    PermanentIdentifier MUST be present and MUST contain the identifier.
 
    The value of the identifierValue field of the PermanentIdentifier
-   MUST exactly match (no normalization, case folding, or encoding
-   transformation is permitted) the device-identifier-value value as
-   encoded in the Order resource.  If the assigner-value value is
+   MUST be an octet-for-octet match of the device-identifier-value value
+   as encoded in the Order resource.  If the assigner-value value is
    included in the identifier as encoded in the Order resource, then the
    assigner field of the PermanentIdentifier MUST be the encoding of the
    "dotted-decimal" object identifier encoded as the assigner-value
    value.
+
+   This strict matching requirement ensures that the SAN in the issued
+   certificate appears exactly as it appeared during proof-of-ownership
+   validation, preventing identifier malleability.  Serial number
+   allocation schemes may be case-sensitive or otherwise sensitive to
+   exact byte representation, so no normalization or transformation is
+   permitted.
 
    To ensure that the identifier as presented in the Order resource and
    CSR match, the Server MUST perform the logical equivalent of
@@ -330,13 +336,19 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    *  hwSerialNum: An OCTET STRING containing the hardware module serial
       number
 
-   The value of the hwSerialNum field of the HardwareModuleName MUST
-   exactly match (no normalization, case folding, or encoding
-   transformation is permitted) the hw-serial-num-value value as encoded
+   The value of the hwSerialNum field of the HardwareModuleName MUST be
+   an octet-for-octet match of the hw-serial-num-value value as encoded
    in the Order resource.  If the hw-type-value value is included in the
    identifier as encoded in the Order resource, then the hwType field of
    the HardwareModuleName MUST be the encoding of the "dotted-decimal"
    object identifier encoded as the hw-type-value value.
+
+   This strict matching requirement ensures that the SAN in the issued
+   certificate appears exactly as it appeared during proof-of-ownership
+   validation, preventing identifier malleability.  Serial number
+   allocation schemes may be case-sensitive or otherwise sensitive to
+   exact byte representation, so no normalization or transformation is
+   permitted.
 
    To ensure that the identifier as presented in the Order resource and
    CSR match, the Server MUST perform the logical equivalent of
@@ -499,8 +511,7 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
 
    Servers can rely on other authorization mechanisms, such as external
    account binding or pre-authorized accounts, to establish device
-   identity instead of requiring completion of the device-attest-01
-   challenge.
+   identity instead of completing the device-attest-01 challenge.
 
 6.1.3.  Multiple Challenge Types
 
