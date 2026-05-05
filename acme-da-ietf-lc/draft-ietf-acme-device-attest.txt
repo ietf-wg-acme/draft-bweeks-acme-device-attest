@@ -66,8 +66,8 @@ Table of Contents
            X.509 Certificates
    4.  Hardware Module
      4.1.  Representation in Order resources
-     4.2.  Representation in Certificate Signing Requests and X.509
-           Certificates
+     4.2.  Representation in Certificate Signing Requests (CSRs) and
+           X.509 Certificates
    5.  Device Attestation Challenge
    6.  Operational Considerations
      6.1.  Enterprise PKI
@@ -318,7 +318,7 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
      "value": "ABCD"
    }
 
-4.2.  Representation in Certificate Signing Requests and X.509
+4.2.  Representation in Certificate Signing Requests (CSRs) and X.509
       Certificates
 
    This section describes the X.509 representation of the hardware-
