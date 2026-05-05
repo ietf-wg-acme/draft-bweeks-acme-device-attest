@@ -204,7 +204,7 @@ Example identifier with no type specified and a serial number of "ABCD":
 }
 ~~~
 
-## Representation in Certificate Signing Requests and X.509 Certificates
+## Representation in Certificate Signing Requests (CSRs) and X.509 Certificates
 
 This section describes the X.509 representation of the `hardware-module` identifier. Other credential types may use the same identifier values with representations appropriate to those credential types.
 
