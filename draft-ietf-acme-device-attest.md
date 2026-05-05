@@ -147,7 +147,9 @@ This section describes the X.509 representation of the `permanent-identifier`. O
 
 The identity is included in the Subject Alternative Name Extension using the `identifierValue` field of the PermanentIdentifier form described in {{!RFC4043}}. Although {{!RFC4043}} permits the requester to include the `identifierValue` in a `serialNumber` subject attribute, this specification mandates that the `identifierValue` field of the PermanentIdentifier MUST be present and MUST contain the identifier.
 
-The value of the `identifierValue` field of the PermanentIdentifier MUST exactly match (no normalization, case folding, or encoding transformation is permitted) the `device-identifier-value` value as encoded in the Order resource. If the `assigner-value` value is included in the identifier as encoded in the Order resource, then the `assigner` field of the PermanentIdentifier MUST be the encoding of the "dotted-decimal" object identifier encoded as the `assigner-value` value.
+The value of the identifierValue field of the PermanentIdentifier MUST be an octet-for-octet match of the device-identifier-value value as encoded in the Order resource. If the `assigner-value` value is included in the identifier as encoded in the Order resource, then the `assigner` field of the PermanentIdentifier MUST be the encoding of the "dotted-decimal" object identifier encoded as the `assigner-value` value.
+
+This strict matching requirement ensures that the SAN in the issued certificate appears exactly as it appeared during proof-of-ownership validation, preventing identifier malleability. Serial number allocation schemes may be case-sensitive or otherwise sensitive to exact byte representation, so no normalization or transformation is permitted.
 
 To ensure that the identifier as presented in the Order resource and CSR match, the Server MUST perform the logical equivalent of extracting the `device-identifier-value` and `assigner-value` values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server MUST then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise. Servers that derive identifier values directly from verified attestation evidence and construct the certificate SAN from that evidence, provided the derived values are verified against the attested device identity in the attestation statement, satisfy the intent of this requirement.
 
@@ -201,7 +203,9 @@ The hardware module identity is included in the Subject Alternate Name Extension
 - hwType: An OBJECT IDENTIFIER that identifies the type of hardware module
 - hwSerialNum: An OCTET STRING containing the hardware module serial number
 
-The value of the `hwSerialNum` field of the HardwareModuleName MUST exactly match (no normalization, case folding, or encoding transformation is permitted) the `hw-serial-num-value` value as encoded in the Order resource. If the `hw-type-value` value is included in the identifier as encoded in the Order resource, then the `hwType` field of the HardwareModuleName MUST be the encoding of the "dotted-decimal" object identifier encoded as the `hw-type-value` value.
+The value of the hwSerialNum field of the HardwareModuleName MUST be an octet-for-octet match of the hw-serial-num-value value as encoded in the Order resource. If the `hw-type-value` value is included in the identifier as encoded in the Order resource, then the `hwType` field of the HardwareModuleName MUST be the encoding of the "dotted-decimal" object identifier encoded as the `hw-type-value` value.
+
+This strict matching requirement ensures that the SAN in the issued certificate appears exactly as it appeared during proof-of-ownership validation, preventing identifier malleability. Serial number allocation schemes may be case-sensitive or otherwise sensitive to exact byte representation, so no normalization or transformation is permitted.
 
 To ensure that the identifier as presented in the Order resource and CSR match, the Server MUST perform the logical equivalent of extracting the `hw-serial-num-value` and `hw-type-value` values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server MUST then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise. Servers that derive identifier values directly from verified attestation evidence and construct the certificate SAN from that evidence, provided the derived values are verified against the attested device identity in the attestation statement, satisfy the intent of this requirement.
 
@@ -287,7 +291,7 @@ If an enterprise CA desires to limit the number of certificates that can be requ
 
 Enterprise deployments often consist of heterogeneous device fleets where not all devices are capable of hardware attestation. A Server MAY offer device-attest-01 alongside other challenge types within a single authorization, allowing capable devices to complete device-attest-01 while other devices complete an alternative challenge. This posture allows operators to observe fleet attestation coverage before enforcing policy and is compatible with phased deployments.
 
-Servers can rely on other authorization mechanisms, such as external account binding or pre-authorized accounts, to establish device identity instead of requiring completion of the device-attest-01 challenge.
+Servers can rely on other authorization mechanisms, such as external account binding or pre-authorized accounts, to establish device identity instead of completing the device-attest-01 challenge.
 
 ### Multiple Challenge Types
 
