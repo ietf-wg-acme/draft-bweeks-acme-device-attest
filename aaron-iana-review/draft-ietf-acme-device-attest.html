@@ -1331,7 +1331,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <div class="alignLeft art-text artwork" id="section-3.1-2">
 <pre>
 assigner-value = first-and-second-components *("." component)
-first-and-second-components = (("0" / "1") "." ("0" / (%x31-33 %x30-39))) / ("2" "." component)
+first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39))) / ("2" "." component)
 component = "0" / (%x31-39 *%x30-39)
 device-identifier-value = 1*(%x00-2E / %x30-FF)
 
@@ -1391,7 +1391,7 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
 <div class="alignLeft art-text artwork" id="section-4.1-2">
 <pre>
 hw-type-value = first-and-second-components *("." component)
-first-and-second-components = (("0" / "1") "." ("0" / (%x31-33 %x30-39))) / ("2" "." component)
+first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39))) / ("2" "." component)
 component = "0" / (%x31-39 *%x30-39)
 hw-serial-num-value = 1*(%x00-2E / %x30-FF)
 
