@@ -124,7 +124,7 @@ The identifier's `value` field contains a UTF-8 string representation of the ide
 
 ~~~
 assigner-value = first-and-second-components *("." component)
-first-and-second-components = (("0" / "1") "." ("0" / (%x31-33 %x30-39))) / ("2" "." component)
+first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39))) / ("2" "." component)
 component = "0" / (%x31-39 *%x30-39)
 device-identifier-value = 1*(%x00-2E / %x30-FF)
 
@@ -179,7 +179,7 @@ The identifier's `value` field contains a UTF-8 string representation of the ide
 
 ~~~
 hw-type-value = first-and-second-components *("." component)
-first-and-second-components = (("0" / "1") "." ("0" / (%x31-33 %x30-39))) / ("2" "." component)
+first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39))) / ("2" "." component)
 component = "0" / (%x31-39 *%x30-39)
 hw-serial-num-value = 1*(%x00-2E / %x30-FF)
 
