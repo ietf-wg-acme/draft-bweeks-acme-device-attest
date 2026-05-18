@@ -123,7 +123,9 @@ Although {{!RFC4043}} permits any valid UTF-8 string to be used as the identifie
 The identifier's `value` field contains a UTF-8 string representation of the identity of the device. In addition to the value being a valid UTF-8 string, the value MUST match the `permanent-identifier-value` production rule as defined in this ABNF {{!RFC5234}} syntax:
 
 ~~~
-assigner-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
+assigner-value = first-and-second-components *("." component)
+first-and-second-components = (("0" / "1") "." ("0" / (%x31-33 %x30-39))) / ("2" "." component)
+component = "0" / (%x31-39 *%x30-39)
 device-identifier-value = 1*(%x00-2E / %x30-FF)
 
 permanent-identifier-value = device-identifier-value ["/" assigner-value]
@@ -176,7 +178,9 @@ Although [RFC4108] specifies that serial numbers can be represented as any seque
 The identifier's `value` field contains a UTF-8 string representation of the identity of the hardware module. In addition to the value being a valid UTF-8 string, the value MUST match the `hardware-module-value` production rule as defined in this ABNF {{!RFC5234}} syntax:
 
 ~~~
-hw-type-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
+hw-type-value = first-and-second-components *("." component)
+first-and-second-components = (("0" / "1") "." ("0" / (%x31-33 %x30-39))) / ("2" "." component)
+component = "0" / (%x31-39 *%x30-39)
 hw-serial-num-value = 1*(%x00-2E / %x30-FF)
 
 hardware-module-value = hw-serial-num-value ["/" hw-type-value]
