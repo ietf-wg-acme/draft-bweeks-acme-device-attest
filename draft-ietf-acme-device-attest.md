@@ -264,6 +264,8 @@ To validate a device attestation challenge, the Server performs the following st
 2. Verify that _attToBeSigned_ contains the key authorization or the token, according to the construction required by the attestation format, and that the value matches what the Server stored.
 3. Verify that the attestation statement contains a device identifier and that it matches the identifier in the Order. The means by which the identifier is encoded in the attestation statement are specific to the attestation format.
 
+If any of the steps fail, then the Server MUST respond to the Client with a "badAttestationStatement" error and set the status of the challenge object to "invalid". The Server SHOULD provide the reason for rejecting the challenge in the "detail" field of the problem document.
+
 <!-- This specification defines a new challenge response field `attObj` to contain WebAuthn attestation objects as described in Section 7.5.1 of {{!RFC8555}}. -->
 ~~~~~~~~~~
 POST /acme/chall/Rg5dV14Gh1Q
@@ -419,8 +421,7 @@ The "ACME Validation Methods" registry is to be updated to include the following
 
 ## New Error Types
 
-This document adds the following entries to the ACME Error Type registry:
-
+The "ACME Error Types" registry is to be updated to include the following entries:
 
 | Type       |Description   |Reference |
 |-----------------------|-------------|-----------|
