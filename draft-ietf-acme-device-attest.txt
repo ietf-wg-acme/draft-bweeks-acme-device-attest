@@ -5,14 +5,14 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                Google Inc
 Intended status: Standards Track                              G. Mallaya
-Expires: 6 November 2026                                   AppViewX Inc.
+Expires: 20 November 2026                                  AppViewX Inc.
                                                                S. Rajala
                                                                Keyfactor
                                                               C. Bonnell
                                                           DigiCert, Inc.
                                                                 R. Hurst
                                                        Peculiar Ventures
-                                                              5 May 2026
+                                                             19 May 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 November 2026.
+   This Internet-Draft will expire on 20 November 2026.
 
 Copyright Notice
 
@@ -178,7 +178,9 @@ Table of Contents
    valid UTF-8 string, the value MUST match the permanent-identifier-
    value production rule as defined in this ABNF [RFC5234] syntax:
 
-assigner-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
+assigner-value = first-and-second-components *("." component)
+first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39))) / ("2" "." component)
+component = "0" / (%x31-39 *%x30-39)
 device-identifier-value = 1*(%x00-2E / %x30-FF)
 
 permanent-identifier-value = device-identifier-value ["/" assigner-value]
@@ -287,10 +289,12 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    being a valid UTF-8 string, the value MUST match the hardware-module-
    value production rule as defined in this ABNF [RFC5234] syntax:
 
-   hw-type-value = ("0" / "1" / "2")  1*("." 1*DIGIT)
-   hw-serial-num-value = 1*(%x00-2E / %x30-FF)
+hw-type-value = first-and-second-components *("." component)
+first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39))) / ("2" "." component)
+component = "0" / (%x31-39 *%x30-39)
+hw-serial-num-value = 1*(%x00-2E / %x30-FF)
 
-   hardware-module-value = hw-serial-num-value ["/" hw-type-value]
+hardware-module-value = hw-serial-num-value ["/" hw-type-value]
 
    A valid hardware-module-value value is a UTF-8 string that contains a
    serial number consisting of one or more characters without any
@@ -451,6 +455,12 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
        identifier and that it matches the identifier in the Order.  The
        means by which the identifier is encoded in the attestation
        statement are specific to the attestation format.
+
+   If any of the steps fail, then the Server MUST respond to the Client
+   with a "badAttestationStatement" error and set the status of the
+   challenge object to "invalid".  The Server SHOULD provide the reason
+   for rejecting the challenge in the "detail" field of the problem
+   document.
 
    POST /acme/chall/Rg5dV14Gh1Q
    Host: example.com
@@ -820,8 +830,8 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
 
 9.3.  New Error Types
 
-   This document adds the following entries to the ACME Error Type
-   registry:
+   The "ACME Error Types" registry is to be updated to include the
+   following entries:
 
     +=========================+===========================+===========+
     | Type                    | Description               | Reference |
