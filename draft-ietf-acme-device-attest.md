@@ -437,4 +437,10 @@ The "ACME Error Types" registry is to be updated to include the following entrie
 # Acknowledgments
 {:numbered="false"}
 
-We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Mike Ounsworth, Deb Cooley, Aaron Gable, Richard Barnes, and  Herman Slatman for their reviews and suggestions, which greatly improved the quality of this document.
+We especially wish to thank Mike Ounsworth, Deb Cooley, Aaron Gable, and Richard Barnes for their insightful reviews, feedback, and technical suggestions, which greatly improved the quality of this document.
+
+We further wish to recognize the contributions of Herman Slatman and Mariano Cano (SmallStep), whose sustained implementation, interoperability, and operational experience over multiple years provided valuable feedback that informed the evolution and refinement of this specification. Their efforts exercising and validating the protocol in real-world deployments helped identify ambiguities and improve interoperability.
+
+We are grateful to all who have given feedback over the years, formally or informally, on mailing lists, through implementation efforts, during interoperability testing, and in person, including any contributors who may have been inadvertently omitted from this list.
+
+Finally, we wish to thank the authors of all referenced documents and prior work upon which this specification was built.
