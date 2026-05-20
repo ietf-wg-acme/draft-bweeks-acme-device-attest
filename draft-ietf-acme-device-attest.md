@@ -439,7 +439,7 @@ The "ACME Error Types" registry is to be updated to include the following entrie
 
 We especially wish to thank Mike Ounsworth, Deb Cooley, Aaron Gable, and Richard Barnes for their insightful reviews, feedback, and technical suggestions, which greatly improved the quality of this document.
 
-We further wish to recognize the contributions of Herman Slatman and Mariano Cano (SmallStep), whose sustained implementation, interoperability, and operational experience over multiple years provided valuable feedback that informed the evolution and refinement of this specification. Their efforts exercising and validating the protocol in real-world deployments helped identify ambiguities and improve interoperability.
+We further wish to recognize the contributions of Herman Slatman and Mariano Cano, whose sustained implementation, interoperability, and operational experience with Smallstep CA over multiple years provided valuable feedback that informed the evolution and refinement of this specification. Their efforts exercising and validating the protocol in real-world deployments helped identify ambiguities and improve interoperability.
 
 We are grateful to all who have given feedback over the years, formally or informally, on mailing lists, through implementation efforts, during interoperability testing, and in person, including any contributors who may have been inadvertently omitted from this list.
 
