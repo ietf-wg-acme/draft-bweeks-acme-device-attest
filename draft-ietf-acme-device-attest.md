@@ -432,9 +432,20 @@ The "ACME Error Types" registry is to be updated to include the following entrie
 
 --- back
 
-
-
 # Acknowledgments
 {:numbered="false"}
 
-We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Mike Ounsworth, Deb Cooley, Aaron Gable, Richard Barnes, and  Herman Slatman for their reviews and suggestions, which greatly improved the quality of this document.
+We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Mike Ounsworth, Deb Cooley, Aaron Gable, and Richard Barnes for their reviews and suggestions, which greatly improved the quality of this document.
+
+# Contributors
+{:numbered="false"}
+
+These contributors provided significant implementation experience using Smallstep CA, which shaped the evolution of this document.
+
+Mariano Cano
+Smallstep
+mariano.cano@gmail.com
+
+Herman Slatman
+Smallstep
+mail@hermanslatman.nl
