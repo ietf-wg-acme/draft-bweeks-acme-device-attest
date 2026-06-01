@@ -5,14 +5,14 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                Google Inc
 Intended status: Standards Track                              G. Mallaya
-Expires: 20 November 2026                                  AppViewX Inc.
+Expires: 3 December 2026                                   AppViewX Inc.
                                                                S. Rajala
                                                                Keyfactor
                                                               C. Bonnell
                                                           DigiCert, Inc.
                                                                 R. Hurst
                                                        Peculiar Ventures
-                                                             19 May 2026
+                                                             1 June 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 November 2026.
+   This Internet-Draft will expire on 3 December 2026.
 
 Copyright Notice
 
@@ -91,6 +91,7 @@ Table of Contents
      10.1.  Normative References
      10.2.  Informative References
    Acknowledgments
+   Contributors
    Authors' Addresses
 
 1.  Introduction
@@ -913,8 +914,18 @@ Acknowledgments
    We thank the participants on the ACME Working Group mailing list for
    their insightful feedback and comments.  In particular, the authors
    extend sincere appreciation to Mike Ounsworth, Deb Cooley, Aaron
-   Gable, Richard Barnes, and Herman Slatman for their reviews and
-   suggestions, which greatly improved the quality of this document.
+   Gable, and Richard Barnes for their reviews and suggestions, which
+   greatly improved the quality of this document.
+
+Contributors
+
+   These contributors provided significant implementation experience
+   using Smallstep CA, which shaped the evolution and design of this
+   document.
+
+   Mariano Cano Smallstep mariano.cano@gmail.com
+
+   Herman Slatman Smallstep mail@hermanslatman.nl
 
 Authors' Addresses
 
