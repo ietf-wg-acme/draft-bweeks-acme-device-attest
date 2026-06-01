@@ -440,7 +440,7 @@ We thank the participants on the ACME Working Group mailing list for their insig
 # Contributors
 {:numbered="false"}
 
-These contributors provided significant implementation experience using Smallstep CA, which shaped the evolution of this document.
+These contributors provided significant implementation experience using Smallstep CA, which shaped the evolution and design of this document.
 
 Mariano Cano
 Smallstep
