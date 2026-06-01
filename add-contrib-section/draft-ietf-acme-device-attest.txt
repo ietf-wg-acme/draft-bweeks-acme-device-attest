@@ -5,14 +5,14 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                Google Inc
 Intended status: Standards Track                              G. Mallaya
-Expires: 24 November 2026                                  AppViewX Inc.
+Expires: 3 December 2026                                   AppViewX Inc.
                                                                S. Rajala
                                                                Keyfactor
                                                               C. Bonnell
                                                           DigiCert, Inc.
                                                                 R. Hurst
                                                        Peculiar Ventures
-                                                             23 May 2026
+                                                             1 June 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 November 2026.
+   This Internet-Draft will expire on 3 December 2026.
 
 Copyright Notice
 
@@ -920,7 +920,8 @@ Acknowledgments
 Contributors
 
    These contributors provided significant implementation experience
-   using Smallstep CA, which shaped the evolution of this document.
+   using Smallstep CA, which shaped the evolution and design of this
+   document.
 
    Mariano Cano Smallstep mariano.cano@gmail.com
 
