@@ -421,7 +421,7 @@ The "ACME Validation Methods" registry is to be updated to include the following
 
 ## New Error Types
 
-The "ACME Error Types" registry is to be updated to include the following entries:
+The "ACME Error Types" registry is to be updated to include the following entry:
 
 | Type       |Description   |Reference |
 |-----------------------|-------------|-----------|
