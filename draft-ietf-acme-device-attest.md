@@ -32,9 +32,9 @@ author:
  -
     ins: C. Bonnell
     name: Corey Bonnell
-    org: DigiCert, Inc.
-    abbrev: DigiCert, Inc.
-    email: corey.bonnell@digicert.com
+    org: TurboLight Solutions
+    abbrev: TurboLight Solutions
+    email: corey.bonnell@turbolightsolutions.com
  -
     ins: R. Hurst
     name: Ryan Hurst
