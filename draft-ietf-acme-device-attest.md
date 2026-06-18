@@ -213,7 +213,7 @@ This strict matching requirement ensures that the SAN in the issued certificate 
 
 To ensure that the identifier as presented in the Order resource and CSR match, the Server MUST perform the logical equivalent of extracting the `hw-serial-num-value` and `hw-type-value` values from the CSR and reconstructing the UTF-8 representation of the identifier. The Server MUST then ensure that the UTF-8 representation and the identifier presented in the Order resource are an octet-for-octet match and reject the Order otherwise. Servers that derive identifier values directly from verified attestation evidence and construct the certificate SAN from that evidence, provided the derived values are verified against the attested device identity in the attestation statement, satisfy the intent of this requirement.
 
-{{!RFC8555}} section 7.4 mandates that "The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where the Server requires validation of the identifier but does not include the identifier in certificates due to privacy concerns. To support privacy-preserving certificates, Clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it MAY reject CSRs containing a HardwareModuleName in the subjectAltName extension. See the {{privacy-considerations}} for more information.
+{{!RFC8555}} section 7.4 mandates that "The CSR MUST indicate the exact same set of requested identifiers as the initial newOrder request". However, there are some environments where the Server requires validation of the identifier but does not include the identifier in certificates due to privacy concerns. To support privacy-preserving certificates, Clients MAY omit this identifier in the certificate signing request (CSR). Similarly, if the Server wishes to issue privacy-preserving certificates, it MAY reject CSRs containing a HardwareModuleName in the subjectAltName extension. See the {{privacy-considerations}} section for more information.
 
 # Device Attestation Challenge
 
@@ -256,7 +256,7 @@ To validate a device attestation challenge, the Server performs the following st
 2. Verify that _attToBeSigned_ contains the key authorization or the token, according to the construction required by the attestation format, and that the value matches what the Server stored.
 3. Verify that the attestation statement contains a device identifier and that it matches the identifier in the Order. The means by which the identifier is encoded in the attestation statement are specific to the attestation format.
 
-If any of the steps fail, then the Server MUST respond to the Client with a "badAttestationStatement" error and set the status of the challenge object to "invalid". The Server SHOULD provide the reason for rejecting the challenge in the "detail" field of the problem document.
+If any of the steps fail, then the Server MUST respond to the Client with a "badAttestationStatement" error and set the status of the challenge object to "invalid". The Server MUST provide the reason for rejecting the challenge in the "detail" field of the problem document, unless the disclosure of the reason to the Client presents a privacy concern; see the {{privacy-considerations}} section for more information.
 
 An example challenge response containing the WebAuthn attestation object in the payload:
 
@@ -425,7 +425,7 @@ The "ACME Error Types" registry is to be updated to include the following entry:
 # Acknowledgments
 {:numbered="false"}
 
-We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Aaron Gable, Christopher Inacio, Deb Cooley, Eric Vyncke, Mahesh Jethanandani, Mike Bishop, Mike Ounsworth, Mohamed Boucadair, Richard Barnes, and Roman Danyliw for their reviews and suggestions, which greatly improved the quality of this document.
+We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Aaron Gable, Christopher Inacio, Deb Cooley, Eric Vyncke, Mahesh Jethanandani, Mike Bishop, Mike Ounsworth, Mohamed Boucadair, Richard Barnes, Roman Danyliw, and Tommy Jensen for their reviews and suggestions, which greatly improved the quality of this document.
 
 # Contributors
 {:numbered="false"}
