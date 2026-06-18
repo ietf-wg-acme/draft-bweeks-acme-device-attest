@@ -50,6 +50,9 @@ normative:
   RFC8555:
   RFC8809:
   I-D.ietf-tls-rfc8446bis:
+  IANA-Webauthn:
+    title: "IANA Registries for Web Authentication (WebAuthn)"
+    target: https://www.iana.org/assignments/webauthn/webauthn.xhtml
   WebAuthn:
     title: "Web Authentication: An API for accessing Public Key Credentials Level 2"
     author:
@@ -76,11 +79,6 @@ normative:
     date: 2021-04
     target: https://www.w3.org/TR/webauthn-2/
 
-informative:
-  IANA-Webauthn:
-    title: "IANA Registries for Web Authentication (WebAuthn)"
-    target: https://www.iana.org/assignments/webauthn/webauthn.xhtml
-
 --- abstract
 
 This document specifies new identifiers and a challenge for the Automated Certificate Management Environment (ACME) protocol which allows validating the identity of a device using attestation.
@@ -97,7 +95,7 @@ Many operating systems and device vendors offer functionality enabling a device 
 - [Trusted Platform Module](https://trustedcomputinggroup.org/resource/trusted-platform-module-tpm-summary/)
 - [Managed Device Attestation for Apple Devices](https://support.apple.com/en-om/guide/deployment/dep28afbde6a/web)
 
-Using ACME and device attestation to issue client certificates for enterprise PKI will be a common use case. The following variances to the ACME specification are described in this document:
+The following variances to the ACME specification are described in this document:
 
 - Addition of `permanent-identifier` {{!RFC4043}} and `hardware-module` {{!RFC4108}} identifier types.
 - Addition of the `device-attest-01` challenge type to prove control of the `permanent-identifier` and `hardware-module` identifier types.
@@ -135,7 +133,7 @@ A valid `permanent-identifier-value` value is a UTF-8 string that contains an id
 
 The Server MUST verify that identifier values in newOrder requests conform to the `permanent-identifier-value` production rule and MUST reject requests containing non-conforming values with a "malformed" error.
 
-Example identifier without an assigner:
+Example of an identifier without an assigner:
 
 ~~~
 {
@@ -144,7 +142,7 @@ Example identifier without an assigner:
 }
 ~~~
 
-Example identifier with an assigner:
+Example of an identifier with an assigner:
 
 ~~~
 {
@@ -190,20 +188,20 @@ A valid `hardware-module-value` value is a UTF-8 string that contains a serial n
 
 The Server MUST verify that identifier values in newOrder requests conform to the `hardware-module-value` production rule and MUST reject requests containing non-conforming values with a "malformed" error.
 
-Example identifier with the type of the hardware module represented using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":
+Example of an identifier with the type of the hardware module represented using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":
 
 ~~~
 {
-  "type": `hardware-module`,
+  "type": "hardware-module",
   "value": "ABCD/1.2.3.4"
 }
 ~~~
 
-Example identifier with no type specified and a serial number of "ABCD":
+Example of an identifier with no type specified and a serial number of "ABCD":
 
 ~~~
 {
-  "type": `hardware-module`,
+  "type": "hardware-module",
   "value": "ABCD"
 }
 ~~~
@@ -227,7 +225,7 @@ To ensure that the identifier as presented in the Order resource and CSR match, 
 
 # Device Attestation Challenge
 
-The Client can prove control over a permanent identifier of a device by providing an attestation statement containing the identifier of the device.
+A Client can prove control over a permanent identifier of a device by providing an attestation statement containing the identifier of the device.
 
 The device-attest-01 ACME challenge object has the following format:
 
@@ -236,6 +234,8 @@ type (required, string):
 
 token (required, string):
 : A random value that uniquely identifies the challenge.
+
+An example message with a device-attest-01 challenge is provided below:
 
 ~~~~~~~~~~
 {
@@ -251,7 +251,7 @@ A Client fulfills this challenge by constructing a key authorization ({{Section 
 This specification borrows the WebAuthn _attestation object_ representation as described in Section 6.5.4 of {{WebAuthn}} for encapsulating attestation formats, but with these modifications:
 
 - The key authorization is used to form _attToBeSigned_. This replaces the concatenation of _authenticatorData_ and _clientDataHash_. _attToBeSigned_ is hashed using an algorithm specified by the attestation format.
--  Some attestation formats use an external attestation authority that issues a certificate binding the challenge to the device before the Client's account key is available. In these formats, _attToBeSigned_ is formed from the token alone rather than the full key authorization, because the external authority signs at attestation time before the account key thumbprint can be incorporated. The token construction provides freshness. The key authorization construction additionally binds the attestation to a specific account key. The Server MUST consult format-specific documentation to determine which construction applies and MUST verify accordingly. Attestation formats whose signing procedure does not incorporate _attToBeSigned_ cannot be used to satisfy this challenge type.
+-  Some attestation formats use an external attestation authority that issues a certificate binding the challenge to the device before the Client's account key is available. In these formats, _attToBeSigned_ is formed from the token alone rather than the full key authorization, because the external authority signs at attestation time before the account key thumbprint can be incorporated. The token construction provides freshness. The key authorization construction additionally binds the attestation to a specific account key. The Server MUST process and verify attestations in accordance with the format-specific documentation. Attestation formats whose signing procedure does not incorporate _attToBeSigned_ cannot be used to satisfy this challenge type.
 - The _authData_ field carries browser-context data (including the RP ID hash) that has no meaning in the ACME context and SHOULD be omitted.
 
 A Client responds with the response object containing the WebAuthn attestation object in the "attObj" field to acknowledge that the challenge can be validated by the Server. Clients MAY include additional fields beyond "attObj" in the response object. Servers MUST ignore unrecognized fields in the challenge response.
@@ -266,7 +266,8 @@ To validate a device attestation challenge, the Server performs the following st
 
 If any of the steps fail, then the Server MUST respond to the Client with a "badAttestationStatement" error and set the status of the challenge object to "invalid". The Server SHOULD provide the reason for rejecting the challenge in the "detail" field of the problem document.
 
-<!-- This specification defines a new challenge response field `attObj` to contain WebAuthn attestation objects as described in Section 7.5.1 of {{!RFC8555}}. -->
+An example challenge response containing the WebAuthn attestation object in the payload:
+
 ~~~~~~~~~~
 POST /acme/chall/Rg5dV14Gh1Q
 Host: example.com
@@ -285,7 +286,7 @@ Content-Type: application/jose+json
   "signature": "Q1bURgJoEslbD1c5...3pYdSMLio57mQNN4"
 }
 ~~~~~~~~~~
-The webauthn payload MAY contain any identifiers registered in "WebAuthn Attestation Statement Format Identifiers" and any extensions registered in "WebAuthn Extension Identifiers" [IANA-Webauthn], [RFC8809].
+The webauthn payload MAY contain any identifiers registered in "WebAuthn Attestation Statement Format Identifiers" and any extensions registered in "WebAuthn Extension Identifiers" [IANA-Webauthn].
 
 # Operational Considerations
 
@@ -435,7 +436,7 @@ The "ACME Error Types" registry is to be updated to include the following entry:
 # Acknowledgments
 {:numbered="false"}
 
-We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Mike Ounsworth, Deb Cooley, Aaron Gable, and Richard Barnes for their reviews and suggestions, which greatly improved the quality of this document.
+We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Aaron Gable, Deb Cooley, Eric Vyncke, Mike Ounsworth, Mohamed Boucadair, and Richard Barnes for their reviews and suggestions, which greatly improved the quality of this document.
 
 # Contributors
 {:numbered="false"}
