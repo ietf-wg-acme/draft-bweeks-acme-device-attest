@@ -9,6 +9,7 @@ v: 3
 area: Security
 workgroup: ACME Working Group
 keyword: Internet-Draft
+updates: 8555
 
 author:
  -
@@ -81,7 +82,7 @@ normative:
 
 --- abstract
 
-This document specifies new identifiers and a challenge for the Automated Certificate Management Environment (ACME) protocol which allows validating the identity of a device using attestation.
+This document specifies new identifiers and a challenge for the Automated Certificate Management Environment (ACME) protocol which allows validating the identity of a device using attestation. This document updates RFC 8555 to enable a privacy-preserving mode for the identifiers defined in this document.
 
 --- middle
 
@@ -122,7 +123,7 @@ The identifier's `value` field contains a UTF-8 string representation of the ide
 
 ~~~
 assigner-value = first-and-second-components *("." component)
-first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39))) / ("2" "." component)
+first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39)) / ("2" "." component)
 component = "0" / (%x31-39 *%x30-39)
 device-identifier-value = 1*(%x00-2E / %x30-FF)
 
@@ -177,14 +178,14 @@ The identifier's `value` field contains a UTF-8 string representation of the ide
 
 ~~~
 hw-type-value = first-and-second-components *("." component)
-first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39))) / ("2" "." component)
+first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39)) / ("2" "." component)
 component = "0" / (%x31-39 *%x30-39)
 hw-serial-num-value = 1*(%x00-2E / %x30-FF)
 
-hardware-module-value = hw-serial-num-value ["/" hw-type-value]
+hardware-module-value = hw-serial-num-value "/" hw-type-value
 ~~~
 
-A valid `hardware-module-value` value is a UTF-8 string that contains a serial number consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. Optionally, a forward-slash "/" character and "dotted-decimal" object identifier identifying the hardware type may follow the serial number.
+A valid `hardware-module-value` value is a UTF-8 string that contains a serial number consisting of one or more characters without any forward-slash "/" (UTF-8: U+002F) characters. A forward-slash "/" character and "dotted-decimal" object identifier identifying the hardware type follows the serial number.
 
 The Server MUST verify that identifier values in newOrder requests conform to the `hardware-module-value` production rule and MUST reject requests containing non-conforming values with a "malformed" error.
 
@@ -194,15 +195,6 @@ Example of an identifier with the type of the hardware module represented using 
 {
   "type": "hardware-module",
   "value": "ABCD/1.2.3.4"
-}
-~~~
-
-Example of an identifier with no type specified and a serial number of "ABCD":
-
-~~~
-{
-  "type": "hardware-module",
-  "value": "ABCD"
 }
 ~~~
 
@@ -392,7 +384,7 @@ See Section 13 of {{WebAuthn}} for additional security considerations related to
 
 Key attestation statements may include a variety of information in addition to the public key being attested. While not described in this document, the Server MAY use any policy when evaluating this information. This evaluation can result in rejection of a certificate request that features a verifiable key attestation for the public key contained in the request. For example, an attestation statement may indicate use of an unacceptable firmware version.
 
-The "token" value MUST have at least 128 bits of entropy. It MUST NOT contain any characters outside the base64url alphabet, including padding characters ("="). See {{I-D.ietf-tls-rfc8446bis}}, Appendix C.1 for additional information on randomness requirements.
+The "token" value MUST have at least 128 bits of entropy. It MUST NOT contain any characters outside the base64url alphabet, including padding characters ("="). The "token" value MUST be generated using a cryptographically secure pseudorandom number generator ("CSPRNG"). See {{I-D.ietf-tls-rfc8446bis}}, Appendix C.1 for guidance on random number generation.
 
 The binding between the certified public key and the device identifier is established through the attestation statement rather than through the CSR alone. The attestation authority cryptographically binds the public key to the device identity, either by signing the attestation statement directly, by issuing an attestation certificate, or by other cryptographic means specific to the attestation format. The Server verifies this chain: the attestation is produced by a trusted attestation authority, the public key in the attestation matches the public key in the CSR, and the device identifier in the attestation matches the identifier in the Order. This three-way binding is the basis on which the Server can associate a certified public key with a particular device.
 
@@ -435,7 +427,7 @@ The "ACME Error Types" registry is to be updated to include the following entry:
 # Acknowledgments
 {:numbered="false"}
 
-We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Aaron Gable, Deb Cooley, Eric Vyncke, Mike Ounsworth, Mohamed Boucadair, Richard Barnes, and Roman Danyliw for their reviews and suggestions, which greatly improved the quality of this document.
+We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Aaron Gable, Deb Cooley, Eric Vyncke, Mahesh Jethanandani, Mike Ounsworth, Mohamed Boucadair, Richard Barnes, and Roman Danyliw for their reviews and suggestions, which greatly improved the quality of this document.
 
 # Contributors
 {:numbered="false"}
