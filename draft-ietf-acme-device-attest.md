@@ -96,7 +96,7 @@ Many operating systems and device vendors offer functionality enabling a device 
 - [Trusted Platform Module](https://trustedcomputinggroup.org/resource/trusted-platform-module-tpm-summary/)
 - [Managed Device Attestation for Apple Devices](https://support.apple.com/en-om/guide/deployment/dep28afbde6a/web)
 
-The following variances to the ACME specification are described in this document:
+The following changes to the ACME specification are described in this document:
 
 - Addition of `permanent-identifier` {{!RFC4043}} and `hardware-module` {{!RFC4108}} identifier types.
 - Addition of the `device-attest-01` challenge type to prove control of the `permanent-identifier` and `hardware-module` identifier types.
@@ -113,7 +113,7 @@ Efforts are underway within the Remote ATtestation ProcedureS (RATS) working gro
 
 # Permanent Identifier
 
-A new identifier type, `permanent-identifier` is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier MAY also be specified. The name of this identifier type was chosen to align with {{!RFC4043}}. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority.
+A new identifier type, `permanent-identifier` is introduced to represent the identity of a device assigned by the manufacturer, typically a serial number. Additionally, the assigner of the identifier MAY be specified. The name of this identifier type was chosen to align with {{!RFC4043}}. This specification does not prescribe the lifetime of the identifier, which is at the discretion of the Assigner Authority ({{!RFC4043}}).
 
 Although {{!RFC4043}} permits any valid UTF-8 string to be used as the identifier, this specification mandates that identifiers MUST NOT contain the forward-slash "/" (UTF-8: U+002F) character. This restriction is required to make the ABNF production rule for the `permanent-identifier-value` unambiguous.
 
@@ -282,8 +282,6 @@ The webauthn payload MAY contain any identifiers registered in "WebAuthn Attesta
 
 # Operational Considerations
 
-Although this document focuses guidance on implementing new identifier types and a challenge for certificate issuance using ACME, it does not define a new protocol, a protocol extension, or an architecture.
-
 ## Enterprise PKI
 
 ACME was originally envisioned for issuing certificates in the Web PKI, however this extension is primarily useful in enterprise PKI. The sections below provide operational considerations for enterprise PKIs.
@@ -427,7 +425,7 @@ The "ACME Error Types" registry is to be updated to include the following entry:
 # Acknowledgments
 {:numbered="false"}
 
-We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Aaron Gable, Deb Cooley, Eric Vyncke, Mahesh Jethanandani, Mike Ounsworth, Mohamed Boucadair, Richard Barnes, and Roman Danyliw for their reviews and suggestions, which greatly improved the quality of this document.
+We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Aaron Gable, Deb Cooley, Eric Vyncke, Mahesh Jethanandani, Mike Bishop, Mike Ounsworth, Mohamed Boucadair, Richard Barnes, and Roman Danyliw for their reviews and suggestions, which greatly improved the quality of this document.
 
 # Contributors
 {:numbered="false"}
