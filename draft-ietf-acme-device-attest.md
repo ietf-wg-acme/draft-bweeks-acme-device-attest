@@ -294,8 +294,7 @@ Although this document focuses guidance on implementing new identifier types and
 
 ## Enterprise PKI
 
-ACME was originally envisioned for issuing certificates in the Web PKI, however this extension will primarily be useful in enterprise PKI.
-
+ACME was originally envisioned for issuing certificates in the Web PKI, however this extension is primarily useful in enterprise PKI. The sections below provide operational considerations for enterprise PKIs.
 
 ### External Account Binding
 
@@ -317,7 +316,7 @@ Servers MAY rely on other authorization mechanisms, such as external account bin
 
 Attestation formats differ in the authority that enforces the boundary around the attested key and in the claims that authority can make. At one end, dedicated security hardware (such as a TPM or HSM) provides manufacturer-backed guarantees that the key is generated and stored within the hardware and cannot be exported. At the other end, OS-enforced isolation boundaries (such as platform keystores protected by the operating system kernel) provide meaningful key protection guarantees without discrete security hardware. Intermediate cases include TEE-based attestation where a hypervisor or trusted execution environment acts as the authority.
 
-Servers SHOULD consider the trust properties of each attestation format when establishing issuance policy, including the nature of the authority making the attestation and the key protection guarantees it can assert. The key authorization construction described in {{device-attestation-challenge}} also contributes to this trust model: formats that use the full key authorization as _attToBeSigned_ bind the attestation to a specific account key, while formats that use the token alone provide freshness without account key binding.
+Server operators must consider the trust properties of each attestation format when establishing issuance policy, including the nature of the authority making the attestation and the key protection guarantees it can assert. The key authorization construction described in {{device-attestation-challenge}} also contributes to this trust model: formats that use the full key authorization as _attToBeSigned_ bind the attestation to a specific account key, while formats that use the token alone provide freshness without account key binding.
 
 # Privacy Considerations
 
@@ -436,7 +435,7 @@ The "ACME Error Types" registry is to be updated to include the following entry:
 # Acknowledgments
 {:numbered="false"}
 
-We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Aaron Gable, Deb Cooley, Eric Vyncke, Mike Ounsworth, Mohamed Boucadair, and Richard Barnes for their reviews and suggestions, which greatly improved the quality of this document.
+We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Aaron Gable, Deb Cooley, Eric Vyncke, Mike Ounsworth, Mohamed Boucadair, Richard Barnes, and Roman Danyliw for their reviews and suggestions, which greatly improved the quality of this document.
 
 # Contributors
 {:numbered="false"}
