@@ -156,7 +156,7 @@ Example of an identifier with an assigner:
 
 This section describes the X.509 representation of the `permanent-identifier`. Other credential types may use the same identifier values with representations appropriate to those credential types.
 
-The identity is included in the Subject Alternative Name Extension using the `identifierValue` field of the PermanentIdentifier form described in {{!RFC4043}}. Although {{!RFC4043}} permits the requester to include the `identifierValue` in a `serialNumber` subject attribute, this specification mandates that the `identifierValue` field of the PermanentIdentifier MUST be present and MUST contain the identifier.
+The identity is included in the Subject Alternative Name Extension ("SAN") using the `identifierValue` field of the PermanentIdentifier form described in {{!RFC4043}}. Although {{!RFC4043}} permits the requester to include the `identifierValue` in a `serialNumber` subject attribute, this specification mandates that the `identifierValue` field of the PermanentIdentifier MUST be present and MUST contain the identifier.
 
 The value of the identifierValue field of the PermanentIdentifier MUST be an octet-for-octet match of the device-identifier-value value as encoded in the Order resource. If the `assigner-value` value is included in the identifier as encoded in the Order resource, then the `assigner` field of the PermanentIdentifier MUST be the encoding of the "dotted-decimal" object identifier encoded as the `assigner-value` value.
 
@@ -425,7 +425,7 @@ The "ACME Error Types" registry is to be updated to include the following entry:
 # Acknowledgments
 {:numbered="false"}
 
-We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Aaron Gable, Deb Cooley, Eric Vyncke, Mahesh Jethanandani, Mike Bishop, Mike Ounsworth, Mohamed Boucadair, Richard Barnes, and Roman Danyliw for their reviews and suggestions, which greatly improved the quality of this document.
+We thank the participants on the ACME Working Group mailing list for their insightful feedback and comments. In particular, the authors extend sincere appreciation to Aaron Gable, Christopher Inacio, Deb Cooley, Eric Vyncke, Mahesh Jethanandani, Mike Bishop, Mike Ounsworth, Mohamed Boucadair, Richard Barnes, and Roman Danyliw for their reviews and suggestions, which greatly improved the quality of this document.
 
 # Contributors
 {:numbered="false"}
