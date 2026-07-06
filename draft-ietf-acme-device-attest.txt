@@ -5,14 +5,14 @@
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                Google Inc
 Intended status: Standards Track                              G. Mallaya
-Expires: 15 December 2026                                  AppViewX Inc.
+Expires: 7 January 2027                                    AppViewX Inc.
                                                                S. Rajala
                                                                Keyfactor
                                                               C. Bonnell
                                                     TurboLight Solutions
                                                                 R. Hurst
                                                        Peculiar Ventures
-                                                            13 June 2026
+                                                             6 July 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 December 2026.
+   This Internet-Draft will expire on 7 January 2027.
 
 Copyright Notice
 
@@ -604,11 +604,11 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
    persistent device audit trail regardless of whether the log operator
    intends to maintain one.
 
-   Implementers SHOULD assess whether the operational benefit of
+   Implementers should assess whether the operational benefit of
    unchanging device identification outweighs this correlation exposure.
    In deployments where device anonymity or pseudonymity is a
    requirement, such as systems handling sensitive workloads on behalf
-   of individuals, implementers SHOULD consider whether alternative
+   of individuals, implementers should consider whether alternative
    validation mechanisms that do not bind the certificate to a permanent
    hardware identifier are more appropriate.
 
@@ -633,14 +633,14 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
    operating servers may consider applying data minimization principles
    to attestation payload handling by limiting only the attributes
    necessary to make the authorization decision should be evaluated, and
-   the full attestation payload SHOULD NOT be retained beyond the
+   the full attestation payload should not be retained beyond the
    duration of the challenge validation exchange unless there is a
    specific, documented operational requirement to do so.
 
-   Implementers operating ACME Clients SHOULD be aware that the
+   Implementers operating ACME Clients should be aware that the
    attestation format selected may expose more device state than is
    necessary to satisfy the server's authorization policy.  Where
-   multiple attestation formats are available, Clients SHOULD prefer
+   multiple attestation formats are available, Clients should prefer
    formats that minimize the set of disclosed attributes.
 
 7.3.  Secondary Use of Attestation Data
@@ -700,7 +700,7 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
       mechanism only.
 
    *  If the certificate is intended for use in certificate transparency
-      logs, implementers MUST consider that embedding a permanent-
+      logs, implementers must consider that embedding a permanent-
       identifier or hardware-module value will make that identifier
       permanently and publicly discoverable, indexed by issuance time,
       issuer, and subject.  This constitutes an irreversible disclosure
@@ -720,7 +720,7 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
    account credentials but a historical record of device-to-identity
    mappings across all certificate issuances.
 
-   Implementers operating servers SHOULD store account-to-device
+   Implementers operating servers should store account-to-device
    bindings using the minimum fidelity necessary for authorization
    decisions.  Where the operational requirement is only to confirm that
    a given device is authorized to request certificates, it may be
@@ -732,7 +732,7 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
 7.6.  Implementer Decision Guidance
 
    Implementers considering whether to include permanent-identifier or
-   hardware-module in CSRs and issued certificates SHOULD work through
+   hardware-module in CSRs and issued certificates should work through
    the following questions before enabling these identifiers:
 
    *  Is unchanging hardware identity in the certificate necessary for
@@ -760,7 +760,7 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
 
    *  What is the attestation data handling policy of the server
       operator?  If this is not documented or auditable, device
-      operators SHOULD treat the attestation exchange as a full
+      operators should treat the attestation exchange as a full
       disclosure of all attributes present in the attestation payload.
 
 8.  Security Considerations

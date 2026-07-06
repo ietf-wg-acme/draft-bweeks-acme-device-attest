@@ -13,22 +13,23 @@
 <meta content="
        This document specifies new identifiers and a challenge for the Automated Certificate Management Environment (ACME) protocol which allows validating the identity of a device using attestation. 
     " name="description">
-<meta content="xml2rfc 3.33.0" name="generator">
+<meta content="xml2rfc 3.34.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-acme-device-attest-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.33.0
-    Python 3.12.13
-    ConfigArgParse 1.7
+  xml2rfc 3.34.0
+    Python 3.14.5
+    ConfigArgParse 1.7.5
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 6.0.2
-    platformdirs 4.9.6
+    lxml 6.1.1
+    natsort 8.4.0
+    platformdirs 4.10.0
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.7.0
+    wcwidth 0.8.2
 -->
 <link href="draft-ietf-acme-device-attest.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1047,11 +1048,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">ACME DA</td>
-<td class="right">June 2026</td>
+<td class="right">July 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Weeks, et al.</td>
-<td class="center">Expires 15 December 2026</td>
+<td class="center">Expires 7 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1064,12 +1065,12 @@ svg {
 <dd class="internet-draft">draft-ietf-acme-device-attest-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-13" class="published">13 June 2026</time>
+<time datetime="2026-07-06" class="published">6 July 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-15">15 December 2026</time></dd>
+<dd class="expires"><time datetime="2027-01-07">7 January 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1119,7 +1120,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 15 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 7 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1591,7 +1592,7 @@ Content-Type: application/jose+json
 <p id="section-7.1-1">The <code>permanent-identifier</code> type encodes a manufacturer assigned device identity, typically a serial number. The <code>hardware-module</code> type encodes the identity of the secure cryptoprocessor that generated the certificate key. In both cases, the identifier is globally unique within its assigner scope and unchanging for the lifetime of the device or hardware module.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
 <p id="section-7.1-2">From the perspective of <span>[<a href="#RFC6973" class="cite xref">RFC6973</a>]</span> Section 5.2.2, such identifiers enable direct identification of a device across protocol interactions, deployments, and time. Any entity that receives or observes these identifiers, including the server, intermediary infrastructure, and any relying party that processes the issued certificate acquires an observable reference that can be used to track the device's certificate issuance history, renewal patterns, and operational context.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
 <p id="section-7.1-3">When the same <code>permanent-identifier</code> or <code>hardware-module</code> value appears across multiple certificate requests (as it will in any recurring renewal workflow), it enables <span>[<a href="#RFC6973" class="cite xref">RFC6973</a>]</span> correlation: an observer with access to server logs can reconstruct the full lifecycle of a device's certificate activity. Similarly, when such identifiers are included in issued certificates, logging issued certificates in a central location (in certificate transparency logs, etc.) produces a persistent device audit trail regardless of whether the log operator intends to maintain one.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
-<p id="section-7.1-4">Implementers <span class="bcp14">SHOULD</span> assess whether the operational benefit of unchanging device identification outweighs this correlation exposure. In deployments where device anonymity or pseudonymity is a requirement, such as systems handling sensitive workloads on behalf of individuals, implementers <span class="bcp14">SHOULD</span> consider whether alternative validation mechanisms that do not bind the certificate to a permanent hardware identifier are more appropriate.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
+<p id="section-7.1-4">Implementers should assess whether the operational benefit of unchanging device identification outweighs this correlation exposure. In deployments where device anonymity or pseudonymity is a requirement, such as systems handling sensitive workloads on behalf of individuals, implementers should consider whether alternative validation mechanisms that do not bind the certificate to a permanent hardware identifier are more appropriate.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="fingerprinting-via-attestation-payloads">
@@ -1600,8 +1601,8 @@ Content-Type: application/jose+json
 <a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-fingerprinting-via-attestat" class="section-name selfRef">Fingerprinting via Attestation Payloads</a>
         </h3>
 <p id="section-7.2-1">The <code>device-attest-01</code> challenge response carries a WebAuthn attestation object that may contain significantly more information than the identifier value alone. Depending on the attestation format, this payload may include device model, firmware version, bootloader state, hardware security level, and operating system version. Even when the resulting certificate is issued in a privacy-preserving form that omits the identifier from the subjectAltName extension (see Section 3.2 and Section 4.2), the attestation payload itself is transmitted to and evaluated by the server during challenge validation.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
-<p id="section-7.2-2">This constitutes a fingerprinting surface as defined in <span>[<a href="#RFC6973" class="cite xref">RFC6973</a>]</span> Section 3.2. The combination of a hardware serial number, hardware type OID, and firmware attestation attributes may uniquely identify not just the device model but the specific device unit, even in the absence of an explicit <code>permanent-identifier</code> value. Implementers operating servers may consider applying data minimization principles to attestation payload handling by limiting only the attributes necessary to make the authorization decision should be evaluated, and the full attestation payload <span class="bcp14">SHOULD NOT</span> be retained beyond the duration of the challenge validation exchange unless there is a specific, documented operational requirement to do so.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
-<p id="section-7.2-3">Implementers operating ACME Clients <span class="bcp14">SHOULD</span> be aware that the attestation format selected may expose more device state than is necessary to satisfy the server's authorization policy. Where multiple attestation formats are available, Clients <span class="bcp14">SHOULD</span> prefer formats that minimize the set of disclosed attributes.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
+<p id="section-7.2-2">This constitutes a fingerprinting surface as defined in <span>[<a href="#RFC6973" class="cite xref">RFC6973</a>]</span> Section 3.2. The combination of a hardware serial number, hardware type OID, and firmware attestation attributes may uniquely identify not just the device model but the specific device unit, even in the absence of an explicit <code>permanent-identifier</code> value. Implementers operating servers may consider applying data minimization principles to attestation payload handling by limiting only the attributes necessary to make the authorization decision should be evaluated, and the full attestation payload should not be retained beyond the duration of the challenge validation exchange unless there is a specific, documented operational requirement to do so.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
+<p id="section-7.2-3">Implementers operating ACME Clients should be aware that the attestation format selected may expose more device state than is necessary to satisfy the server's authorization policy. Where multiple attestation formats are available, Clients should prefer formats that minimize the set of disclosed attributes.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="secondary-use-of-attestation-data">
@@ -1629,7 +1630,7 @@ Content-Type: application/jose+json
             <p id="section-7.4-3.2.1">If the certificate is used for mutual TLS in a workload identity context, embedding an unchanging hardware identifier couples the cryptographic identity of the workload to the physical device rather than to the logical identity of the workload. This can impede key rotation, device replacement, and workload migration, in addition to creating the correlation risks described above. In such cases, implementers should prefer logical workload identifiers (such as SPIFFE URIs) in the issued certificate and treat the hardware attestation as a bootstrap authorization mechanism only.<a href="#section-7.4-3.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.4-3.3">
-            <p id="section-7.4-3.3.1">If the certificate is intended for use in certificate transparency logs, implementers <span class="bcp14">MUST</span> consider that embedding a <code>permanent-identifier</code> or <code>hardware-module</code> value will make that identifier permanently and publicly discoverable, indexed by issuance time, issuer, and subject. This constitutes an irreversible disclosure under <span>[<a href="#RFC6973" class="cite xref">RFC6973</a>]</span> Section 5.2.4 and should be avoided unless public discoverability of the device identifier is an explicit operational requirement.<a href="#section-7.4-3.3.1" class="pilcrow">¶</a></p>
+            <p id="section-7.4-3.3.1">If the certificate is intended for use in certificate transparency logs, implementers must consider that embedding a <code>permanent-identifier</code> or <code>hardware-module</code> value will make that identifier permanently and publicly discoverable, indexed by issuance time, issuer, and subject. This constitutes an irreversible disclosure under <span>[<a href="#RFC6973" class="cite xref">RFC6973</a>]</span> Section 5.2.4 and should be avoided unless public discoverability of the device identifier is an explicit operational requirement.<a href="#section-7.4-3.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1640,7 +1641,7 @@ Content-Type: application/jose+json
 <a href="#section-7.5" class="section-number selfRef">7.5. </a><a href="#name-stored-data-and-account-bin" class="section-name selfRef">Stored Data and Account Binding</a>
         </h3>
 <p id="section-7.5-1">This document recommends the use of externalAccountBinding to pre-authenticate device requests to an enterprise server. When an ACME account is persistently bound to a device identity, the server's account store contains a durable mapping between the cryptographic account credential and the physical device. Per <span>[<a href="#RFC6973" class="cite xref">RFC6973</a>]</span> Section 5.1.2, this stored association constitutes a target for compromise: an attacker who obtains the account store gains not only account credentials but a historical record of device-to-identity mappings across all certificate issuances.<a href="#section-7.5-1" class="pilcrow">¶</a></p>
-<p id="section-7.5-2">Implementers operating servers <span class="bcp14">SHOULD</span> store account-to-device bindings using the minimum fidelity necessary for authorization decisions. Where the operational requirement is only to confirm that a given device is authorized to request certificates, it may be sufficient to store a hash or other one-way transformation of the device identifier rather than the identifier itself. Implementers should also define and enforce retention limits on historical account-to-certificate linkage records.<a href="#section-7.5-2" class="pilcrow">¶</a></p>
+<p id="section-7.5-2">Implementers operating servers should store account-to-device bindings using the minimum fidelity necessary for authorization decisions. Where the operational requirement is only to confirm that a given device is authorized to request certificates, it may be sufficient to store a hash or other one-way transformation of the device identifier rather than the identifier itself. Implementers should also define and enforce retention limits on historical account-to-certificate linkage records.<a href="#section-7.5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="implementer-decision-guidance">
@@ -1648,7 +1649,7 @@ Content-Type: application/jose+json
         <h3 id="name-implementer-decision-guidan">
 <a href="#section-7.6" class="section-number selfRef">7.6. </a><a href="#name-implementer-decision-guidan" class="section-name selfRef">Implementer Decision Guidance</a>
         </h3>
-<p id="section-7.6-1">Implementers considering whether to include <code>permanent-identifier</code> or <code>hardware-module</code> in CSRs and issued certificates <span class="bcp14">SHOULD</span> work through the following questions before enabling these identifiers:<a href="#section-7.6-1" class="pilcrow">¶</a></p>
+<p id="section-7.6-1">Implementers considering whether to include <code>permanent-identifier</code> or <code>hardware-module</code> in CSRs and issued certificates should work through the following questions before enabling these identifiers:<a href="#section-7.6-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-7.6-2.1">
             <p id="section-7.6-2.1.1">Is unchanging hardware identity in the certificate necessary for the relying party to make authorization decisions, or is it sufficient for the server to have validated it at issuance time? If the latter, prefer privacy-preserving certificate mode.<a href="#section-7.6-2.1.1" class="pilcrow">¶</a></p>
@@ -1663,7 +1664,7 @@ Content-Type: application/jose+json
             <p id="section-7.6-2.4.1">Does the deployment have requirements for device replacement or key rotation without service interruption? Binding the certificate's identity to a specific hardware module OID and serial number complicates these operational scenarios and may require reissuance policies that expose additional identifier churn in logs.<a href="#section-7.6-2.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.6-2.5">
-            <p id="section-7.6-2.5.1">What is the attestation data handling policy of the server operator? If this is not documented or auditable, device operators <span class="bcp14">SHOULD</span> treat the attestation exchange as a full disclosure of all attributes present in the attestation payload.<a href="#section-7.6-2.5.1" class="pilcrow">¶</a></p>
+            <p id="section-7.6-2.5.1">What is the attestation data handling policy of the server operator? If this is not documented or auditable, device operators should treat the attestation exchange as a full disclosure of all attributes present in the attestation payload.<a href="#section-7.6-2.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
