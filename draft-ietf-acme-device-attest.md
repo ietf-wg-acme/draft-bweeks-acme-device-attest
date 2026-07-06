@@ -334,15 +334,15 @@ From the perspective of {{!RFC6973}} Section 5.2.2, such identifiers enable dire
 
 When the same `permanent-identifier` or `hardware-module` value appears across multiple certificate requests (as it will in any recurring renewal workflow), it enables {{!RFC6973}} correlation: an observer with access to server logs can reconstruct the full lifecycle of a device's certificate activity. Similarly, when such identifiers are included in issued certificates, logging issued certificates in a central location (in certificate transparency logs, etc.) produces a persistent device audit trail regardless of whether the log operator intends to maintain one.
 
-Implementers SHOULD assess whether the operational benefit of unchanging device identification outweighs this correlation exposure. In deployments where device anonymity or pseudonymity is a requirement, such as systems handling sensitive workloads on behalf of individuals, implementers SHOULD consider whether alternative validation mechanisms that do not bind the certificate to a permanent hardware identifier are more appropriate.
+Implementers should assess whether the operational benefit of unchanging device identification outweighs this correlation exposure. In deployments where device anonymity or pseudonymity is a requirement, such as systems handling sensitive workloads on behalf of individuals, implementers should consider whether alternative validation mechanisms that do not bind the certificate to a permanent hardware identifier are more appropriate.
 
 ## Fingerprinting via Attestation Payloads
 
 The `device-attest-01` challenge response carries a WebAuthn attestation object that may contain significantly more information than the identifier value alone. Depending on the attestation format, this payload may include device model, firmware version, bootloader state, hardware security level, and operating system version. Even when the resulting certificate is issued in a privacy-preserving form that omits the identifier from the subjectAltName extension (see Section 3.2 and Section 4.2), the attestation payload itself is transmitted to and evaluated by the server during challenge validation.
 
-This constitutes a fingerprinting surface as defined in {{!RFC6973}} Section 3.2. The combination of a hardware serial number, hardware type OID, and firmware attestation attributes may uniquely identify not just the device model but the specific device unit, even in the absence of an explicit `permanent-identifier` value. Implementers operating servers may consider applying data minimization principles to attestation payload handling by limiting only the attributes necessary to make the authorization decision should be evaluated, and the full attestation payload SHOULD NOT be retained beyond the duration of the challenge validation exchange unless there is a specific, documented operational requirement to do so.
+This constitutes a fingerprinting surface as defined in {{!RFC6973}} Section 3.2. The combination of a hardware serial number, hardware type OID, and firmware attestation attributes may uniquely identify not just the device model but the specific device unit, even in the absence of an explicit `permanent-identifier` value. Implementers operating servers may consider applying data minimization principles to attestation payload handling by limiting only the attributes necessary to make the authorization decision should be evaluated, and the full attestation payload should not be retained beyond the duration of the challenge validation exchange unless there is a specific, documented operational requirement to do so.
 
-Implementers operating ACME Clients SHOULD be aware that the attestation format selected may expose more device state than is necessary to satisfy the server's authorization policy. Where multiple attestation formats are available, Clients SHOULD prefer formats that minimize the set of disclosed attributes.
+Implementers operating ACME Clients should be aware that the attestation format selected may expose more device state than is necessary to satisfy the server's authorization policy. Where multiple attestation formats are available, Clients should prefer formats that minimize the set of disclosed attributes.
 
 ## Secondary Use of Attestation Data
 
@@ -362,17 +362,17 @@ Implementers should treat this privacy-preserving mode as the default posture un
 
 - If the certificate is used for mutual TLS in a workload identity context, embedding an unchanging hardware identifier couples the cryptographic identity of the workload to the physical device rather than to the logical identity of the workload. This can impede key rotation, device replacement, and workload migration, in addition to creating the correlation risks described above. In such cases, implementers should prefer logical workload identifiers (such as SPIFFE URIs) in the issued certificate and treat the hardware attestation as a bootstrap authorization mechanism only.
 
-- If the certificate is intended for use in certificate transparency logs, implementers MUST consider that embedding a `permanent-identifier` or `hardware-module` value will make that identifier permanently and publicly discoverable, indexed by issuance time, issuer, and subject. This constitutes an irreversible disclosure under {{!RFC6973}} Section 5.2.4 and should be avoided unless public discoverability of the device identifier is an explicit operational requirement.
+- If the certificate is intended for use in certificate transparency logs, implementers must consider that embedding a `permanent-identifier` or `hardware-module` value will make that identifier permanently and publicly discoverable, indexed by issuance time, issuer, and subject. This constitutes an irreversible disclosure under {{!RFC6973}} Section 5.2.4 and should be avoided unless public discoverability of the device identifier is an explicit operational requirement.
 
 ## Stored Data and Account Binding
 
 This document recommends the use of externalAccountBinding to pre-authenticate device requests to an enterprise server. When an ACME account is persistently bound to a device identity, the server's account store contains a durable mapping between the cryptographic account credential and the physical device. Per {{!RFC6973}} Section 5.1.2, this stored association constitutes a target for compromise: an attacker who obtains the account store gains not only account credentials but a historical record of device-to-identity mappings across all certificate issuances.
 
-Implementers operating servers SHOULD store account-to-device bindings using the minimum fidelity necessary for authorization decisions. Where the operational requirement is only to confirm that a given device is authorized to request certificates, it may be sufficient to store a hash or other one-way transformation of the device identifier rather than the identifier itself. Implementers should also define and enforce retention limits on historical account-to-certificate linkage records.
+Implementers operating servers should store account-to-device bindings using the minimum fidelity necessary for authorization decisions. Where the operational requirement is only to confirm that a given device is authorized to request certificates, it may be sufficient to store a hash or other one-way transformation of the device identifier rather than the identifier itself. Implementers should also define and enforce retention limits on historical account-to-certificate linkage records.
 
 ## Implementer Decision Guidance
 
-Implementers considering whether to include `permanent-identifier` or `hardware-module` in CSRs and issued certificates SHOULD work through the following questions before enabling these identifiers:
+Implementers considering whether to include `permanent-identifier` or `hardware-module` in CSRs and issued certificates should work through the following questions before enabling these identifiers:
 
 - Is unchanging hardware identity in the certificate necessary for the relying party to make authorization decisions, or is it sufficient for the server to have validated it at issuance time? If the latter, prefer privacy-preserving certificate mode.
 
@@ -382,7 +382,7 @@ Implementers considering whether to include `permanent-identifier` or `hardware-
 
 - Does the deployment have requirements for device replacement or key rotation without service interruption? Binding the certificate's identity to a specific hardware module OID and serial number complicates these operational scenarios and may require reissuance policies that expose additional identifier churn in logs.
 
-- What is the attestation data handling policy of the server operator? If this is not documented or auditable, device operators SHOULD treat the attestation exchange as a full disclosure of all attributes present in the attestation payload.
+- What is the attestation data handling policy of the server operator? If this is not documented or auditable, device operators should treat the attestation exchange as a full disclosure of all attributes present in the attestation payload.
 
 # Security Considerations
 
