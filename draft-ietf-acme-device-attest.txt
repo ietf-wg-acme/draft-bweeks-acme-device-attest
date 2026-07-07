@@ -6,13 +6,13 @@ ACME Working Group                                              B. Weeks
 Internet-Draft                                                Google Inc
 Updates: 8555 (if approved)                                   G. Mallaya
 Intended status: Standards Track                           AppViewX Inc.
-Expires: 7 January 2027                                        S. Rajala
+Expires: 8 January 2027                                        S. Rajala
                                                                Keyfactor
                                                               C. Bonnell
                                                     TurboLight Solutions
                                                                 R. Hurst
                                                        Peculiar Ventures
-                                                             6 July 2026
+                                                             7 July 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 January 2027.
+   This Internet-Draft will expire on 8 January 2027.
 
 Copyright Notice
 
@@ -498,7 +498,7 @@ hardware-module-value = hw-serial-num-value "/" hw-type-value
    An enterprise CA likely only wants to receive requests from
    authorized devices.  It is RECOMMENDED that the Server require a
    value for the "externalAccountBinding" field to be present in
-   "newAccount" requests.
+   "newAccount" requests, as defined by Section 7.3.4 of [RFC8555].
 
    If an enterprise CA desires to limit the number of certificates that
    can be requested with a given account, including limiting an account
@@ -891,11 +891,6 @@ hardware-module-value = hw-serial-num-value "/" hw-type-value
               Kasten, "Automatic Certificate Management Environment
               (ACME)", RFC 8555, DOI 10.17487/RFC8555, March 2019,
               <https://www.rfc-editor.org/rfc/rfc8555>.
-
-   [RFC8809]  Hodges, J., Mandyam, G., and M. Jones, "Registries for Web
-              Authentication (WebAuthn)", RFC 8809,
-              DOI 10.17487/RFC8809, August 2020,
-              <https://www.rfc-editor.org/rfc/rfc8809>.
 
    [WebAuthn] Hodges, J., Jones, J., Jones, M. B., Kumar, A., and E.
               Lundberg, "Web Authentication: An API for accessing Public
