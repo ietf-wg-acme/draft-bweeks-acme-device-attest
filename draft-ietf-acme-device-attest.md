@@ -49,7 +49,6 @@ normative:
   RFC4108:
   RFC5234:
   RFC8555:
-  RFC8809:
   I-D.ietf-tls-rfc8446bis:
   IANA-Webauthn:
     title: "IANA Registries for Web Authentication (WebAuthn)"
@@ -288,7 +287,7 @@ ACME was originally envisioned for issuing certificates in the Web PKI, however 
 
 ### External Account Binding
 
-An enterprise CA likely only wants to receive requests from authorized devices. It is RECOMMENDED that the Server require a value for the "externalAccountBinding" field to be present in "newAccount" requests.
+An enterprise CA likely only wants to receive requests from authorized devices. It is RECOMMENDED that the Server require a value for the "externalAccountBinding" field to be present in "newAccount" requests, as defined by Section 7.3.4 of {{RFC8555}}.
 
 If an enterprise CA desires to limit the number of certificates that can be requested with a given account, including limiting an account to a single certificate, after the desired number of certificates have been issued to an account the Server MAY revoke the account as described in Section 7.1.2 of {{RFC8555}}.
 
