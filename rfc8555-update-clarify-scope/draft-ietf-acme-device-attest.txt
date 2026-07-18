@@ -4,15 +4,15 @@
 
 ACME Working Group                                              B. Weeks
 Internet-Draft                                                Google Inc
-Intended status: Standards Track                              G. Mallaya
-Expires: 19 December 2026                                  AppViewX Inc.
-                                                               S. Rajala
+Updates: 8555 (if approved)                                   G. Mallaya
+Intended status: Standards Track                           AppViewX Inc.
+Expires: 19 January 2027                                       S. Rajala
                                                                Keyfactor
                                                               C. Bonnell
                                                     TurboLight Solutions
                                                                 R. Hurst
                                                        Peculiar Ventures
-                                                            17 June 2026
+                                                            18 July 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -23,7 +23,9 @@ Abstract
 
    This document specifies new identifiers and a challenge for the
    Automated Certificate Management Environment (ACME) protocol which
-   allows validating the identity of a device using attestation.
+   allows validating the identity of a device using attestation.  This
+   document updates RFC 8555 to enable a privacy-preserving mode for the
+   identifiers defined in this document.
 
 Status of This Memo
 
@@ -40,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 December 2026.
+   This Internet-Draft will expire on 19 January 2027.
 
 Copyright Notice
 
@@ -87,9 +89,7 @@ Table of Contents
      9.1.  ACME Identifier Types
      9.2.  ACME Validation Method
      9.3.  New Error Types
-   10. References
-     10.1.  Normative References
-     10.2.  Informative References
+   10. Normative References
    Acknowledgments
    Contributors
    Authors' Addresses
@@ -121,9 +121,8 @@ Table of Contents
       (https://support.apple.com/en-om/guide/deployment/dep28afbde6a/
       web)
 
-   Using ACME and device attestation to issue client certificates for
-   enterprise PKI will be a common use case.  The following variances to
-   the ACME specification are described in this document:
+   The following changes to the ACME specification are described in this
+   document:
 
    *  Addition of permanent-identifier [RFC4043] and hardware-module
       [RFC4108] identifier types.
@@ -161,10 +160,10 @@ Table of Contents
    A new identifier type, permanent-identifier is introduced to
    represent the identity of a device assigned by the manufacturer,
    typically a serial number.  Additionally, the assigner of the
-   identifier MAY also be specified.  The name of this identifier type
-   was chosen to align with [RFC4043].  This specification does not
+   identifier MAY be specified.  The name of this identifier type was
+   chosen to align with [RFC4043].  This specification does not
    prescribe the lifetime of the identifier, which is at the discretion
-   of the Assigner Authority.
+   of the Assigner Authority ([RFC4043]).
 
    Although [RFC4043] permits any valid UTF-8 string to be used as the
    identifier, this specification mandates that identifiers MUST NOT
@@ -180,7 +179,7 @@ Table of Contents
    value production rule as defined in this ABNF [RFC5234] syntax:
 
 assigner-value = first-and-second-components *("." component)
-first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39))) / ("2" "." component)
+first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39)) / ("2" "." component)
 component = "0" / (%x31-39 *%x30-39)
 device-identifier-value = 1*(%x00-2E / %x30-FF)
 
@@ -198,14 +197,14 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    reject requests containing non-conforming values with a "malformed"
    error.
 
-   Example identifier without an assigner:
+   Example of an identifier without an assigner:
 
    {
      "type": "permanent-identifier",
      "value": "ABCDEF123456"
    }
 
-   Example identifier with an assigner:
+   Example of an identifier with an assigner:
 
    {
      "type": "permanent-identifier",
@@ -220,11 +219,12 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    values with representations appropriate to those credential types.
 
    The identity is included in the Subject Alternative Name Extension
-   using the identifierValue field of the PermanentIdentifier form
-   described in [RFC4043].  Although [RFC4043] permits the requester to
-   include the identifierValue in a serialNumber subject attribute, this
-   specification mandates that the identifierValue field of the
-   PermanentIdentifier MUST be present and MUST contain the identifier.
+   ("SAN") using the identifierValue field of the PermanentIdentifier
+   form described in [RFC4043].  Although [RFC4043] permits the
+   requester to include the identifierValue in a serialNumber subject
+   attribute, this specification mandates that the identifierValue field
+   of the PermanentIdentifier MUST be present and MUST contain the
+   identifier.
 
    The value of the identifierValue field of the PermanentIdentifier
    MUST be an octet-for-octet match of the device-identifier-value value
@@ -258,12 +258,17 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    same set of requested identifiers as the initial newOrder request".
    However, there are some environments where the Server requires
    validation of the identifier but does not include the identifier in
-   certificates due to privacy concerns.  To support privacy-preserving
-   certificates, Clients MAY omit this identifier in the certificate
-   signing request (CSR).  Similarly, if the Server wishes to issue
-   privacy-preserving certificates, it MAY reject CSRs containing a
-   PermanentIdentifier in the subjectAltName extension.  See the
-   Section 7 for more information.
+   certificates due to privacy concerns.  This document updates
+   [RFC8555] to specify that the CSR SHOULD indicate the exact same set
+   of requested identifiers of types permanent-identifier and hardware-
+   module (Section 4) as the initial newOrder request (identifiers of
+   other types MUST be indicated in the CSR per [RFC8555] section 7.4).
+   To support privacy-preserving certificates, Clients MAY omit
+   identifiers of types permanent-identifier and hardware-module in the
+   certificate signing request (CSR).  Similarly, if the Server wishes
+   to issue privacy-preserving certificates, it MAY reject CSRs
+   containing a PermanentIdentifier or HardwareModuleName in the
+   subjectAltName extension.  See the Section 7 for more information.
 
 4.  Hardware Module
 
@@ -291,36 +296,29 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    value production rule as defined in this ABNF [RFC5234] syntax:
 
 hw-type-value = first-and-second-components *("." component)
-first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39))) / ("2" "." component)
+first-and-second-components = (("0" / "1") "." (*1(%x31-33) %x30-39)) / ("2" "." component)
 component = "0" / (%x31-39 *%x30-39)
 hw-serial-num-value = 1*(%x00-2E / %x30-FF)
 
-hardware-module-value = hw-serial-num-value ["/" hw-type-value]
+hardware-module-value = hw-serial-num-value "/" hw-type-value
 
    A valid hardware-module-value value is a UTF-8 string that contains a
    serial number consisting of one or more characters without any
-   forward-slash "/" (UTF-8: U+002F) characters.  Optionally, a forward-
-   slash "/" character and "dotted-decimal" object identifier
-   identifying the hardware type may follow the serial number.
+   forward-slash "/" (UTF-8: U+002F) characters.  A forward-slash "/"
+   character and "dotted-decimal" object identifier identifying the
+   hardware type follows the serial number.
 
    The Server MUST verify that identifier values in newOrder requests
    conform to the hardware-module-value production rule and MUST reject
    requests containing non-conforming values with a "malformed" error.
 
-   Example identifier with the type of the hardware module represented
-   using the OBJECT IDENTIFIER "1.2.3.4" and a serial number of "ABCD":
+   Example of an identifier with the type of the hardware module
+   represented using the OBJECT IDENTIFIER "1.2.3.4" and a serial number
+   of "ABCD":
 
    {
-     "type": `hardware-module`,
+     "type": "hardware-module",
      "value": "ABCD/1.2.3.4"
-   }
-
-   Example identifier with no type specified and a serial number of
-   "ABCD":
-
-   {
-     "type": `hardware-module`,
-     "value": "ABCD"
    }
 
 4.2.  Representation in Certificate Signing Requests and X.509
@@ -370,20 +368,23 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
 
    [RFC8555] section 7.4 mandates that "The CSR MUST indicate the exact
    same set of requested identifiers as the initial newOrder request".
-   However, there are some environments where the Server requires
-   validation of the identifier but does not include the identifier in
-   certificates due to privacy concerns.  To support privacy-preserving
-   certificates, Clients MAY omit this identifier in the certificate
-   signing request (CSR).  Similarly, if the Server wishes to issue
-   privacy-preserving certificates, it MAY reject CSRs containing a
+   This document updates [RFC8555] to specify that the CSR SHOULD
+   indicate the exact same set of requested identifiers of types
+   permanent-identifier (Section 3) and hardware-module as the initial
+   newOrder request (identifiers of other types MUST be indicated in the
+   CSR per [RFC8555] section 7.4).  To support privacy-preserving
+   certificates, Clients MAY omit identifiers of types permanent-
+   identifier and hardware-module in the certificate signing request
+   (CSR).  Similarly, if the Server wishes to issue privacy-preserving
+   certificates, it MAY reject CSRs containing a PermanentIdentifier or
    HardwareModuleName in the subjectAltName extension.  See the
    Section 7 for more information.
 
 5.  Device Attestation Challenge
 
-   The Client can prove control over a permanent identifier of a device
-   by providing an attestation statement containing the identifier of
-   the device.
+   A Client can prove control over a permanent identifier of a device by
+   providing an attestation statement containing the identifier of the
+   device.
 
    The device-attest-01 ACME challenge object has the following format:
 
@@ -391,6 +392,9 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
 
    token (required, string):  A random value that uniquely identifies
       the challenge.
+
+   An example message with a device-attest-01 challenge is provided
+   below:
 
    {
      "type": "device-attest-01",
@@ -422,11 +426,10 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
       attestation time before the account key thumbprint can be
       incorporated.  The token construction provides freshness.  The key
       authorization construction additionally binds the attestation to a
-      specific account key.  The Server MUST consult format-specific
-      documentation to determine which construction applies and MUST
-      verify accordingly.  Attestation formats whose signing procedure
-      does not incorporate _attToBeSigned_ cannot be used to satisfy
-      this challenge type.
+      specific account key.  The Server MUST process and verify
+      attestations in accordance with the format-specific documentation.
+      Attestation formats whose signing procedure does not incorporate
+      _attToBeSigned_ cannot be used to satisfy this challenge type.
 
    *  The _authData_ field carries browser-context data (including the
       RP ID hash) that has no meaning in the ACME context and SHOULD be
@@ -459,9 +462,13 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
 
    If any of the steps fail, then the Server MUST respond to the Client
    with a "badAttestationStatement" error and set the status of the
-   challenge object to "invalid".  The Server SHOULD provide the reason
+   challenge object to "invalid".  The Server MUST provide the reason
    for rejecting the challenge in the "detail" field of the problem
-   document.
+   document, unless the disclosure of the reason to the Client presents
+   a privacy concern; see the Section 7 section for more information.
+
+   An example challenge response containing the WebAuthn attestation
+   object in the payload:
 
    POST /acme/chall/Rg5dV14Gh1Q
    Host: example.com
@@ -483,27 +490,23 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
    The webauthn payload MAY contain any identifiers registered in
    "WebAuthn Attestation Statement Format Identifiers" and any
    extensions registered in "WebAuthn Extension Identifiers"
-   [IANA-Webauthn], [RFC8809].
+   [IANA-Webauthn].
 
 6.  Operational Considerations
-
-   Although this document focuses guidance on implementing new
-   identifier types and a challenge for certificate issuance using ACME,
-   it does not define a new protocol, a protocol extension, or an
-   architecture.
 
 6.1.  Enterprise PKI
 
    ACME was originally envisioned for issuing certificates in the Web
-   PKI, however this extension will primarily be useful in enterprise
-   PKI.
+   PKI, however this extension is primarily useful in enterprise PKI.
+   The sections below provide operational considerations for enterprise
+   PKIs.
 
 6.1.1.  External Account Binding
 
    An enterprise CA likely only wants to receive requests from
    authorized devices.  It is RECOMMENDED that the Server require a
    value for the "externalAccountBinding" field to be present in
-   "newAccount" requests.
+   "newAccount" requests, as defined by Section 7.3.4 of [RFC8555].
 
    If an enterprise CA desires to limit the number of certificates that
    can be requested with a given account, including limiting an account
@@ -546,14 +549,14 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
    Intermediate cases include TEE-based attestation where a hypervisor
    or trusted execution environment acts as the authority.
 
-   Servers SHOULD consider the trust properties of each attestation
-   format when establishing issuance policy, including the nature of the
-   authority making the attestation and the key protection guarantees it
-   can assert.  The key authorization construction described in
-   Section 5 also contributes to this trust model: formats that use the
-   full key authorization as _attToBeSigned_ bind the attestation to a
-   specific account key, while formats that use the token alone provide
-   freshness without account key binding.
+   Server operators must consider the trust properties of each
+   attestation format when establishing issuance policy, including the
+   nature of the authority making the attestation and the key protection
+   guarantees it can assert.  The key authorization construction
+   described in Section 5 also contributes to this trust model: formats
+   that use the full key authorization as _attToBeSigned_ bind the
+   attestation to a specific account key, while formats that use the
+   token alone provide freshness without account key binding.
 
 7.  Privacy Considerations
 
@@ -781,8 +784,10 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
 
    The "token" value MUST have at least 128 bits of entropy.  It MUST
    NOT contain any characters outside the base64url alphabet, including
-   padding characters ("=").  See [I-D.ietf-tls-rfc8446bis],
-   Appendix C.1 for additional information on randomness requirements.
+   padding characters ("=").  The "token" value MUST be generated using
+   a cryptographically secure pseudorandom number generator ("CSPRNG").
+   See [I-D.ietf-tls-rfc8446bis], Appendix C.1 for guidance on random
+   number generation.
 
    The binding between the certified public key and the device
    identifier is established through the attestation statement rather
@@ -846,9 +851,7 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
 
                                   Table 3
 
-10.  References
-
-10.1.  Normative References
+10.  Normative References
 
    [I-D.ietf-tls-rfc8446bis]
               Rescorla, E., "The Transport Layer Security (TLS) Protocol
@@ -856,6 +859,11 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
               ietf-tls-rfc8446bis-14, 13 September 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
               rfc8446bis-14>.
+
+   [IANA-Webauthn]
+              "IANA Registries for Web Authentication (WebAuthn)", n.d.,
+              <https://www.iana.org/assignments/webauthn/
+              webauthn.xhtml>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -892,30 +900,20 @@ hardware-module-value = hw-serial-num-value ["/" hw-type-value]
               (ACME)", RFC 8555, DOI 10.17487/RFC8555, March 2019,
               <https://www.rfc-editor.org/rfc/rfc8555>.
 
-   [RFC8809]  Hodges, J., Mandyam, G., and M. Jones, "Registries for Web
-              Authentication (WebAuthn)", RFC 8809,
-              DOI 10.17487/RFC8809, August 2020,
-              <https://www.rfc-editor.org/rfc/rfc8809>.
-
    [WebAuthn] Hodges, J., Jones, J., Jones, M. B., Kumar, A., and E.
               Lundberg, "Web Authentication: An API for accessing Public
               Key Credentials Level 2", April 2021,
               <https://www.w3.org/TR/webauthn-2/>.
 
-10.2.  Informative References
-
-   [IANA-Webauthn]
-              "IANA Registries for Web Authentication (WebAuthn)", n.d.,
-              <https://www.iana.org/assignments/webauthn/
-              webauthn.xhtml>.
-
 Acknowledgments
 
    We thank the participants on the ACME Working Group mailing list for
    their insightful feedback and comments.  In particular, the authors
-   extend sincere appreciation to Mike Ounsworth, Deb Cooley, Aaron
-   Gable, and Richard Barnes for their reviews and suggestions, which
-   greatly improved the quality of this document.
+   extend sincere appreciation to Aaron Gable, Christopher Inacio, Deb
+   Cooley, Eric Vyncke, Mahesh Jethanandani, Mike Bishop, Mike
+   Ounsworth, Mohamed Boucadair, Richard Barnes, Roman Danyliw, and
+   Tommy Jensen for their reviews and suggestions, which greatly
+   improved the quality of this document.
 
 Contributors
 
