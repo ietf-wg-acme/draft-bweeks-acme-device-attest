@@ -6,13 +6,13 @@ ACME Working Group                                              B. Weeks
 Internet-Draft                                                Google Inc
 Updates: 8555 (if approved)                                   G. Mallaya
 Intended status: Standards Track                           AppViewX Inc.
-Expires: 16 January 2027                                       S. Rajala
+Expires: 24 January 2027                                       S. Rajala
                                                                Keyfactor
                                                               C. Bonnell
                                                     TurboLight Solutions
                                                                 R. Hurst
                                                        Peculiar Ventures
-                                                            15 July 2026
+                                                            23 July 2026
 
 
  Automated Certificate Management Environment (ACME) Device Attestation
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 January 2027.
+   This Internet-Draft will expire on 24 January 2027.
 
 Copyright Notice
 
@@ -258,15 +258,17 @@ permanent-identifier-value = device-identifier-value ["/" assigner-value]
    same set of requested identifiers as the initial newOrder request".
    However, there are some environments where the Server requires
    validation of the identifier but does not include the identifier in
-   certificates due to privacy concerns.  To accommodate these
-   environments, this document updates [RFC8555] to specify that the CSR
-   SHOULD indicate the exact same set of requested identifiers as the
-   initial newOrder request.  To support privacy-preserving
-   certificates, Clients MAY omit this identifier in the certificate
-   signing request (CSR).  Similarly, if the Server wishes to issue
-   privacy-preserving certificates, it MAY reject CSRs containing a
-   PermanentIdentifier in the subjectAltName extension.  See the
-   Section 7 for more information.
+   certificates due to privacy concerns.  This document updates
+   [RFC8555] to specify that the CSR SHOULD indicate the exact same set
+   of requested identifiers of types permanent-identifier and hardware-
+   module (Section 4) as the initial newOrder request (identifiers of
+   other types MUST be indicated in the CSR per [RFC8555] section 7.4).
+   To support privacy-preserving certificates, Clients MAY omit
+   identifiers of types permanent-identifier and hardware-module in the
+   certificate signing request (CSR).  Similarly, if the Server wishes
+   to issue privacy-preserving certificates, it MAY reject CSRs
+   containing a PermanentIdentifier or HardwareModuleName in the
+   subjectAltName extension.  See the Section 7 for more information.
 
 4.  Hardware Module
 
@@ -366,17 +368,17 @@ hardware-module-value = hw-serial-num-value "/" hw-type-value
 
    [RFC8555] section 7.4 mandates that "The CSR MUST indicate the exact
    same set of requested identifiers as the initial newOrder request".
-   However, there are some environments where the Server requires
-   validation of the identifier but does not include the identifier in
-   certificates due to privacy concerns.  To accommodate these
-   environments, this document updates [RFC8555] to specify that the CSR
-   SHOULD indicate the exact same set of requested identifiers as the
-   initial newOrder request.  To support privacy-preserving
-   certificates, Clients MAY omit this identifier in the certificate
-   signing request (CSR).  Similarly, if the Server wishes to issue
-   privacy-preserving certificates, it MAY reject CSRs containing a
+   This document updates [RFC8555] to specify that the CSR SHOULD
+   indicate the exact same set of requested identifiers of types
+   permanent-identifier (Section 3) and hardware-module as the initial
+   newOrder request (identifiers of other types MUST be indicated in the
+   CSR per [RFC8555] section 7.4).  To support privacy-preserving
+   certificates, Clients MAY omit identifiers of types permanent-
+   identifier and hardware-module in the certificate signing request
+   (CSR).  Similarly, if the Server wishes to issue privacy-preserving
+   certificates, it MAY reject CSRs containing a PermanentIdentifier or
    HardwareModuleName in the subjectAltName extension.  See the
-   Section 7 section for more information.
+   Section 7 for more information.
 
 5.  Device Attestation Challenge
 
